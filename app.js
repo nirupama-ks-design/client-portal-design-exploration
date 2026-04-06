@@ -1486,14 +1486,19 @@ function applyResponsiveSections() {
     scroller.addEventListener("scroll", syncMobileCarouselIndex, { passive: true });
     scroller.dataset.carouselBound = "true";
   }
-  // Delay scroll to let CSS order apply to flex layout
-  setTimeout(function() {
-    var grid = elements.appView.querySelector("#dashboard-grid");
-    if (grid) {
-      grid.scrollTo({ left: 0, behavior: "auto" });
-    }
+  // Scroll to Team section explicitly after layout settles
+  if (isMobileViewport()) {
+    setTimeout(function() {
+      var grid = elements.appView.querySelector("#dashboard-grid");
+      var team = elements.appView.querySelector("#section-team");
+      if (grid && team) {
+        grid.scrollTo({ left: team.offsetLeft - grid.offsetLeft, behavior: "auto" });
+      }
+      syncMobileCarouselIndex();
+    }, 200);
+  } else {
     syncMobileCarouselIndex();
-  }, 150);
+  }
 }
 
 function hydrateStaticIcons(root = document) {
