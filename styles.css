@@ -1431,9 +1431,8 @@ h4 {
   max-width: none;
   margin: 0 auto;
   display: grid;
-  grid-template-columns: minmax(0, 550px) minmax(280px, 318px);
+  grid-template-columns: minmax(0, 1fr) 318px;
   gap: 20px;
-  justify-content: center;
   align-items: start;
 }
 
