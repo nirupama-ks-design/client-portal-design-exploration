@@ -375,6 +375,11 @@ h4 {
   cursor: pointer;
 }
 
+.meeting-item {
+  grid-template-columns: auto minmax(0, 1fr);
+  cursor: pointer;
+}
+
 .task-item.is-disabled,
 .workflow-item.is-muted {
   background: rgba(238, 244, 255, 0.7);
