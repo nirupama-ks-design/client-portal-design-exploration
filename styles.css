@@ -203,11 +203,11 @@ h4 {
 }
 
 .page-content-neutral {
-  max-width: var(--content-width);
-  margin: 0 auto;
+  max-width: none;
+  width: 100%;
   min-height: calc(100vh - 64px);
-  padding: 36px 24px 40px;
-  background: transparent;
+  padding: 36px 32px 40px;
+  background: #f3f3f0;
 }
 
 .hero {
@@ -1373,7 +1373,8 @@ h4 {
 }
 
 .detail-hero {
-  margin: 0 0 18px;
+  max-width: var(--content-width);
+  margin: 0 auto 18px;
 }
 
 .detail-hero h1 {
@@ -1392,12 +1393,13 @@ h4 {
 }
 
 .progress-card-page {
-  max-width: none;
-  margin-bottom: 20px;
+  max-width: var(--content-width);
+  margin: 0 auto 20px;
 }
 
 .detail-tabs {
-  margin: 0 0 20px;
+  max-width: var(--content-width);
+  margin: 0 auto 20px;
   display: inline-flex;
   align-items: center;
   gap: 4px;
@@ -1424,7 +1426,8 @@ h4 {
 }
 
 .detail-layout {
-  margin: 0;
+  max-width: var(--content-width);
+  margin: 0 auto;
   display: grid;
   grid-template-columns: minmax(0, 1fr) 340px;
   gap: 24px;
@@ -1779,6 +1782,8 @@ h4 {
 }
 
 .task-hero-actions {
+  max-width: var(--content-width);
+  margin: 0 auto;
   margin: 0 18px;
 }
 
