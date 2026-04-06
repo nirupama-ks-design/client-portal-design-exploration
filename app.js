@@ -1486,19 +1486,17 @@ function applyResponsiveSections() {
     scroller.addEventListener("scroll", syncMobileCarouselIndex, { passive: true });
     scroller.dataset.carouselBound = "true";
   }
-  // Scroll to Team section explicitly after layout settles
-  if (isMobileViewport()) {
-    setTimeout(function() {
-      var grid = elements.appView.querySelector("#dashboard-grid");
-      var team = elements.appView.querySelector("#section-team");
-      if (grid && team) {
-        grid.scrollTo({ left: team.offsetLeft - grid.offsetLeft, behavior: "auto" });
-      }
-      syncMobileCarouselIndex();
-    }, 200);
-  } else {
-    syncMobileCarouselIndex();
-  }
+  syncMobileCarouselIndex();
+}
+
+function scrollToTeamSection() {
+  if (!isMobileViewport()) return;
+  var grid = elements.appView.querySelector("#dashboard-grid");
+  var team = elements.appView.querySelector("#section-team");
+  if (!grid || !team) return;
+  var pos = team.offsetLeft - grid.offsetLeft;
+  grid.scrollLeft = pos;
+  syncMobileCarouselIndex();
 }
 
 function hydrateStaticIcons(root = document) {
@@ -1777,6 +1775,17 @@ function renderApp() {
   renderChatSurfaces();
   state.mobileCarouselIndex = 0;
   applyResponsiveSections();
+  // Multiple scroll attempts to beat layout timing
+  scrollToTeamSection();
+  requestAnimationFrame(function() {
+    scrollToTeamSection();
+    requestAnimationFrame(function() {
+      scrollToTeamSection();
+    });
+  });
+  setTimeout(scrollToTeamSection, 100);
+  setTimeout(scrollToTeamSection, 300);
+  setTimeout(scrollToTeamSection, 600);
 }
 
 function initEvents() {
