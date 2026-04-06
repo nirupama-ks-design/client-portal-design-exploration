@@ -1406,7 +1406,7 @@ body.is-locked {
 
   .hero-mobile-title {
     margin: 0 0 8px;
-    font-size: 0.92rem;
+    font-size: 1.375rem;
     line-height: 1.14;
     letter-spacing: -0.04em;
   }
@@ -1466,7 +1466,7 @@ body.is-locked {
   }
 
   .progress-card .progress-badge {
-    min-width: 44px;
+    min-width: 26px;
     height: 26px;
     padding: 0 8px;
     font-size: 10px;
@@ -1476,7 +1476,7 @@ body.is-locked {
 
   .progress-card .progress-track {
     margin-top: 14px;
-    width: calc(100% - 60px);
+    width: 100%;
   }
 
   .mobile-carousel-pagination {
@@ -1767,7 +1767,7 @@ body.is-locked {
     background: transparent;
     padding: 0;
     color: #010101;
-    font-size: 20px;
+    font-size: 14px;
     line-height: 1.2;
     font-weight: 600;
   }
