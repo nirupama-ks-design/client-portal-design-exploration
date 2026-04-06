@@ -1599,15 +1599,21 @@ body.is-locked {
     color: #666666;
   }
 
-  .dashboard-grid .card-head {
+  .dashboard-grid .card-head,
+  #section-team .card-head {
     display: block;
     padding: 16px 16px 10px;
   }
 
   .task-item,
   .workflow-item {
-    gap: 12px;
-    padding: 16px;
+    gap: 8px;
+    padding: 24px;
+  }
+
+  .task-item:first-child,
+  .workflow-item:first-child {
+    padding-top: 10px;
   }
 
   .task-item {
