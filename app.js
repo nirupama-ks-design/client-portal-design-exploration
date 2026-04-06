@@ -256,6 +256,7 @@ const state = {
 };
 
 const elements = {
+  topbar: document.querySelector(".topbar"),
   overlay: document.getElementById("overlay"),
   supportSheet: document.getElementById("support-sheet"),
   detailModal: document.getElementById("detail-modal"),
@@ -397,6 +398,26 @@ function renderMobileCarouselPagination() {
       });
     });
   });
+}
+
+function syncMobileStickyChrome() {
+  if (!elements.topbar) {
+    return;
+  }
+
+  if (!isMobileViewport()) {
+    document.documentElement.style.setProperty("--mobile-topbar-height", "0px");
+    elements.mobileCarouselPagination.classList.remove("is-stuck");
+    return;
+  }
+
+  const headerHeight = elements.topbar.offsetHeight;
+  document.documentElement.style.setProperty("--mobile-topbar-height", `${headerHeight}px`);
+
+  const paginationRect = elements.mobileCarouselPagination.getBoundingClientRect();
+  const headerRect = elements.topbar.getBoundingClientRect();
+  const stuck = paginationRect.top <= headerRect.bottom + 1;
+  elements.mobileCarouselPagination.classList.toggle("is-stuck", stuck);
 }
 
 function setMobileChatExpanded(expanded) {
@@ -946,6 +967,7 @@ function applyResponsiveSections() {
 
   renderMobileCarouselPagination();
   syncMobileCarouselIndex();
+  syncMobileStickyChrome();
 }
 
 function initEvents() {
@@ -964,6 +986,7 @@ function initEvents() {
   });
   elements.dashboardGrid.addEventListener("scroll", syncMobileCarouselIndex, { passive: true });
   window.addEventListener("resize", applyResponsiveSections);
+  window.addEventListener("scroll", syncMobileStickyChrome, { passive: true });
 
   document.addEventListener("keydown", (event) => {
     if (event.key === "Escape") {

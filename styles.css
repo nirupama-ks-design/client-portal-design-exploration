@@ -1357,7 +1357,7 @@ body.is-locked {
   }
 
   .eyebrow,
-  .hero > h1,
+  .hero > h1:not(.hero-mobile-title),
   .hero > .hero-copy:not(.hero-copy-mobile) {
     display: none;
   }
@@ -1405,10 +1405,13 @@ body.is-locked {
     justify-content: space-between;
     gap: 14px;
     position: sticky;
-    top: 74px;
+    top: var(--mobile-topbar-height, 74px);
     z-index: 20;
     margin: 0 0 18px;
     padding: 16px 2px 14px;
+  }
+
+  .mobile-carousel-pagination.is-stuck {
     background:
       linear-gradient(180deg, rgba(246, 247, 251, 0.98), rgba(246, 247, 251, 0.88) 68%, rgba(246, 247, 251, 0));
     backdrop-filter: blur(10px);
@@ -1497,9 +1500,12 @@ body.is-locked {
     display: none;
   }
 
+  .dashboard-grid .card-head {
+    display: none;
+  }
+
   .meeting-card,
   .payment-summary,
-  .card-head,
   .task-item,
   .workflow-item,
   .resource-group,
@@ -1510,11 +1516,6 @@ body.is-locked {
 
   .card {
     border-radius: 18px;
-  }
-
-  .card-head {
-    padding-top: 16px;
-    padding-bottom: 12px;
   }
 
   .card-label {
@@ -1597,6 +1598,7 @@ body.is-locked {
   }
 
   .team-list {
+    padding-top: 14px;
     padding-bottom: 14px;
   }
 
@@ -1620,12 +1622,12 @@ body.is-locked {
 
   .meeting-card {
     width: calc(100% - 28px);
-    margin: 0 14px 14px;
+    margin: 14px 14px 14px;
   }
 
   .meeting-card,
   .payment-summary {
-    padding-top: 4px;
+    padding-top: 16px;
     padding-bottom: 16px;
   }
 
