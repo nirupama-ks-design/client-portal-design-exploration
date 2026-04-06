@@ -1485,10 +1485,15 @@ function applyResponsiveSections() {
   if (scroller && !scroller.dataset.carouselBound) {
     scroller.addEventListener("scroll", syncMobileCarouselIndex, { passive: true });
     scroller.dataset.carouselBound = "true";
-    // Scroll to Your Team (index 0) on initial load
-    scroller.scrollTo({ left: 0, behavior: "auto" });
   }
-  syncMobileCarouselIndex();
+  // Delay scroll to let CSS order apply to flex layout
+  setTimeout(function() {
+    var grid = elements.appView.querySelector("#dashboard-grid");
+    if (grid) {
+      grid.scrollTo({ left: 0, behavior: "auto" });
+    }
+    syncMobileCarouselIndex();
+  }, 150);
 }
 
 function hydrateStaticIcons(root = document) {
