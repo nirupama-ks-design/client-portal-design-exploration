@@ -360,15 +360,13 @@ function syncMobileCarouselIndex() {
     return;
   }
 
-  const containerRect = elements.dashboardGrid.getBoundingClientRect();
-  const containerCenter = containerRect.left + containerRect.width / 2;
-
+  const viewportCenter = window.innerHeight / 2;
   const closestIndex = slides.reduce((bestIndex, slide, index) => {
     const slideRect = slide.getBoundingClientRect();
-    const slideCenter = slideRect.left + slideRect.width / 2;
+    const slideCenter = slideRect.top + slideRect.height / 2;
     const bestRect = slides[bestIndex].getBoundingClientRect();
-    const bestCenter = bestRect.left + bestRect.width / 2;
-    return Math.abs(slideCenter - containerCenter) < Math.abs(bestCenter - containerCenter) ? index : bestIndex;
+    const bestCenter = bestRect.top + bestRect.height / 2;
+    return Math.abs(slideCenter - viewportCenter) < Math.abs(bestCenter - viewportCenter) ? index : bestIndex;
   }, 0);
 
   if (closestIndex !== state.mobileCarouselIndex) {
@@ -411,10 +409,7 @@ function renderMobileCarouselPagination() {
       }
       state.mobileCarouselIndex = Number(button.dataset.carouselIndex);
       updateMobileCarouselPagination();
-      elements.dashboardGrid.scrollTo({
-        left: slide.offsetLeft - elements.dashboardGrid.offsetLeft,
-        behavior: "smooth"
-      });
+      slide.scrollIntoView({ behavior: "smooth", block: "center" });
     });
   });
 }
@@ -1062,7 +1057,7 @@ function initEvents() {
   elements.mobileChatToggle.addEventListener("click", () => {
     setMobileChatExpanded(!elements.mobileChatDock.classList.contains("is-expanded"));
   });
-  elements.dashboardGrid.addEventListener("scroll", syncMobileCarouselIndex, { passive: true });
+  window.addEventListener("scroll", syncMobileCarouselIndex, { passive: true });
   window.addEventListener("resize", applyResponsiveSections);
   window.addEventListener("scroll", syncMobileStickyChrome, { passive: true });
   document.addEventListener("click", closeProfileMenu);

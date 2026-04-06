@@ -1551,18 +1551,9 @@ body.is-locked {
   }
 
   .dashboard-grid {
-    display: flex;
+    display: grid;
     gap: 18px;
-    overflow-x: auto;
     padding-bottom: 4px;
-    scroll-snap-type: x mandatory;
-    overscroll-behavior-x: contain;
-    -webkit-overflow-scrolling: touch;
-    scrollbar-width: none;
-  }
-
-  .dashboard-grid::-webkit-scrollbar {
-    display: none;
   }
 
   .main-column,
@@ -1571,9 +1562,8 @@ body.is-locked {
   }
 
   [data-mobile-groups] {
-    flex: 0 0 calc(100vw - 32px);
-    max-width: calc(100vw - 32px);
-    scroll-snap-align: start;
+    width: 100%;
+    max-width: 100%;
   }
 
   #section-team {
