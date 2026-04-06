@@ -20,7 +20,7 @@
   --warning: #f97316;
   --warning-soft: rgba(249, 115, 22, 0.12);
   --blue-soft: rgba(90, 146, 255, 0.1);
-  --radius-lg: 18px;
+  --radius-lg: 16px;
   --radius-md: 12px;
   --radius-sm: 10px;
   --content-width: 1020px;
@@ -176,13 +176,13 @@ h4 {
 .profile-menu-item {
   width: 100%;
   display: block;
-  padding: 14px 24px;
+  padding: 12px 20px;
   border: 0;
   background: transparent;
   text-align: left;
   color: #010101;
-  font-size: 19px;
-  line-height: 1.2;
+  font-size: 14px;
+  line-height: 1.35;
   font-weight: 400;
   cursor: pointer;
   transition: background var(--transition);
@@ -584,7 +584,7 @@ h4 {
   align-items: center;
   background: var(--surface-strong);
   border: 1px solid var(--border);
-  border-radius: 12px;
+  border-radius: 8px;
   padding: 16px;
   text-align: left;
   cursor: pointer;
@@ -679,8 +679,8 @@ h4 {
 }
 
 .resource-link.is-highlighted {
-  background: #f6f6f6;
-  border-radius: 14px;
+  background: #ffffff;
+  border-radius: 8px;
 }
 
 .resource-copy {
@@ -809,7 +809,7 @@ h4 {
   justify-content: center;
   gap: 8px;
   padding: 0 16px;
-  border-radius: 10px;
+  border-radius: 8px;
   font-size: 13px;
   line-height: 1;
   font-weight: 500;
@@ -895,7 +895,7 @@ h4 {
   align-items: center;
   justify-content: center;
   min-height: 36px;
-  border-radius: 10px;
+  border-radius: 8px;
   padding: 0 16px;
   font-size: 13px;
   line-height: 1;
@@ -1406,7 +1406,7 @@ body.is-locked {
 
   .hero-mobile-title {
     margin: 0 0 8px;
-    font-size: 1.22rem;
+    font-size: 0.92rem;
     line-height: 1.14;
     letter-spacing: -0.04em;
   }
@@ -1471,6 +1471,7 @@ body.is-locked {
 
   .progress-card .progress-track {
     margin-top: 14px;
+    width: calc(100% - 52px);
   }
 
   .mobile-carousel-pagination {
@@ -1577,7 +1578,7 @@ body.is-locked {
   }
 
   .card {
-    border-radius: 18px;
+    border-radius: 16px;
   }
 
   .card-label {
@@ -1633,7 +1634,7 @@ body.is-locked {
     min-width: 110px;
     min-height: 38px;
     padding: 0 16px;
-    border-radius: 14px;
+    border-radius: 8px;
     font-size: 14px;
     font-weight: 400;
     box-shadow: 0 1px 3px rgba(15, 23, 42, 0.12);
@@ -1665,6 +1666,10 @@ body.is-locked {
 
   .resource-link {
     padding-left: 12px;
+  }
+
+  .resource-link.is-highlighted {
+    background: #ffffff;
   }
 
   .team-list {
@@ -1699,6 +1704,14 @@ body.is-locked {
   .payment-summary {
     padding-top: 4px;
     padding-bottom: 16px;
+  }
+
+  .meeting-card {
+    align-items: center;
+  }
+
+  .meeting-copy {
+    align-self: center;
   }
 
   .progress-row {
