@@ -807,8 +807,8 @@ h4 {
 }
 
 .carousel-dot.is-active {
-  background: #60a5fa;
-  box-shadow: 0 0 0 5px rgba(96, 165, 250, 0.28), 0 8px 18px rgba(59, 130, 246, 0.2);
+  background: #010101;
+  box-shadow: 0 0 0 5px rgba(17, 24, 39, 0.15), 0 8px 18px rgba(17, 24, 39, 0.12);
 }
 
 .button,
@@ -1070,7 +1070,7 @@ h4 {
   min-height: 24px;
   padding: 0 8px;
   border-radius: 6px;
-  background: rgba(96, 165, 250, 0.72);
+  background: rgba(17, 24, 39, 0.72);
   color: #ffffff;
   font-size: 10px;
   font-weight: 600;
@@ -1246,7 +1246,7 @@ h4 {
 .chat-collapse-button:focus-visible,
 .carousel-dot:focus-visible,
 .mobile-chat-header:focus-visible {
-  outline: 2px solid rgba(90, 146, 255, 0.48);
+  outline: 2px solid rgba(17, 24, 39, 0.3);
   outline-offset: 2px;
 }
 
@@ -2222,7 +2222,7 @@ body.is-locked {
   }
 
   .carousel-dot.is-active {
-    box-shadow: 0 0 0 4px rgba(96, 165, 250, 0.26), 0 6px 14px rgba(59, 130, 246, 0.18);
+    box-shadow: 0 0 0 4px rgba(17, 24, 39, 0.15), 0 6px 14px rgba(17, 24, 39, 0.12);
   }
 
   .dashboard-grid {
