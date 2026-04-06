@@ -219,7 +219,8 @@ h4 {
   height: 6px;
   background: rgba(17, 24, 39, 0.08);
   overflow: visible;
-  margin: 0 -24px;
+  margin: 0 -24px 12px;
+  box-shadow: -100vmax 0 0 0 rgba(17, 24, 39, 0.08), 100vmax 0 0 0 rgba(17, 24, 39, 0.08);
 }
 
 .progress-strip-fill {
@@ -2121,7 +2122,8 @@ body.is-locked {
   height: 6px;
   background: rgba(17, 24, 39, 0.08);
   overflow: visible;
-  margin: 0 -24px;
+  margin: 0 -24px 12px;
+  box-shadow: -100vmax 0 0 0 rgba(17, 24, 39, 0.08), 100vmax 0 0 0 rgba(17, 24, 39, 0.08);
 }
 
 .progress-strip-fill {
