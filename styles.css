@@ -384,11 +384,7 @@ h4 {
 .meeting-item {
   grid-template-columns: auto minmax(0, 1fr);
   cursor: pointer;
-}
-
-.meeting-item {
-  grid-template-columns: auto minmax(0, 1fr);
-  cursor: pointer;
+  border-top: 0;
 }
 
 .task-item.is-disabled,
