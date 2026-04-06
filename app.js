@@ -1217,6 +1217,11 @@ function renderWorkflowView(route) {
   }
 
   return `
+    <div class="progress-strip" aria-label="Case progress: ${page.progressPercent}%">
+      <div class="progress-strip-fill" style="width:${page.progressPercent}%"></div>
+      <span class="progress-strip-meta">${page.completedTasks}/${page.totalTasks} tasks &middot; ${page.progressPercent}%</span>
+    </div>
+
     ${renderBreadcrumbs([
       { label: "Home", route: "#home" },
       { label: page.title }
@@ -1226,13 +1231,6 @@ function renderWorkflowView(route) {
       <h1>${escapeHtml(page.title)}</h1>
       <p>${escapeHtml(page.summary)}</p>
     </section>
-
-    ${renderProgressCard({
-      progressPercent: page.progressPercent,
-      completedTasks: page.completedTasks,
-      totalTasks: page.totalTasks,
-      compact: true
-    })}
 
     ${renderWorkflowTabs(page, page.id, activeTab)}
 
@@ -1324,10 +1322,6 @@ function renderTaskView(route) {
         <span class="button-icon" aria-hidden="true">${phosphorIcon("paper-plane-right")}</span>
         <span>${escapeHtml(task.ctaLabel)}</span>
       </button>
-    </div>
-
-    <div class="task-progress-line" aria-hidden="true">
-      <div class="task-progress-line-fill" style="width:${task.progressPercent}%"></div>
     </div>
 
     <div class="detail-layout">
