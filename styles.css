@@ -203,11 +203,13 @@ h4 {
 }
 
 .page-content-neutral {
-  max-width: none;
-  width: 100%;
+  max-width: var(--content-width);
+  margin: 0 auto;
   min-height: calc(100vh - 64px);
-  padding: 36px 32px 40px;
+  padding: 24px 24px 32px;
   background: #f3f3f0;
+  box-shadow: 0 0 0 100vmax #f3f3f0;
+  clip-path: inset(0 -100vmax);
 }
 
 .hero {
@@ -1336,7 +1338,7 @@ h4 {
 }
 
 .page-breadcrumbs {
-  max-width: 888px;
+  max-width: none;
   margin: 0 auto 18px;
   display: flex;
   align-items: center;
@@ -1373,7 +1375,7 @@ h4 {
 }
 
 .detail-hero {
-  max-width: 888px;
+  max-width: none;
   margin: 0 auto 18px;
 }
 
@@ -1393,12 +1395,12 @@ h4 {
 }
 
 .progress-card-page {
-  max-width: 888px;
+  max-width: none;
   margin: 0 auto 20px;
 }
 
 .detail-tabs {
-  max-width: 888px;
+  max-width: none;
   margin: 0 auto 20px;
   display: flex;
   align-items: center;
@@ -1426,7 +1428,7 @@ h4 {
 }
 
 .detail-layout {
-  max-width: 888px;
+  max-width: none;
   margin: 0 auto;
   display: grid;
   grid-template-columns: minmax(0, 550px) minmax(280px, 318px);
@@ -1783,7 +1785,7 @@ h4 {
 }
 
 .task-hero-actions {
-  max-width: 888px;
+  max-width: none;
   margin: 0 auto 20px;
 }
 
@@ -1795,7 +1797,7 @@ h4 {
 }
 
 .task-progress-line {
-  max-width: 888px;
+  max-width: none;
   height: 8px;
   margin: 0 auto 24px;
   border-radius: 999px;
