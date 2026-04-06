@@ -1336,7 +1336,7 @@ h4 {
 }
 
 .page-breadcrumbs {
-  max-width: var(--content-width);
+  max-width: 888px;
   margin: 0 auto 18px;
   display: flex;
   align-items: center;
@@ -1373,7 +1373,7 @@ h4 {
 }
 
 .detail-hero {
-  max-width: var(--content-width);
+  max-width: 888px;
   margin: 0 auto 18px;
 }
 
@@ -1393,7 +1393,7 @@ h4 {
 }
 
 .progress-card-page {
-  max-width: var(--content-width);
+  max-width: 888px;
   margin: 0 auto 20px;
 }
 
@@ -1426,7 +1426,7 @@ h4 {
 }
 
 .detail-layout {
-  max-width: var(--content-width);
+  max-width: 888px;
   margin: 0 auto;
   display: grid;
   grid-template-columns: minmax(0, 550px) minmax(280px, 318px);
@@ -1795,7 +1795,7 @@ h4 {
 }
 
 .task-progress-line {
-  max-width: var(--content-width);
+  max-width: 888px;
   height: 8px;
   margin: 0 auto 24px;
   border-radius: 999px;
