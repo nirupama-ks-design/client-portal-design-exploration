@@ -1444,7 +1444,7 @@ body.is-locked {
 
   .progress-card .card-head-inline {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(0, auto) 52px;
+    grid-template-columns: minmax(0, 1fr) minmax(0, auto) 26px;
     column-gap: 10px;
     align-items: center;
   }
@@ -1713,6 +1713,7 @@ body.is-locked {
 
   .meeting-card {
     align-items: center;
+    justify-content: center;
   }
 
   .meeting-copy {
