@@ -203,11 +203,11 @@ h4 {
 }
 
 .page-content-neutral {
-  max-width: none;
-  width: 100%;
+  max-width: var(--content-width);
+  margin: 0 auto;
   min-height: calc(100vh - 64px);
-  padding: 36px 32px 40px;
-  background: #f3f3f0;
+  padding: 36px 24px 40px;
+  background: transparent;
 }
 
 .hero {
