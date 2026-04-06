@@ -274,6 +274,10 @@ const elements = {
   nextStepsCount: document.getElementById("next-steps-count"),
   workflowCount: document.getElementById("workflow-count"),
   heroOpenCount: document.getElementById("hero-open-count"),
+  profileButton: document.getElementById("profile-button"),
+  profileMenu: document.getElementById("profile-menu"),
+  accountSettingsButton: document.getElementById("account-settings-button"),
+  logoutButton: document.getElementById("logout-button"),
   modalLabel: document.getElementById("modal-label"),
   modalTitle: document.getElementById("modal-title"),
   modalBody: document.getElementById("modal-body"),
@@ -662,7 +666,32 @@ function showToast(message) {
   }, 2200);
 }
 
+function closeProfileMenu() {
+  elements.profileMenu.classList.add("hidden");
+  elements.profileMenu.setAttribute("aria-hidden", "true");
+  elements.profileButton.setAttribute("aria-expanded", "false");
+}
+
+function openProfileMenu() {
+  elements.profileMenu.classList.remove("hidden");
+  elements.profileMenu.setAttribute("aria-hidden", "false");
+  elements.profileButton.setAttribute("aria-expanded", "true");
+}
+
+function toggleProfileMenu() {
+  const isOpen = !elements.profileMenu.classList.contains("hidden");
+  if (isOpen) {
+    closeProfileMenu();
+    return;
+  }
+
+  closePanels();
+  openProfileMenu();
+}
+
 function openPanel(panel) {
+  closeProfileMenu();
+
   if (panel === "support" && isMobileViewport()) {
     setMobileChatExpanded(true);
     return;
@@ -975,10 +1004,27 @@ function initEvents() {
   document.getElementById("support-close-button").addEventListener("click", closePanels);
   document.getElementById("modal-close-button").addEventListener("click", closePanels);
   document.getElementById("notifications-button").addEventListener("click", openNotifications);
-  document.getElementById("profile-button").addEventListener("click", () => showToast("Profile menu can be connected here."));
+  elements.profileButton.addEventListener("click", (event) => {
+    event.stopPropagation();
+    toggleProfileMenu();
+  });
+  elements.profileMenu.addEventListener("click", (event) => {
+    event.stopPropagation();
+  });
+  elements.accountSettingsButton.addEventListener("click", () => {
+    closeProfileMenu();
+    showToast("Account settings can be connected here.");
+  });
+  elements.logoutButton.addEventListener("click", () => {
+    closeProfileMenu();
+    showToast("Logout action can be connected here.");
+  });
   document.getElementById("meeting-button").addEventListener("click", openMeetingDetail);
   document.getElementById("payment-plan-button").addEventListener("click", openPaymentDetail);
-  elements.overlay.addEventListener("click", closePanels);
+  elements.overlay.addEventListener("click", () => {
+    closePanels();
+    closeProfileMenu();
+  });
   elements.chatForm.addEventListener("submit", handleChatSubmit);
   elements.mobileChatForm.addEventListener("submit", handleChatSubmit);
   elements.mobileChatToggle.addEventListener("click", () => {
@@ -987,10 +1033,12 @@ function initEvents() {
   elements.dashboardGrid.addEventListener("scroll", syncMobileCarouselIndex, { passive: true });
   window.addEventListener("resize", applyResponsiveSections);
   window.addEventListener("scroll", syncMobileStickyChrome, { passive: true });
+  document.addEventListener("click", closeProfileMenu);
 
   document.addEventListener("keydown", (event) => {
     if (event.key === "Escape") {
       closePanels();
+      closeProfileMenu();
     }
   });
 }

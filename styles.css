@@ -154,9 +154,46 @@ h4 {
 }
 
 .topbar-actions {
+  position: relative;
   display: inline-flex;
   align-items: center;
   gap: 12px;
+}
+
+.profile-menu {
+  position: absolute;
+  top: calc(100% + 12px);
+  right: 0;
+  min-width: 260px;
+  padding: 12px 0;
+  border-radius: 18px;
+  border: 1px solid rgba(17, 24, 39, 0.08);
+  background: #ffffff;
+  box-shadow: 0 18px 38px rgba(15, 23, 42, 0.22);
+  z-index: 32;
+}
+
+.profile-menu-item {
+  width: 100%;
+  display: block;
+  padding: 14px 24px;
+  border: 0;
+  background: transparent;
+  text-align: left;
+  color: #010101;
+  font-size: 19px;
+  line-height: 1.2;
+  font-weight: 400;
+  cursor: pointer;
+  transition: background var(--transition);
+}
+
+.profile-menu-item:hover {
+  background: rgba(17, 24, 39, 0.04);
+}
+
+.profile-menu-item-danger {
+  color: #df1f2d;
 }
 
 .page-content {
@@ -1349,11 +1386,11 @@ body.is-locked {
   }
 
   .page-content {
-    padding: 14px 16px 188px;
+    padding: 12px 16px 188px;
   }
 
   .hero {
-    margin-bottom: 18px;
+    margin-bottom: 14px;
   }
 
   .eyebrow,
@@ -1368,25 +1405,25 @@ body.is-locked {
   }
 
   .hero-mobile-title {
-    margin: 0 0 12px;
-    font-size: 1.48rem;
-    line-height: 1.1;
+    margin: 0 0 10px;
+    font-size: 1.32rem;
+    line-height: 1.14;
     letter-spacing: -0.04em;
   }
 
   .hero-copy-mobile {
     max-width: 100%;
-    font-size: 14px;
-    line-height: 1.5;
+    font-size: 13px;
+    line-height: 1.45;
   }
 
   .progress-card {
-    margin-bottom: 14px;
-    padding: 16px 18px 18px;
+    margin-bottom: 16px;
+    padding: 16px;
   }
 
   .progress-card .card-label {
-    font-size: 15px;
+    font-size: 14px;
     line-height: 1.2;
     font-weight: 500;
     letter-spacing: -0.02em;
@@ -1397,14 +1434,14 @@ body.is-locked {
   .card-head-inline {
     align-items: center;
     flex-direction: row;
-    gap: 14px;
+    gap: 12px;
   }
 
   .progress-meta {
     width: auto;
     margin-left: auto;
     justify-content: flex-end;
-    gap: 10px;
+    gap: 8px;
     font-size: 11px;
     color: #7a7f89;
   }
@@ -1416,23 +1453,27 @@ body.is-locked {
   }
 
   .progress-card .progress-badge {
-    min-width: 42px;
-    height: 42px;
-    padding: 0 10px;
+    min-width: 40px;
+    height: 40px;
+    padding: 0 9px;
     font-size: 11px;
     font-weight: 600;
+  }
+
+  .progress-card .progress-track {
+    margin-top: 12px;
   }
 
   .mobile-carousel-pagination {
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: center;
     gap: 14px;
     position: sticky;
     top: var(--mobile-topbar-height, 74px);
     z-index: 20;
-    margin: 0 0 18px;
-    padding: 16px 2px 14px;
+    margin: 0 0 16px;
+    padding: 14px 0 12px;
   }
 
   .mobile-carousel-pagination.is-stuck {
@@ -1442,23 +1483,15 @@ body.is-locked {
   }
 
   .mobile-carousel-label {
-    min-width: 0;
-    font-size: 10px;
-    line-height: 1.2;
-    text-transform: uppercase;
-    letter-spacing: 0.04em;
-    font-weight: 600;
-    color: #666666;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    display: none;
   }
 
   .mobile-carousel-dots {
     display: inline-flex;
     align-items: center;
-    justify-content: flex-end;
+    justify-content: center;
     gap: 14px;
+    width: 100%;
   }
 
   .carousel-dot {
@@ -1524,10 +1557,6 @@ body.is-locked {
     display: none;
   }
 
-  .dashboard-grid .card-head {
-    display: none;
-  }
-
   .meeting-card,
   .payment-summary,
   .task-item,
@@ -1544,7 +1573,15 @@ body.is-locked {
 
   .card-label {
     font-size: 10px;
+    line-height: 1.2;
+    font-weight: 600;
+    letter-spacing: 0.02em;
     color: #666666;
+  }
+
+  .dashboard-grid .card-head {
+    display: block;
+    padding: 16px 16px 10px;
   }
 
   .task-item,
@@ -1613,7 +1650,7 @@ body.is-locked {
   }
 
   .resource-group {
-    padding-top: 18px;
+    padding-top: 12px;
     padding-bottom: 18px;
   }
 
@@ -1622,7 +1659,7 @@ body.is-locked {
   }
 
   .team-list {
-    padding-top: 14px;
+    padding-top: 4px;
     padding-bottom: 14px;
   }
 
@@ -1646,12 +1683,12 @@ body.is-locked {
 
   .meeting-card {
     width: calc(100% - 28px);
-    margin: 14px 14px 14px;
+    margin: 4px 14px 14px;
   }
 
   .meeting-card,
   .payment-summary {
-    padding-top: 16px;
+    padding-top: 4px;
     padding-bottom: 16px;
   }
 
@@ -1682,7 +1719,7 @@ body.is-locked {
     left: 0;
     right: 0;
     bottom: 0;
-    z-index: 18;
+    z-index: 24;
     display: grid;
     grid-template-rows: auto auto;
     gap: 18px;
