@@ -1336,7 +1336,7 @@ h4 {
 }
 
 .page-breadcrumbs {
-  max-width: 1060px;
+  max-width: var(--content-width);
   margin: 0 auto 18px;
   display: flex;
   align-items: center;
@@ -1784,7 +1784,6 @@ h4 {
 .task-hero-actions {
   max-width: var(--content-width);
   margin: 0 auto;
-  margin: 0 18px;
 }
 
 .task-submit-button {
@@ -1795,7 +1794,7 @@ h4 {
 }
 
 .task-progress-line {
-  max-width: 1060px;
+  max-width: var(--content-width);
   height: 8px;
   margin: 0 auto 24px;
   border-radius: 999px;
