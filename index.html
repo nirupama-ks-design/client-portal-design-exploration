@@ -101,19 +101,21 @@
             <div class="team-list" id="team-list"></div>
           </section>
 
-          <section class="card compact-card" id="section-meeting" data-mobile-groups="workflow" aria-labelledby="meeting-title">
+          <section class="card" id="section-meeting" data-mobile-groups="workflow" aria-labelledby="meeting-title">
             <div class="card-head">
               <div class="section-heading">
                 <p class="card-label" id="meeting-title">Upcoming Meetings</p>
               </div>
             </div>
-            <button class="meeting-card" id="meeting-button" type="button">
-              <span class="icon-frame" aria-hidden="true" data-icon="calendar-x"></span>
-              <span class="meeting-copy">
-                <strong>341 Meeting of Creditors</strong>
-                <span>10:00 AM PST on Friday, March 15</span>
-              </span>
-            </button>
+            <div class="stack-list">
+              <button class="task-item meeting-item" id="meeting-button" type="button">
+                <span class="icon-frame" aria-hidden="true" data-icon="calendar-x"></span>
+                <div class="item-copy">
+                  <p class="item-title">341 Meeting of Creditors</p>
+                  <p class="item-subtitle">10:00 AM PST on Friday, March 15</p>
+                </div>
+              </button>
+            </div>
           </section>
 
           <section class="card compact-card" id="section-payments" data-mobile-groups="invoices" aria-labelledby="payments-title">

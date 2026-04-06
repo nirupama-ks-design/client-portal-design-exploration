@@ -370,6 +370,11 @@ h4 {
   border-top: 0;
 }
 
+.meeting-item {
+  grid-template-columns: auto minmax(0, 1fr);
+  cursor: pointer;
+}
+
 .task-item.is-disabled,
 .workflow-item.is-muted {
   background: rgba(238, 244, 255, 0.7);
@@ -1443,39 +1448,40 @@ body.is-locked {
   }
 
   .progress-card .card-head-inline {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(0, auto) 26px;
-    column-gap: 10px;
+    display: flex;
     align-items: center;
+    gap: 8px;
+    padding: 0;
+  }
+
+  .progress-card .card-head {
+    padding: 0 0 14px;
   }
 
   .progress-meta {
-    display: block;
-    min-width: 0;
-    margin-left: 0;
-    text-align: right;
-    font-size: 10px;
+    display: inline;
+    margin-left: auto;
+    font-size: 12px;
     color: #7a7f89;
   }
 
   #progress-text {
-    font-size: 10px;
+    font-size: 12px;
     line-height: 1.25;
     font-weight: 400;
     white-space: nowrap;
   }
 
   .progress-card .progress-badge {
-    min-width: 26px;
-    height: 26px;
+    min-width: 36px;
+    height: 24px;
     padding: 0 8px;
-    font-size: 10px;
+    font-size: 11px;
     font-weight: 600;
-    justify-self: end;
   }
 
   .progress-card .progress-track {
-    margin-top: 14px;
+    margin-top: 0;
     width: 100%;
   }
 
@@ -1572,7 +1578,6 @@ body.is-locked {
     display: none;
   }
 
-  .meeting-card,
   .payment-summary,
   .task-item,
   .workflow-item,
@@ -1700,25 +1705,13 @@ body.is-locked {
     height: 46px;
   }
 
-  .meeting-card {
-    width: calc(100% - 28px);
-    margin: 4px auto 14px;
-  }
-
-  .meeting-card,
   .payment-summary {
     padding-top: 4px;
     padding-bottom: 16px;
   }
 
-  .meeting-card {
-    grid-template-columns: auto auto;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .meeting-copy {
-    align-self: center;
+  .meeting-item {
+    border-top: 0;
   }
 
   .progress-row {
