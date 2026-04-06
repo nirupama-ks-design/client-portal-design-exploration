@@ -334,8 +334,8 @@ const state = {
   mobileCarouselIndex: 0,
   route: { name: "home" },
   documentTreeExpanded: {
-    "chapter-7-client-document-checklist": true,
-    "tax-returns": true,
+    "chapter-7-client-document-checklist": false,
+    "tax-returns": false,
     "drivers-license": false,
     "credit-counseling-certificate": false
   },
