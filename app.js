@@ -314,6 +314,14 @@ function getMobileSlides() {
 }
 
 function updateMobileCarouselPagination() {
+  const slides = getMobileSlides();
+  const activeSlide = slides[state.mobileCarouselIndex];
+  const label = activeSlide?.querySelector(".card-label")?.textContent?.trim() || `Section ${state.mobileCarouselIndex + 1}`;
+  const labelNode = elements.mobileCarouselPagination.querySelector(".mobile-carousel-label");
+  if (labelNode) {
+    labelNode.textContent = label;
+  }
+
   const dots = elements.mobileCarouselPagination.querySelectorAll("[data-carousel-index]");
   dots.forEach((dot, index) => {
     const active = index === state.mobileCarouselIndex;
@@ -351,7 +359,10 @@ function syncMobileCarouselIndex() {
 
 function renderMobileCarouselPagination() {
   const slides = getMobileSlides();
-  elements.mobileCarouselPagination.innerHTML = slides.map((slide, index) => {
+  const activeSlide = slides[state.mobileCarouselIndex] || slides[0];
+  const activeLabel = activeSlide?.querySelector(".card-label")?.textContent?.trim() || "Section 1";
+
+  const dotsMarkup = slides.map((slide, index) => {
     const label = slide.querySelector(".card-label")?.textContent?.trim() || `Section ${index + 1}`;
     const active = index === state.mobileCarouselIndex;
     return `
@@ -364,6 +375,13 @@ function renderMobileCarouselPagination() {
       ></button>
     `;
   }).join("");
+
+  elements.mobileCarouselPagination.innerHTML = `
+    <span class="mobile-carousel-label">${escapeHtml(activeLabel)}</span>
+    <div class="mobile-carousel-dots" role="presentation">
+      ${dotsMarkup}
+    </div>
+  `;
 
   elements.mobileCarouselPagination.querySelectorAll("[data-carousel-index]").forEach((button) => {
     button.addEventListener("click", () => {

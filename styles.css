@@ -90,6 +90,9 @@ h4 {
 .topbar {
   width: 100%;
   margin: 0;
+  position: sticky;
+  top: 0;
+  z-index: 26;
   min-height: 64px;
   display: flex;
   align-items: center;
@@ -1399,9 +1402,36 @@ body.is-locked {
   .mobile-carousel-pagination {
     display: flex;
     align-items: center;
-    justify-content: center;
+    justify-content: space-between;
     gap: 14px;
-    margin: 0 0 22px;
+    position: sticky;
+    top: 74px;
+    z-index: 20;
+    margin: 0 0 18px;
+    padding: 16px 2px 14px;
+    background:
+      linear-gradient(180deg, rgba(246, 247, 251, 0.98), rgba(246, 247, 251, 0.88) 68%, rgba(246, 247, 251, 0));
+    backdrop-filter: blur(10px);
+  }
+
+  .mobile-carousel-label {
+    min-width: 0;
+    font-size: 10px;
+    line-height: 1.2;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    font-weight: 600;
+    color: #666666;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .mobile-carousel-dots {
+    display: inline-flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 14px;
   }
 
   .carousel-dot {
@@ -1695,7 +1725,7 @@ body.is-locked {
 
   .mobile-chat-composer {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) 72px;
+    grid-template-columns: minmax(0, 1fr) 44px;
     gap: 12px;
     align-items: center;
   }
@@ -1703,12 +1733,12 @@ body.is-locked {
   .mobile-chat-input-shell {
     min-width: 0;
     display: grid;
-    grid-template-columns: 28px minmax(0, 1fr);
+    grid-template-columns: 20px minmax(0, 1fr);
     align-items: center;
-    gap: 14px;
-    min-height: 70px;
-    padding: 0 20px;
-    border-radius: 18px;
+    gap: 12px;
+    min-height: 44px;
+    padding: 0 16px;
+    border-radius: 14px;
     border: 1px solid rgba(17, 24, 39, 0.14);
     background: #ffffff;
     box-shadow: 0 2px 5px rgba(15, 23, 42, 0.06);
@@ -1722,8 +1752,8 @@ body.is-locked {
   }
 
   .mobile-chat-plus svg {
-    width: 22px;
-    height: 22px;
+    width: 18px;
+    height: 18px;
     stroke-width: 18;
   }
 
@@ -1734,7 +1764,7 @@ body.is-locked {
     background: transparent;
     padding: 0;
     color: #010101;
-    font-size: 16px;
+    font-size: 14px;
     outline: none;
   }
 
@@ -1743,21 +1773,21 @@ body.is-locked {
   }
 
   .mobile-chat-send {
-    width: 72px;
-    height: 72px;
+    width: 44px;
+    height: 44px;
     border: 0;
-    border-radius: 18px;
+    border-radius: 14px;
     background: #010101;
     color: #ffffff;
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 8px 20px rgba(15, 23, 42, 0.14);
+    box-shadow: 0 4px 14px rgba(15, 23, 42, 0.14);
   }
 
   .mobile-chat-send svg {
-    width: 24px;
-    height: 24px;
+    width: 18px;
+    height: 18px;
     stroke-width: 18;
   }
 
