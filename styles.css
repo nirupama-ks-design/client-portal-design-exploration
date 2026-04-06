@@ -1398,9 +1398,9 @@ h4 {
 }
 
 .detail-tabs {
-  max-width: var(--content-width);
+  max-width: 888px;
   margin: 0 auto 20px;
-  display: inline-flex;
+  display: flex;
   align-items: center;
   gap: 4px;
   padding: 4px;
@@ -1783,8 +1783,8 @@ h4 {
 }
 
 .task-hero-actions {
-  max-width: var(--content-width);
-  margin: 0 auto;
+  max-width: 888px;
+  margin: 0 auto 20px;
 }
 
 .task-submit-button {
