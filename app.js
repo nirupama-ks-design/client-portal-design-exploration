@@ -1208,9 +1208,9 @@ function renderWorkflowView(route) {
   const activeTab = page.tabs.includes(route.tab) ? route.tab : page.defaultTab;
 
   let mainContent = "";
-  if (activeTab === "documents") {
+  if (activeTab === "documents" && page.documents) {
     mainContent = renderDocumentsView(page);
-  } else if (activeTab === "invoices") {
+  } else if (activeTab === "invoices" && page.invoices) {
     mainContent = renderInvoicesView(page);
   } else {
     mainContent = page.sections.map(renderWorkflowStageCard).join("");
@@ -1443,7 +1443,13 @@ function renderMobileCarouselPagination() {
       }
       state.mobileCarouselIndex = Number(button.dataset.carouselIndex);
       updateMobileCarouselPagination();
-      slide.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "start" });
+      const scroller = elements.appView.querySelector("#dashboard-grid");
+      if (scroller) {
+        scroller.scrollTo({
+          left: slide.offsetLeft - scroller.offsetLeft,
+          behavior: "smooth"
+        });
+      }
     });
   });
 }
