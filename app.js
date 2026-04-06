@@ -956,6 +956,14 @@ function renderHomeView() {
     <div class="mobile-carousel-pagination" id="mobile-carousel-pagination" aria-label="Portal section carousel navigation"></div>
 
     <div class="dashboard-grid" id="dashboard-grid">
+              <section class="card" id="section-team" data-mobile-groups="workflow" aria-labelledby="team-title">
+        <div class="card-head">
+          <div class="section-heading">
+            <p class="card-label" id="team-title">Your Team</p>
+          </div>
+        </div>
+        <div class="team-list">${renderTeamList()}</div>
+      </section>
       <div class="main-column">
         <section class="card" id="section-next-steps" data-mobile-groups="workflow" aria-labelledby="next-steps-title">
           <div class="card-head">
@@ -988,15 +996,6 @@ function renderHomeView() {
       </div>
 
       <aside class="side-column">
-        <section class="card" id="section-team" data-mobile-groups="workflow" aria-labelledby="team-title">
-          <div class="card-head">
-            <div class="section-heading">
-              <p class="card-label" id="team-title">Your Team</p>
-            </div>
-          </div>
-          <div class="team-list">${renderTeamList()}</div>
-        </section>
-
         <section class="card" id="section-meeting" data-mobile-groups="workflow" aria-labelledby="meeting-title">
           <div class="card-head">
             <div class="section-heading">
