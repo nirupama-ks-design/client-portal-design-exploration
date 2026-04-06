@@ -1712,6 +1712,7 @@ body.is-locked {
   }
 
   .meeting-card {
+    grid-template-columns: auto auto;
     align-items: center;
     justify-content: center;
   }
