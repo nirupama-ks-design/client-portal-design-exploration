@@ -1479,14 +1479,16 @@ function syncMobileStickyChrome() {
 
 function applyResponsiveSections() {
   renderMobileCarouselPagination();
-  syncMobileCarouselIndex();
   syncMobileStickyChrome();
 
   const scroller = elements.appView.querySelector("#dashboard-grid");
   if (scroller && !scroller.dataset.carouselBound) {
     scroller.addEventListener("scroll", syncMobileCarouselIndex, { passive: true });
     scroller.dataset.carouselBound = "true";
+    // Scroll to Your Team (index 0) on initial load
+    scroller.scrollTo({ left: 0, behavior: "auto" });
   }
+  syncMobileCarouselIndex();
 }
 
 function hydrateStaticIcons(root = document) {
