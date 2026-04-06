@@ -220,36 +220,51 @@ const state = {
       timestamp: "11:34 PM",
       avatar: "https://www.figma.com/api/mcp/asset/70fd69b2-07ee-4313-808d-ac8c0baed3b1",
       body: [
-        "Hi Lilian,",
-        "We're ready to continue moving forward with your Chapter 7 filing and just need one quick item from you to proceed. When you have a moment, please complete the task below so our team can continue preparing your petition."
+        "Hi Cindy,",
+        "We're ready to continue moving forward with your Chapter 13 filing and just need one quick item from you to proceed. When you have a moment, please complete the task below so our team can continue preparing your petition."
       ],
       replies: "3 replies",
-      replyMeta: "Last reply today at 11:34 PM"
+      replyMeta: "Last reply today at 11:34 PM",
+      replyAvatarCount: 2
     },
     {
       id: "chat-2",
       role: "support",
-      author: "Jane Paralegal",
+      author: "Anna",
       timestamp: "11:34 PM",
-      avatar: "https://www.figma.com/api/mcp/asset/d58c8886-8ce8-4e4a-ad5a-c79ea16288a1",
-      badge: "TASK",
-      taskStatus: "Document rejected",
-      taskTitle: "Chapter 7 - Client Document Checklist",
-      taskDescription: "A photo of you holding your Driver's License and Social Security card is still needed.",
+      avatar: "https://www.figma.com/api/mcp/asset/70fd69b2-07ee-4313-808d-ac8c0baed3b1",
       body: [
-        "Reason: Please re-upload a new photo of your Driver's License."
-      ],
-      replies: "3 replies",
-      replyMeta: "Last reply today at 11:34 PM"
+        "Hi Cindy,",
+        "We're ready to continue moving forward with your Chapter 13 filing and just need one quick item from you to proceed. When you have a moment, please complete the task below so our team can continue preparing your petition."
+      ]
     },
     {
       id: "chat-3",
+      role: "support",
+      author: "Anna Paralegal",
+      timestamp: "11:34 PM",
+      avatar: "https://www.figma.com/api/mcp/asset/d58c8886-8ce8-4e4a-ad5a-c79ea16288a1",
+      badge: "TASK",
+      verified: true,
+      taskStatus: "Document rejected",
+      taskTitle: "Chapter 7 - Client Document Checklist",
+      taskDescription: "A photo of you holding your Driver's License and Social...",
+      body: [
+        "<strong>Reason:</strong> Please re-upload a new photo of your Driver's License."
+      ],
+      bodyIsHtml: true,
+      replies: "3 replies",
+      replyMeta: "Last reply today at 11:34 PM",
+      replyAvatarCount: 4
+    },
+    {
+      id: "chat-4",
       role: "user",
-      author: "Lilian",
+      author: "Cindy",
       timestamp: "11:34 PM",
       avatar: "https://www.figma.com/api/mcp/asset/18744495-dd8c-4d60-b59a-73e000059ff3",
       body: [
-        "Sure, I'll upload a new photo now."
+        "Sure, I ll schedule a call"
       ]
     }
   ]
@@ -606,11 +621,29 @@ function renderResources() {
 }
 
 function renderChat() {
-  const markup = state.chat.map((entry) => `
+  const replyAvatars = [
+    state.team[0].avatar,
+    state.team[1].avatar,
+    state.team[2] ? state.team[2].avatar : state.team[0].avatar,
+    state.team[3] ? state.team[3].avatar : state.team[1].avatar
+  ];
+
+  const markup = state.chat.map((entry) => {
+    const avatarCount = entry.replyAvatarCount || 2;
+    const replyAvatarMarkup = replyAvatars.slice(0, avatarCount).map((src) =>
+      `<span class="chat-replies-avatar"><img class="avatar-image" src="${src}" alt=""></span>`
+    ).join("");
+
+    const bodyMarkup = entry.bodyIsHtml
+      ? entry.body.map((p) => `<p>${p}</p>`).join("")
+      : entry.body.map((p) => `<p>${escapeHtml(p)}</p>`).join("");
+
+    return `
     <article class="chat-entry ${entry.role === "user" ? "is-user" : "is-support"}">
       <div class="chat-entry-head">
         <span class="chat-avatar" aria-hidden="true">
           <img class="avatar-image" src="${entry.avatar}" alt="">
+          ${entry.verified ? '<span class="chat-verified"></span>' : ""}
         </span>
         <div class="chat-entry-meta">
           <div class="chat-entry-author-row">
@@ -625,14 +658,13 @@ function renderChat() {
               <span>${escapeHtml(entry.taskDescription)}</span>
             </div>
           ` : ""}
-          <div class="chat-bubble ${entry.role === "user" ? "is-user" : "is-support"}">
-            ${entry.body.map((paragraph) => `<p>${escapeHtml(paragraph)}</p>`).join("")}
+          <div class="chat-body">
+            ${bodyMarkup}
           </div>
           ${entry.replies ? `
             <div class="chat-replies">
               <span class="chat-replies-avatars" aria-hidden="true">
-                <span class="chat-replies-avatar"><img class="avatar-image" src="${state.team[0].avatar}" alt=""></span>
-                <span class="chat-replies-avatar"><img class="avatar-image" src="${state.team[1].avatar}" alt=""></span>
+                ${replyAvatarMarkup}
               </span>
               <strong>${escapeHtml(entry.replies)}</strong>
               <span>${escapeHtml(entry.replyMeta)}</span>
@@ -641,7 +673,7 @@ function renderChat() {
         </div>
       </div>
     </article>
-  `).join("");
+  `}).join("");
 
   elements.chatThread.innerHTML = markup;
   elements.mobileChatThread.innerHTML = markup;
