@@ -510,7 +510,7 @@ h4 {
 }
 
 .team-feature .item-title {
-  font-size: 20px;
+  font-size: 14px;
   line-height: 1.15;
 }
 
@@ -649,7 +649,7 @@ h4 {
 
 .resource-group-title {
   margin: 0 0 14px;
-  font-size: 13px;
+  font-size: 14px;
   font-weight: 600;
   line-height: 1.6;
 }
@@ -1138,7 +1138,7 @@ h4 {
   grid-template-columns: 28px minmax(0, 1fr);
   align-items: center;
   gap: 10px;
-  min-height: 44px;
+  min-height: 26px;
   padding: 0 12px;
   border-radius: 12px;
   border: 1px solid rgba(17, 24, 39, 0.12);
@@ -1172,7 +1172,7 @@ h4 {
 
 .chat-send {
   width: 44px;
-  height: 44px;
+  height: 26px;
   border: 0;
   border-radius: 12px;
   background: #010101;
@@ -1345,7 +1345,7 @@ body.is-locked {
 
   .brand-mark {
     width: 44px;
-    height: 44px;
+    height: 26px;
     border-radius: 10px;
   }
 
@@ -1367,7 +1367,7 @@ body.is-locked {
 
   .icon-button {
     width: 44px;
-    height: 44px;
+    height: 26px;
     border-radius: 14px;
   }
 
@@ -1406,13 +1406,13 @@ body.is-locked {
 
   .hero-mobile-title {
     margin: 0 0 8px;
-    font-size: 0.92rem;
+    font-size: 1.375rem;
     line-height: 1.14;
     letter-spacing: -0.04em;
   }
 
   .hero .hero-mobile-title {
-    font-size: 0.92rem;
+    font-size: 1.375rem;
     line-height: 1.14;
   }
 
@@ -1467,8 +1467,8 @@ body.is-locked {
 
   .progress-card .progress-badge {
     min-width: 44px;
-    height: 44px;
-    padding: 0 10px;
+    height: 26px;
+    padding: 0 8px;
     font-size: 10px;
     font-weight: 600;
     justify-self: end;
@@ -1702,7 +1702,7 @@ body.is-locked {
 
   .meeting-card {
     width: calc(100% - 28px);
-    margin: 4px 14px 14px;
+    margin: 4px auto 14px;
   }
 
   .meeting-card,
@@ -1767,7 +1767,7 @@ body.is-locked {
     background: transparent;
     padding: 0;
     color: #010101;
-    font-size: 20px;
+    font-size: 14px;
     line-height: 1.2;
     font-weight: 600;
   }
@@ -1826,7 +1826,7 @@ body.is-locked {
     grid-template-columns: 20px minmax(0, 1fr);
     align-items: center;
     gap: 12px;
-    min-height: 44px;
+    min-height: 26px;
     padding: 0 16px;
     border-radius: 14px;
     border: 1px solid rgba(17, 24, 39, 0.14);
@@ -1864,7 +1864,7 @@ body.is-locked {
 
   .mobile-chat-send {
     width: 44px;
-    height: 44px;
+    height: 26px;
     border: 0;
     border-radius: 14px;
     background: #010101;
