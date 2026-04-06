@@ -1468,6 +1468,10 @@ h4 {
 
 .stage-card-head {
   padding: 20px 22px 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
 }
 
 .stage-card-count {
@@ -1479,7 +1483,14 @@ h4 {
 }
 
 .stage-card-count strong {
-  font-size: 15px;
+  font-size: 16px;
+  line-height: 1.2;
+}
+
+.stage-card-symbol {
+  color: #010101;
+  font-size: 28px;
+  line-height: 1;
 }
 
 .workflow-stage-copy {
@@ -1515,7 +1526,29 @@ h4 {
 }
 
 .portal-task-row.is-completed {
-  background: rgba(34, 197, 94, 0.04);
+  background: transparent;
+}
+
+.portal-task-row.is-completed .icon-frame-small {
+  color: #10b981;
+  background: rgba(34, 197, 94, 0.1);
+}
+
+.portal-task-row.is-completed .item-title {
+  font-size: 15px;
+  line-height: 1.3;
+}
+
+.portal-task-row.is-completed .item-subtitle {
+  margin-top: 4px;
+  font-size: 11px;
+  line-height: 1.35;
+  color: #7a7f89;
+}
+
+.portal-task-action-spacer {
+  width: 88px;
+  height: 1px;
 }
 
 .document-browser-card {
@@ -1757,7 +1790,7 @@ h4 {
   min-height: 42px;
   padding: 0 18px;
   border-radius: 10px;
-  background: #5a92ff;
+  background: #010101;
 }
 
 .task-progress-line {
@@ -2360,6 +2393,14 @@ body.is-locked {
   .stage-card-head {
     padding-left: 16px;
     padding-right: 16px;
+  }
+
+  .stage-card-count strong {
+    font-size: 15px;
+  }
+
+  .stage-card-symbol {
+    font-size: 24px;
   }
 
   .portal-task-row {

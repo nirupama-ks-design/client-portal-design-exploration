@@ -44,6 +44,7 @@ const workflowPages = {
       {
         tone: "green",
         countLabel: "2 Completed Tasks",
+        trailingSymbol: "−",
         paragraphs: [
           "Thanks again for signing your contract and completing your payment for pre-petition services.",
           "To move forward with the preparation of your bankruptcy petition, please book your initial documents meeting.",
@@ -55,7 +56,6 @@ const workflowPages = {
             title: "Initial documents meeting",
             subtitle: "Completed March 24 at 8:30 AM",
             route: "#task/initial-documents-meeting",
-            actionLabel: "View",
             completed: true
           },
           {
@@ -1080,6 +1080,7 @@ function renderWorkflowStageCard(section) {
           <span class="status-dot is-${section.tone}"></span>
           <strong>${escapeHtml(section.countLabel)}</strong>
         </div>
+        ${section.trailingSymbol ? `<span class="stage-card-symbol" aria-hidden="true">${escapeHtml(section.trailingSymbol)}</span>` : ""}
       </div>
       <div class="workflow-stage-copy">
         ${section.paragraphs.map((paragraph) => `<p>${escapeHtml(paragraph)}</p>`).join("")}
@@ -1092,9 +1093,11 @@ function renderWorkflowStageCard(section) {
               <h3 class="item-title">${escapeHtml(task.title)}</h3>
               <p class="item-subtitle">${escapeHtml(task.subtitle)}</p>
             </div>
-            <button class="workflow-action" type="button" ${task.route ? `data-nav="${task.route}"` : ""} ${task.disabled ? "disabled" : ""}>
-              ${escapeHtml(task.actionLabel)}
-            </button>
+            ${task.actionLabel ? `
+              <button class="workflow-action" type="button" ${task.route ? `data-nav="${task.route}"` : ""} ${task.disabled ? "disabled" : ""}>
+                ${escapeHtml(task.actionLabel)}
+              </button>
+            ` : '<span class="portal-task-action-spacer" aria-hidden="true"></span>'}
           </article>
         `).join("")}
       </div>
@@ -1382,17 +1385,19 @@ function syncMobileCarouselIndex() {
     return;
   }
 
+  const scroller = elements.appView.querySelector("#dashboard-grid");
   const slides = getMobileSlides();
-  if (!slides.length) {
+  if (!slides.length || !scroller) {
     return;
   }
 
-  const viewportCenter = window.innerHeight / 2;
+  const scrollerRect = scroller.getBoundingClientRect();
+  const viewportCenter = scrollerRect.left + scrollerRect.width / 2;
   const closestIndex = slides.reduce((bestIndex, slide, index) => {
     const slideRect = slide.getBoundingClientRect();
-    const slideCenter = slideRect.top + slideRect.height / 2;
+    const slideCenter = slideRect.left + slideRect.width / 2;
     const bestRect = slides[bestIndex].getBoundingClientRect();
-    const bestCenter = bestRect.top + bestRect.height / 2;
+    const bestCenter = bestRect.left + bestRect.width / 2;
     return Math.abs(slideCenter - viewportCenter) < Math.abs(bestCenter - viewportCenter) ? index : bestIndex;
   }, 0);
 
@@ -1438,7 +1443,7 @@ function renderMobileCarouselPagination() {
       }
       state.mobileCarouselIndex = Number(button.dataset.carouselIndex);
       updateMobileCarouselPagination();
-      slide.scrollIntoView({ behavior: "smooth", block: "center" });
+      slide.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "start" });
     });
   });
 }
@@ -1470,6 +1475,12 @@ function applyResponsiveSections() {
   renderMobileCarouselPagination();
   syncMobileCarouselIndex();
   syncMobileStickyChrome();
+
+  const scroller = elements.appView.querySelector("#dashboard-grid");
+  if (scroller && !scroller.dataset.carouselBound) {
+    scroller.addEventListener("scroll", syncMobileCarouselIndex, { passive: true });
+    scroller.dataset.carouselBound = "true";
+  }
 }
 
 function hydrateStaticIcons(root = document) {
