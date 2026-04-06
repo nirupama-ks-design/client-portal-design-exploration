@@ -2346,9 +2346,9 @@ body.is-locked {
 
   .task-action,
   .workflow-action {
-    min-width: 110px;
-    min-height: 38px;
-    padding: 0 16px;
+    min-width: 64px;
+    min-height: 34px;
+    padding: 0 12px;
     border-radius: 8px;
     font-size: 14px;
     font-weight: 400;
