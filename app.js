@@ -484,8 +484,7 @@ const gladeWorkflowPages = {
             subtitle: "10 required documents under review",
             status: "active",
             actionLabel: "View",
-            route: makeFirmHash("glade", "task", "glade-business-assets-checklist"),
-            assignee: "Assigned to Laila G. and Coleman V."
+            route: makeFirmHash("glade", "task", "glade-business-assets-checklist")
           }
         ]
       },
@@ -503,13 +502,11 @@ const gladeWorkflowPages = {
         tasks: [
           {
             title: "Glade Onboarding First Review",
-            subtitle: "Select date and time",
+            subtitle: "Meeting",
             status: "active",
             icon: "calendar",
-            actionLabel: "View",
-            route: makeFirmHash("glade", "task", "glade-onboarding-first-review"),
-            assignee: "Assigned to Laila G.",
-            completeLink: "Complete this task"
+            actionLabel: "Schedule",
+            route: makeFirmHash("glade", "task", "glade-onboarding-first-review")
           }
         ]
       },
@@ -1896,17 +1893,6 @@ function renderGladeDocumentsTab(page) {
 
 function renderGladeWorkflowView(page, activeTab) {
   const mainContent = activeTab === "documents" ? renderGladeDocumentsTab(page) : `
-    <section class="card glade-invoice-card">
-      <div class="glade-invoice-copy">
-        <strong>${escapeHtml(page.invoice.title)}</strong>
-        <span>Remaining Balance: ${escapeHtml(page.invoice.balance)}</span>
-        <span>${escapeHtml(page.invoice.assignee)}</span>
-        <button class="task-link-button" type="button" data-task-action="complete">Complete this task</button>
-      </div>
-      <div class="glade-invoice-actions">
-        <button class="workflow-action" type="button" data-nav="${makeFirmHash("glade", "task", "glade-business-assets-checklist")}">View</button>
-      </div>
-    </section>
     ${renderGladeWorkflowSteps(page)}
   `;
 
