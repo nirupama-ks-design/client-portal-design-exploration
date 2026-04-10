@@ -8,14 +8,19 @@
 </head>
 <body>
   <div class="page-shell">
-    <header class="topbar">
-      <a class="brand" href="#home" aria-label="Van Horn Law Group P.A. home">
-        <span class="brand-mark" aria-hidden="true">
+    <header class="topbar" data-firm="van-horn">
+      <div class="firm-switcher" aria-label="Select portal firm">
+        <span class="brand-mark" id="brand-mark" aria-hidden="true">
           <span class="brand-mark-v">V</span>
           <span class="brand-mark-h">H</span>
+          <span class="brand-mark-g">G</span>
         </span>
-        <span class="brand-name">Van Horn Law Group P.A.</span>
-      </a>
+        <label class="sr-only" for="firm-switcher">Firm</label>
+        <select class="firm-switcher-select" id="firm-switcher" aria-label="Select firm">
+          <option value="van-horn">Van Horn Law Group P.A.</option>
+          <option value="glade">Glade.ai</option>
+        </select>
+      </div>
       <div class="topbar-actions">
         <button class="button button-primary button-chat" id="support-chat-button" type="button">
           <span class="button-icon" aria-hidden="true" data-icon="chats-circle"></span>

@@ -43,10 +43,7 @@ body {
   min-height: 100vh;
   font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   color: var(--text);
-  background:
-    radial-gradient(circle at top left, rgba(184, 153, 255, 0.22), transparent 32%),
-    radial-gradient(circle at right 65%, rgba(255, 230, 138, 0.32), transparent 30%),
-    linear-gradient(120deg, var(--bg-start) 0%, var(--bg-mid) 52%, #f5f6f7 76%, var(--bg-end) 100%);
+  background: var(--bg-start);
 }
 
 button,
@@ -111,6 +108,35 @@ h4 {
   min-width: 0;
 }
 
+.firm-switcher {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}
+
+.firm-switcher-select {
+  min-height: 44px;
+  min-width: 260px;
+  border: 1px solid rgba(17, 24, 39, 0.16);
+  border-radius: 10px;
+  padding: 0 38px 0 14px;
+  background: #ffffff;
+  color: #010101;
+  font-size: 15px;
+  font-weight: 600;
+  appearance: none;
+  background-image: linear-gradient(45deg, transparent 50%, #4b5563 50%), linear-gradient(135deg, #4b5563 50%, transparent 50%);
+  background-position: calc(100% - 18px) 19px, calc(100% - 12px) 19px;
+  background-size: 6px 6px, 6px 6px;
+  background-repeat: no-repeat;
+}
+
+.firm-switcher-select:focus-visible {
+  outline: 2px solid rgba(37, 99, 235, 0.45);
+  outline-offset: 1px;
+}
+
 .brand-mark {
   position: relative;
   width: 54px;
@@ -142,6 +168,30 @@ h4 {
   right: 7px;
   bottom: 4px;
   font-size: 34px;
+}
+
+.brand-mark-g {
+  position: absolute;
+  inset: 0;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  font-size: 28px;
+  font-weight: 700;
+  color: #ffffff;
+}
+
+.topbar[data-firm="glade"] .brand-mark {
+  background: linear-gradient(140deg, #16a34a, #0ea5e9);
+}
+
+.topbar[data-firm="glade"] .brand-mark-v,
+.topbar[data-firm="glade"] .brand-mark-h {
+  display: none;
+}
+
+.topbar[data-firm="glade"] .brand-mark-g {
+  display: inline-flex;
 }
 
 .brand-name {
@@ -221,6 +271,10 @@ h4 {
   overflow: visible;
   margin: 0 -24px 12px;
   box-shadow: -100vmax 0 0 0 rgba(17, 24, 39, 0.08), 100vmax 0 0 0 rgba(17, 24, 39, 0.08);
+}
+
+.page-content-neutral .progress-strip {
+  margin-top: -24px;
 }
 
 .progress-strip-fill {
@@ -1815,6 +1869,149 @@ h4 {
   gap: 4px;
 }
 
+.glade-invoice-card {
+  padding: 18px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.glade-invoice-copy {
+  display: grid;
+  gap: 6px;
+}
+
+.glade-invoice-copy strong {
+  font-size: 17px;
+}
+
+.glade-step-card {
+  padding: 0;
+}
+
+.glade-step-card.is-locked {
+  opacity: 0.62;
+  background: rgba(15, 23, 42, 0.04);
+}
+
+.glade-step-head {
+  padding: 16px 20px 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.glade-step-label {
+  color: #6b7280;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.glade-step-check {
+  margin-left: auto;
+  width: 24px;
+  height: 24px;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(22, 163, 74, 0.14);
+  color: #16a34a;
+  font-size: 14px;
+}
+
+.glade-task-assignee {
+  margin: 4px 0 0;
+  color: #6b7280;
+  font-size: 12px;
+}
+
+.task-link-button {
+  margin-top: 8px;
+  border: 0;
+  padding: 0;
+  background: transparent;
+  color: #1d4ed8;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.glade-documents-card {
+  padding: 0;
+  border-color: transparent;
+}
+
+.glade-documents-card .document-browser-label {
+  border-bottom-color: rgba(17, 24, 39, 0.06);
+}
+
+.glade-documents-card .document-browser-row {
+  border-bottom-color: rgba(17, 24, 39, 0.06);
+}
+
+.glade-documents-list {
+  display: grid;
+}
+
+.glade-document-row {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  gap: 12px;
+  align-items: center;
+  padding: 14px 22px;
+  border-bottom: 1px solid var(--border);
+}
+
+.glade-document-row:last-child {
+  border-bottom: 0;
+}
+
+.support-page-chat {
+  padding: 0;
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  min-height: 680px;
+}
+
+.support-page-head {
+  border-bottom: 1px solid var(--border);
+}
+
+.support-page-head .chat-panel-title {
+  font-size: 18px;
+  line-height: 1.35;
+  max-width: 820px;
+}
+
+.support-page-thread {
+  padding: 18px;
+  gap: 22px;
+}
+
+.support-page-composer-wrap {
+  padding: 0 18px 18px;
+}
+
+.support-generated-line {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  font-size: 12px;
+  color: #6b7280;
+}
+
+.generated-badge {
+  border: 1px solid rgba(59, 130, 246, 0.3);
+  border-radius: 999px;
+  padding: 2px 8px;
+  background: rgba(59, 130, 246, 0.1);
+  color: #1d4ed8;
+}
+
 .task-hero-actions {
   max-width: none;
   margin: 0 auto 20px;
@@ -1969,6 +2166,239 @@ h4 {
   padding: 18px 20px 20px;
 }
 
+.credit-tabs-list {
+  max-width: none;
+  margin: 0 auto 16px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  background: rgba(255, 255, 255, 0.85);
+  box-shadow: 0 8px 20px rgba(15, 23, 42, 0.06);
+}
+
+.credit-tab {
+  min-height: 34px;
+  padding: 0 12px;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: #4b5563;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.credit-tab.is-active {
+  color: #010101;
+  background: #ffffff;
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.12);
+}
+
+.credit-layout {
+  max-width: none;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 340px;
+  gap: 20px;
+  align-items: start;
+}
+
+.credit-report-card {
+  padding: 20px;
+  display: grid;
+  gap: 18px;
+}
+
+.credit-report-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.credit-powered {
+  display: grid;
+  gap: 4px;
+}
+
+.credit-powered span {
+  font-size: 10px;
+  line-height: 1.2;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #6b7280;
+}
+
+.credit-powered strong {
+  font-size: 20px;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+}
+
+.credit-download-button {
+  min-height: 40px;
+  border-radius: 10px;
+}
+
+.credit-heading-block {
+  text-align: center;
+  padding: 2px 12px 8px;
+}
+
+.credit-heading-block h2 {
+  margin: 0;
+  font-size: clamp(1.8rem, 3vw, 2.35rem);
+  line-height: 1.08;
+  letter-spacing: -0.03em;
+}
+
+.credit-section {
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.82);
+}
+
+.credit-section-head {
+  padding: 12px 16px;
+  background: #010101;
+  color: #ffffff;
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+.credit-table {
+  display: grid;
+}
+
+.credit-row {
+  display: grid;
+  grid-template-columns: 190px minmax(0, 1fr);
+  gap: 18px;
+  align-items: start;
+  padding: 14px 16px;
+  border-top: 1px solid var(--border);
+}
+
+.credit-row:first-child {
+  border-top: 0;
+}
+
+.credit-key {
+  font-size: 13px;
+  color: #6b7280;
+}
+
+.credit-value {
+  font-size: 14px;
+  color: #010101;
+  font-weight: 500;
+}
+
+.credit-score-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.credit-score-card {
+  min-height: 146px;
+  padding: 18px 16px;
+  border-left: 1px solid var(--border);
+  display: grid;
+  align-content: center;
+  justify-items: center;
+  gap: 8px;
+}
+
+.credit-score-card:first-child {
+  border-left: 0;
+}
+
+.credit-bureau {
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  color: #6b7280;
+}
+
+.credit-score {
+  font-size: clamp(2.2rem, 4vw, 3rem);
+  line-height: 1;
+  letter-spacing: -0.04em;
+  color: #dc2626;
+}
+
+.credit-rating {
+  font-size: 14px;
+  font-weight: 600;
+  color: #dc2626;
+}
+
+.credit-extract-card {
+  overflow: hidden;
+  display: grid;
+  min-height: 680px;
+  grid-template-rows: auto minmax(0, 1fr);
+}
+
+.credit-extract-head {
+  padding: 14px 14px 12px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.credit-extract-title {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.credit-extract-title strong {
+  font-size: 15px;
+  line-height: 1.2;
+}
+
+.credit-extract-actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.credit-pill-button {
+  min-height: 30px;
+  padding: 0 11px;
+  border-radius: 8px;
+  border: 1px solid var(--border-strong);
+  background: #ffffff;
+  color: #010101;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.credit-pill-button:hover {
+  background: rgba(17, 24, 39, 0.03);
+}
+
+.credit-extract-body {
+  margin: 0;
+  min-height: 0;
+  overflow: auto;
+  padding: 14px;
+  background: rgba(248, 250, 252, 0.9);
+  color: #334155;
+  font-size: 12px;
+  line-height: 1.5;
+  font-family: "SFMono-Regular", Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+}
+
 .toast {
   position: fixed;
   left: 50%;
@@ -2021,10 +2451,6 @@ body.is-locked {
     padding: 10px 16px;
   }
 
-  .brand-name {
-    display: none;
-  }
-
   .brand-mark {
     width: 44px;
     height: 44px;
@@ -2041,6 +2467,21 @@ body.is-locked {
     right: 6px;
     bottom: 3px;
     font-size: 27px;
+  }
+
+  .brand-mark-g {
+    font-size: 22px;
+  }
+
+  .firm-switcher {
+    gap: 8px;
+  }
+
+  .firm-switcher-select {
+    min-width: 165px;
+    min-height: 42px;
+    font-size: 13px;
+    padding-left: 10px;
   }
 
   .button-chat {
@@ -2074,6 +2515,10 @@ body.is-locked {
   .page-content-neutral {
     padding: 18px 16px 188px;
     background: #f3f3f0;
+  }
+
+  .page-content-neutral .progress-strip {
+    margin-top: -18px;
   }
 
   .page-breadcrumbs {
@@ -2113,6 +2558,69 @@ body.is-locked {
 
   .task-submit-button {
     width: 100%;
+  }
+
+  .credit-tabs-list {
+    display: flex;
+    width: 100%;
+  }
+
+  .credit-tab {
+    flex: 1 1 0;
+    min-height: 38px;
+    padding: 0 8px;
+    font-size: 11px;
+  }
+
+  .credit-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .credit-report-card {
+    padding: 16px;
+  }
+
+  .credit-report-toolbar {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .credit-download-button {
+    width: 100%;
+  }
+
+  .credit-heading-block {
+    text-align: left;
+    padding-left: 0;
+    padding-right: 0;
+  }
+
+  .credit-heading-block h2 {
+    font-size: 1.85rem;
+  }
+
+  .credit-row {
+    grid-template-columns: 1fr;
+    gap: 6px;
+  }
+
+  .credit-score-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .credit-score-card {
+    min-height: 0;
+    border-left: 0;
+    border-top: 1px solid var(--border);
+    padding: 16px;
+  }
+
+  .credit-score-card:first-child {
+    border-top: 0;
+  }
+
+  .credit-extract-card {
+    min-height: 480px;
   }
 
   .progress-strip {

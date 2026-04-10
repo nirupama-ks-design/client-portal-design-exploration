@@ -62,6 +62,7 @@ const workflowPages = {
             icon: "upload",
             title: "Get Credit report",
             subtitle: "Completed March 23 at 12:30 PM",
+            route: "#task/credit-report-main-debtor",
             actionLabel: "View",
             completed: true
           }
@@ -309,6 +310,67 @@ const taskPages = {
       "Outlined the timeline for questionnaire completion"
     ]
   },
+  "credit-report-main-debtor": {
+    id: "credit-report-main-debtor",
+    workflowId: "chapter-7",
+    title: "Credit Report Pull - Main Debtor",
+    summary: "Completed on March 28",
+    ctaLabel: "Download PDF",
+    layout: "credit-report",
+    tabs: ["Credit Report", "Previous Bankruptcies", "Property Data"],
+    personalInformation: [
+      { label: "Full name", value: "Jordan Mercer" },
+      { label: "Date of birth", value: "June 14, 1991" },
+      { label: "SSN", value: "XXX-XX-8842" },
+      { label: "Current address", value: "1847 Grove St, Apt 4B, San Francisco, CA 94117" },
+      { label: "Employer", value: "Bayside Cafe (Part-time)" },
+      { label: "Phone", value: "(628) 304-7712" }
+    ],
+    scoreSummary: [
+      { bureau: "Equifax", score: 542, rating: "Poor" },
+      { bureau: "Experian", score: 538, rating: "Poor" },
+      { bureau: "TransUnion", score: 551, rating: "Poor" }
+    ],
+    extractedData: {
+      providerViews: [
+        {
+          provider: "GLADE_AI",
+          summary: {
+            id: "GL:7f2a91c8-04e2-4b87-a1d3",
+            reportGenerated: 1744156800000,
+            creditFileSecurityFreezeFlag: false,
+            reportType: "US_3B"
+          }
+        }
+      ],
+      subject: {
+        currentName: {
+          firstName: "JORDAN",
+          lastName: "MERCER",
+          middleName: null,
+          suffix: null
+        },
+        currentAddress: {
+          line1: "1847 GROVE ST APT 4B",
+          city: "SAN FRANCISCO",
+          state: "CA",
+          postalCode: "94117",
+          countryCode: "USA"
+        },
+        homePhone: "(628) 304-7712",
+        dateOfBirth: "1991-06-14",
+        employerName: "BAYSIDE CAFE"
+      },
+      tradelines: [
+        {
+          creditorName: "CHASE BANK USA NA",
+          accountNumber: "xxxx-xxxx-4821",
+          accountType: "REVOLVING",
+          status: "OPEN"
+        }
+      ]
+    }
+  },
   "initial-phone-consultation": {
     id: "initial-phone-consultation",
     workflowId: "call",
@@ -325,7 +387,285 @@ const taskPages = {
   }
 };
 
+function makeFirmHash(firmId, section, id, tab) {
+  const prefix = firmId === "glade" ? "glade-" : "";
+  if (section === "home") {
+    return `#${prefix}home`;
+  }
+  if (section === "support") {
+    return `#${prefix}support`;
+  }
+  if (section === "workflow") {
+    return `#${prefix}workflow/${id}${tab ? `/${tab}` : ""}`;
+  }
+  if (section === "task") {
+    return `#${prefix}task/${id}`;
+  }
+  return "#home";
+}
+
+function safeReadFirmStorage() {
+  try {
+    return localStorage.getItem("portalFirm");
+  } catch {
+    return null;
+  }
+}
+
+function safeWriteFirmStorage(firmId) {
+  try {
+    localStorage.setItem("portalFirm", firmId);
+  } catch {
+    // no-op in restricted contexts
+  }
+}
+
+function getStoredFirm() {
+  return safeReadFirmStorage() === "glade" ? "glade" : "van-horn";
+}
+
+function deepClone(value) {
+  return JSON.parse(JSON.stringify(value));
+}
+
+const gladeWorkflowPages = {
+  "glade-onboarding": {
+    id: "glade-onboarding",
+    title: "Glade New Client Onboarding",
+    summary: "Your Glade New Client Onboarding is 40% complete — here's what needs your attention.",
+    progressPercent: 40,
+    completedTasks: 2,
+    totalTasks: 5,
+    defaultTab: "workflow",
+    tabs: ["workflow", "documents"],
+    layout: "glade-onboarding",
+    invoice: {
+      title: "Customization Fee",
+      balance: "$2,500.00",
+      assignee: "Assigned to Laila G."
+    },
+    steps: [
+      {
+        stepLabel: "Step 1",
+        title: "Custom Terms Request",
+        status: "completed",
+        body: [
+          "We are thrilled that you'd like to implement Glade to streamline your practice. Please review & digitally sign our contract. This contains details on your per workflow pricing and any customization fees.",
+          "Next, pay the Glade customization fee invoice.",
+          "We will also ask for important documents along with process details regarding your current practice. This will help us set you up for success."
+        ],
+        tasks: [
+          {
+            title: "Glade.ai has requested you to sign the agreement",
+            subtitle: "Glade Contract is signed",
+            status: "completed"
+          }
+        ]
+      },
+      {
+        stepLabel: "Step 2",
+        title: "These 2 tasks must be completed before moving on",
+        status: "active",
+        body: [
+          "Thank you for paying your customization fee. Let's get rolling!",
+          "Please complete the questionnaire to help us understand your firm's processes & upload the documents as soon as possible.",
+          "Once these are complete, we'll set up a call to walk through your set up.",
+          "We look forward to working with you!",
+          "Please complete your assignments below before moving on to the next step. Have questions? Ask in the Case Chat."
+        ],
+        tasks: [
+          {
+            title: "Business Process Discovery Questionnaire",
+            subtitle: "Completed on Apr 9 at 6:33 PM",
+            status: "completed"
+          },
+          {
+            title: "Business Assets & Details Document Checklist",
+            subtitle: "10 required documents under review",
+            status: "active",
+            actionLabel: "View",
+            route: makeFirmHash("glade", "task", "glade-business-assets-checklist"),
+            assignee: "Assigned to Laila G. and Coleman V."
+          }
+        ]
+      },
+      {
+        stepLabel: "Step 3",
+        title: "This task must be completed before moving on.",
+        status: "next",
+        body: [
+          "Thanks for finishing the Questionnaire & Document Uploads!",
+          "Please book a call with us to have our first review of your attorney-facing dashboard. We will base your set up on the documents & details gathered so far.",
+          "The booking will be our first review, but do not hesitate to reach out with any questions in the discussion panel. We're always happy to hop on a call in the meantime as well, just let us know.",
+          "Prior to our call, we will work on setting up your dashboard & workflows.",
+          "Can't wait to have our first review! Thanks again."
+        ],
+        tasks: [
+          {
+            title: "Glade Onboarding First Review",
+            subtitle: "Select date and time",
+            status: "active",
+            icon: "calendar",
+            actionLabel: "View",
+            route: makeFirmHash("glade", "task", "glade-onboarding-first-review"),
+            assignee: "Assigned to Laila G.",
+            completeLink: "Complete this task"
+          }
+        ]
+      },
+      {
+        stepLabel: "Step 4",
+        title: "Dashboard & Workflow Setup Review",
+        status: "locked",
+        body: []
+      },
+      {
+        stepLabel: "Step 5",
+        title: "Go Live",
+        status: "locked",
+        body: []
+      }
+    ],
+    documents: {
+      label: "Glade New Client Onboarding Documents",
+      rows: [
+        {
+          id: "glade-terms-and-agreements",
+          title: "Terms & Agreements",
+          subtitle: "1 item",
+          children: [
+            {
+              id: "glade-custom-terms",
+              title: "customTerms-DJSL... (PDF)",
+              subtitle: "1 day ago",
+              files: [
+                "Download Certificate",
+                "Make a correction"
+              ]
+            }
+          ]
+        },
+        {
+          id: "glade-business-assets",
+          title: "Business Assets & Details Document Checklist",
+          subtitle: "12 items",
+          viewRoute: makeFirmHash("glade", "task", "glade-business-assets-checklist"),
+          children: [
+            {
+              id: "glade-articles",
+              title: "Articles of Incorporation / Organization",
+              subtitle: "1 item"
+            },
+            {
+              id: "glade-logo",
+              title: "Company Logo",
+              subtitle: "1 item"
+            },
+            {
+              id: "glade-invoice-example",
+              title: "Example of Current Invoice",
+              subtitle: "1 item"
+            },
+            {
+              id: "glade-photo-id",
+              title: "Government issued Photo ID",
+              subtitle: "1 item"
+            },
+            {
+              id: "glade-phone-bill",
+              title: "Phone bill with the company or sole proprietor's name on it",
+              subtitle: "1 item"
+            },
+            {
+              id: "glade-additional-docs",
+              title: "Any additional documentation that is sent to clients",
+              subtitle: "1 item"
+            },
+            {
+              id: "glade-credit-course-pdfs",
+              title: "Credit Counseling Course Informational PDFs",
+              subtitle: "1 item"
+            },
+            {
+              id: "glade-voided-check",
+              title: "Voided Check or Signed Bank Letter",
+              subtitle: "1 item"
+            },
+            {
+              id: "glade-ch7-retainer",
+              title: "Chapter 7 Retainer Agreement",
+              subtitle: "2 items"
+            },
+            {
+              id: "glade-ch13-retainer",
+              title: "Chapter 13 Retainer Agreement",
+              subtitle: "2 items"
+            }
+          ]
+        }
+      ]
+    }
+  }
+};
+
+const gladeTaskPages = {
+  "glade-business-assets-checklist": {
+    id: "glade-business-assets-checklist",
+    workflowId: "glade-onboarding",
+    title: "Business Assets & Details Document Checklist",
+    summary: "10 of 12 documents uploaded. The remaining uploads are needed before your first review.",
+    ctaLabel: "Submit for Review",
+    progressPercent: 83,
+    outstandingCount: 2,
+    rows: [
+      {
+        title: "Voided Check or Signed Bank Letter",
+        description: "Upload one of these documents for payout and account verification.",
+        status: "Required"
+      },
+      {
+        title: "Any additional documentation sent to clients",
+        description: "Upload any intake PDFs, agreements, or guides currently shared with clients.",
+        status: "Required"
+      }
+    ]
+  },
+  "glade-onboarding-first-review": {
+    id: "glade-onboarding-first-review",
+    workflowId: "glade-onboarding",
+    title: "Glade Onboarding First Review",
+    summary: "Select a date and time for your first review with the Glade onboarding team.",
+    ctaLabel: "Book Review",
+    progressPercent: 0,
+    checklistTitle: "Before Booking",
+    checklistRows: [
+      "Confirm your primary contact information.",
+      "Share any onboarding questions in the case chat.",
+      "Have your uploaded documents available during the call."
+    ]
+  }
+};
+
 const state = {
+  firmId: "van-horn",
+  userName: "Lilian",
+  profileInitials: "CN",
+  homeGreeting: "Good Afternoon, Lilian",
+  homeLeadText: "Your Chapter 7 filing is",
+  homeHeroPercent: 29,
+  meeting: {
+    title: "341 Meeting of Creditors",
+    subtitle: "10:00 AM PST on Friday, March 15",
+    pending: false
+  },
+  payments: {
+    remainingBalance: "$2188.00 USD",
+    progressPercent: 56
+  },
+  supportPage: {
+    heading: "Support Chat",
+    messages: []
+  },
   progressPercent: 51,
   completedTasks: 8,
   totalTasks: 14,
@@ -527,11 +867,239 @@ const state = {
   ]
 };
 
+const defaultDocumentTreeExpanded = deepClone(state.documentTreeExpanded);
+
+const portalDataByFirm = {
+  "van-horn": {
+    userName: "Lilian",
+    profileInitials: "CN",
+    homeGreeting: "Good Afternoon, Lilian",
+    homeLeadText: "Your Chapter 7 filing is",
+    homeHeroPercent: 29,
+    progressPercent: state.progressPercent,
+    completedTasks: state.completedTasks,
+    totalTasks: state.totalTasks,
+    meeting: deepClone(state.meeting),
+    payments: deepClone(state.payments),
+    tasks: deepClone(state.tasks),
+    workflows: deepClone(state.workflows),
+    team: deepClone(state.team),
+    resources: deepClone(state.resources),
+    chat: deepClone(state.chat),
+    supportPage: {
+      heading: "Support Chat",
+      messages: []
+    },
+    teamContact: {
+      email: "support@vanhornlaw.example",
+      phone: "(555) 010-2048"
+    },
+    notifications: [
+      "Your retainer agreement is ready for signature.",
+      "Your Chapter 7 retainer workflow was archived successfully.",
+      "A reminder has been scheduled for the 341 Meeting of Creditors."
+    ]
+  },
+  glade: {
+    userName: "Laila",
+    profileInitials: "LG",
+    homeGreeting: "Good Afternoon, Laila",
+    homeLeadText: "Your Glade New Client Onboarding is",
+    homeHeroPercent: 40,
+    progressPercent: 40,
+    completedTasks: 2,
+    totalTasks: 5,
+    meeting: {
+      title: "Glade Onboarding First Review",
+      subtitle: "Select date and time",
+      pending: true
+    },
+    payments: {
+      remainingBalance: "$2,500.00 USD",
+      progressPercent: 34
+    },
+    tasks: [
+      {
+        id: "upload-documents",
+        icon: "upload",
+        title: "Upload required documents",
+        subtitle: "10 of 12 documents uploaded",
+        route: makeFirmHash("glade", "task", "glade-business-assets-checklist")
+      },
+      {
+        id: "book-review",
+        icon: "calendar",
+        title: "Book onboarding review",
+        subtitle: "Select a date and time for your first review",
+        route: makeFirmHash("glade", "task", "glade-onboarding-first-review")
+      }
+    ],
+    workflows: [
+      {
+        id: "glade-onboarding",
+        title: "Glade New Client Onboarding",
+        badge: "In Progress",
+        tone: "orange",
+        route: makeFirmHash("glade", "workflow", "glade-onboarding")
+      }
+    ],
+    team: [
+      {
+        id: "coleman",
+        name: "Coleman Vurbeff",
+        role: "Head of Sales",
+        gradient: "linear-gradient(135deg, #0ea5e9, #2563eb)",
+        avatar: "https://www.figma.com/api/mcp/asset/18744495-dd8c-4d60-b59a-73e000059ff3",
+        summary: "Your primary onboarding lead for setup and rollout planning."
+      },
+      {
+        id: "ana",
+        name: "Ana Gayoso",
+        role: "Sales",
+        gradient: "linear-gradient(135deg, #f97316, #ef4444)",
+        avatar: "https://www.figma.com/api/mcp/asset/d58c8886-8ce8-4e4a-ad5a-c79ea16288a1",
+        summary: "Coordinates onboarding logistics and keeps implementation moving."
+      }
+    ],
+    resources: [
+      {
+        group: "Glade Workflow Guides",
+        items: [
+          {
+            id: "glade-doc-requests",
+            title: "Requesting & Collecting Documents from Clients",
+            description: "Guide for structuring document requests inside Glade workflows.",
+            detail: "Use this guide to configure streamlined document intake and review flows."
+          },
+          {
+            id: "glade-questionnaires",
+            title: "Client Questionnaires within a Workflow",
+            description: "How to build and assign questionnaires to clients.",
+            detail: "Questionnaires can be combined with conditional steps and assignment rules."
+          },
+          {
+            id: "glade-pdf-generation",
+            title: "How Questionnaires Automatically Generate PDF Forms",
+            description: "Understand form mapping and generated outputs.",
+            detail: "Responses can be transformed into PDF packets for downstream review."
+          }
+        ]
+      },
+      {
+        group: "Glade Set Up Guides",
+        items: [
+          {
+            id: "glade-payment-links",
+            title: "Collect Payment with Payment Links",
+            description: "Set up payment links for onboarding and recurring fees.",
+            detail: "Payment links can be embedded directly into workflow tasks and reminders."
+          },
+          {
+            id: "glade-in-person-services",
+            title: "Selling In Person Services",
+            description: "Configure workflows and offers for in-person engagements.",
+            detail: "Use packages and scheduling together for location-based services."
+          },
+          {
+            id: "glade-remote-services",
+            title: "Selling Remote Services",
+            description: "Run remote-first services with automated follow-ups.",
+            detail: "Remote setups can include forms, chat, payment, and booking in one flow."
+          },
+          {
+            id: "glade-private-chats",
+            title: "Selling Private Chats",
+            description: "Enable private consultation chat products.",
+            detail: "Private chats can be sold standalone or attached to workflow milestones."
+          },
+          {
+            id: "glade-ai-responses",
+            title: "How Glade AI Responds to Your Customers",
+            description: "Review response behavior and escalation paths.",
+            detail: "Tune AI behavior and handoff points to match your firm's service model."
+          }
+        ]
+      }
+    ],
+    chat: [
+      {
+        id: "glade-chat-1",
+        role: "support",
+        author: "Coleman",
+        timestamp: "4/8/26, 6:43 PM",
+        avatar: "https://www.figma.com/api/mcp/asset/18744495-dd8c-4d60-b59a-73e000059ff3",
+        body: [
+          "Hi Laila,",
+          "Quick reminder about a couple of outstanding items for your Glade New Client Onboarding. If you'd like any help completing these, or have questions, please let us know and our team will assist."
+        ],
+        replies: "3 replies",
+        replyMeta: "Last reply today at 11:34 AM",
+        replyAvatarCount: 2
+      },
+      {
+        id: "glade-chat-2",
+        role: "support",
+        author: "Coleman",
+        timestamp: "4/9/26, 8:59 PM",
+        avatar: "https://www.figma.com/api/mcp/asset/18744495-dd8c-4d60-b59a-73e000059ff3",
+        body: [
+          "Hi Laila,",
+          "Thanks for finishing the Questionnaire & Document Uploads! Please book a call with us to have our first review of your attorney-facing dashboard."
+        ]
+      },
+      {
+        id: "glade-chat-3",
+        role: "support",
+        author: "Ana Gayoso",
+        timestamp: "4/9/26, 6:43 PM",
+        avatar: "https://www.figma.com/api/mcp/asset/d58c8886-8ce8-4e4a-ad5a-c79ea16288a1",
+        badge: "TASK",
+        verified: true,
+        taskStatus: "Upload Documents",
+        taskTitle: "Business Assets & Details Document Checklist",
+        taskDescription: "2 remaining documents need to be uploaded",
+        body: [
+          "<strong>Reason:</strong> Please upload the remaining Voided Check and additional client documentation."
+        ],
+        bodyIsHtml: true,
+        replies: "3 replies",
+        replyMeta: "Last reply today at 11:34 AM",
+        replyAvatarCount: 4
+      },
+      {
+        id: "glade-chat-4",
+        role: "user",
+        author: "Laila",
+        timestamp: "4/9/26, 9:12 PM",
+        avatar: "https://www.figma.com/api/mcp/asset/18744495-dd8c-4d60-b59a-73e000059ff3",
+        body: [
+          "Sure, I'll upload those documents tonight."
+        ]
+      }
+    ],
+    supportPage: {
+      heading: "Support Chat",
+      messages: []
+    },
+    teamContact: {
+      email: "support@glade.ai",
+      phone: "(415) 555-0131"
+    },
+    notifications: [
+      "10 of 12 required onboarding documents are uploaded.",
+      "Your questionnaire is completed and under review.",
+      "Your first onboarding review is waiting to be scheduled."
+    ]
+  }
+};
+
 state.route = parseHash();
 
 const elements = {
   appView: document.getElementById("app-view"),
   topbar: document.querySelector(".topbar"),
+  firmSwitcher: document.getElementById("firm-switcher"),
+  brandMark: document.getElementById("brand-mark"),
   overlay: document.getElementById("overlay"),
   supportSheet: document.getElementById("support-sheet"),
   supportSheetTitle: document.getElementById("support-sheet-title"),
@@ -554,6 +1122,9 @@ const elements = {
   mobileChatInput: document.getElementById("mobile-chat-input"),
   mobileChatThread: document.getElementById("mobile-chat-thread")
 };
+
+applyFirmContext(state.route.firmId || getStoredFirm());
+syncHeaderForFirm();
 
 function phosphorIcon(name) {
   const common = 'viewBox="0 0 256 256" fill="none" stroke="currentColor" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"';
@@ -588,27 +1159,97 @@ function isMobileViewport() {
 function parseHash() {
   const cleanHash = window.location.hash.replace(/^#/, "");
   const parts = cleanHash.split("/").filter(Boolean);
+  const preferredFirm = getStoredFirm();
 
-  if (!parts.length || parts[0] === "home") {
-    return { name: "home" };
+  if (!parts.length) {
+    return { firmId: preferredFirm, name: "home" };
   }
 
-  if (parts[0] === "workflow" && parts[1]) {
+  let firmId = preferredFirm;
+  let first = parts[0] || "home";
+
+  if (first.startsWith("glade-")) {
+    firmId = "glade";
+    first = first.slice("glade-".length) || "home";
+  } else {
+    firmId = "van-horn";
+  }
+
+  if (first === "home") {
+    return { firmId, name: "home" };
+  }
+
+  if (first === "support") {
+    return { firmId, name: "support" };
+  }
+
+  if (first === "workflow" && parts[1]) {
     return {
+      firmId,
       name: "workflow",
       workflowId: parts[1],
       tab: parts[2] || null
     };
   }
 
-  if (parts[0] === "task" && parts[1]) {
+  if (first === "task" && parts[1]) {
     return {
+      firmId,
       name: "task",
       taskId: parts[1]
     };
   }
 
-  return { name: "home" };
+  return { firmId, name: "home" };
+}
+
+function getWorkflowPagesForFirm(firmId = state.firmId) {
+  return firmId === "glade" ? gladeWorkflowPages : workflowPages;
+}
+
+function getTaskPagesForFirm(firmId = state.firmId) {
+  return firmId === "glade" ? gladeTaskPages : taskPages;
+}
+
+function getHomeHashForFirm(firmId) {
+  return makeFirmHash(firmId, "home");
+}
+
+function getSupportHashForFirm(firmId) {
+  return makeFirmHash(firmId, "support");
+}
+
+function applyFirmContext(firmId) {
+  const context = portalDataByFirm[firmId] || portalDataByFirm["van-horn"];
+  state.firmId = firmId;
+  state.userName = context.userName;
+  state.profileInitials = context.profileInitials;
+  state.homeGreeting = context.homeGreeting;
+  state.homeLeadText = context.homeLeadText;
+  state.homeHeroPercent = context.homeHeroPercent;
+  state.progressPercent = context.progressPercent;
+  state.completedTasks = context.completedTasks;
+  state.totalTasks = context.totalTasks;
+  state.meeting = deepClone(context.meeting);
+  state.payments = deepClone(context.payments);
+  state.tasks = deepClone(context.tasks);
+  state.workflows = deepClone(context.workflows);
+  state.team = deepClone(context.team);
+  state.resources = deepClone(context.resources);
+  state.chat = deepClone(context.chat);
+  state.supportPage = deepClone(context.supportPage);
+  state.teamContact = deepClone(context.teamContact);
+  state.notifications = deepClone(context.notifications);
+  state.documentTreeExpanded = deepClone(defaultDocumentTreeExpanded);
+  safeWriteFirmStorage(firmId);
+}
+
+function syncHeaderForFirm() {
+  elements.topbar.dataset.firm = state.firmId;
+  elements.profileButton.textContent = state.profileInitials;
+  if (elements.firmSwitcher.value !== state.firmId) {
+    elements.firmSwitcher.value = state.firmId;
+  }
 }
 
 function escapeHtml(value) {
@@ -718,7 +1359,7 @@ function appendChatMessage(message, role = "user") {
   state.chat.push({
     id: `chat-${Date.now()}`,
     role,
-    author: role === "user" ? "Lilian" : "Support team",
+    author: role === "user" ? state.userName : state.firmId === "glade" ? "Glade" : "Support team",
     timestamp: "Now",
     avatar: role === "user" ? state.team[0].avatar : state.team[1].avatar,
     body: [message]
@@ -729,15 +1370,15 @@ function getReplyAvatars() {
   return [
     state.team[0].avatar,
     state.team[1].avatar,
-    state.team[2].avatar,
-    state.team[3].avatar
-  ];
+    state.team[2]?.avatar,
+    state.team[3]?.avatar
+  ].filter(Boolean);
 }
 
-function renderChatEntries() {
+function renderChatEntries(entries = state.chat) {
   const replyAvatars = getReplyAvatars();
 
-  return state.chat.map((entry) => {
+  return entries.map((entry) => {
     const avatarCount = entry.replyAvatarCount || 2;
     const replyAvatarMarkup = replyAvatars.slice(0, avatarCount).map((src) =>
       `<span class="chat-replies-avatar"><img class="avatar-image" src="${src}" alt=""></span>`
@@ -852,7 +1493,7 @@ function renderHomeTaskItems() {
 
     return `
       <article class="${classes.join(" ")}">
-        <div class="icon-frame" aria-hidden="true">${phosphorIcon(task.icon === "upload" ? "file-arrow-up" : task.icon === "list" ? "list-bullets" : "signature")}</div>
+        <div class="icon-frame" aria-hidden="true">${phosphorIcon(task.icon === "upload" ? "file-arrow-up" : task.icon === "list" ? "list-bullets" : task.icon === "calendar" ? "calendar" : "signature")}</div>
         <div class="item-copy">
           <h3 class="item-title">${escapeHtml(task.title)}</h3>
           <p class="item-subtitle">${escapeHtml(task.subtitle)}</p>
@@ -939,14 +1580,16 @@ function renderResources() {
 function renderHomeView() {
   return `
     <section class="hero">
-      <h1>Good Afternoon, Lilian</h1>
-      <h1 class="hero-mobile-title">Good Afternoon, Lilian</h1>
+      <h1>${escapeHtml(state.homeGreeting)}</h1>
+      <h1 class="hero-mobile-title">${escapeHtml(state.homeGreeting)}</h1>
       <p class="hero-copy">
-        Your Chapter 7 filing is <strong>29% complete</strong> — here's what needs your attention.
+        ${escapeHtml(state.homeLeadText)}
+        <strong>${state.homeHeroPercent}% complete</strong> — here's what needs your attention.
         <span class="sr-only">${state.tasks.filter((task) => !task.disabled).length} active items</span>
       </p>
       <p class="hero-copy hero-copy-mobile">
-        Your Chapter 7 filing is <strong>29% complete</strong> — here's what needs your attention.
+        ${escapeHtml(state.homeLeadText)}
+        <strong>${state.homeHeroPercent}% complete</strong> — here's what needs your attention.
       </p>
     </section>
 
@@ -1005,10 +1648,10 @@ function renderHomeView() {
           </div>
           <div class="stack-list">
             <button class="task-item meeting-item" id="meeting-button" type="button">
-              <span class="icon-frame" aria-hidden="true">${phosphorIcon("calendar-x")}</span>
+              <span class="icon-frame" aria-hidden="true">${phosphorIcon(state.meeting.pending ? "calendar-x" : "calendar")}</span>
               <div class="item-copy">
-                <p class="item-title">341 Meeting of Creditors</p>
-                <p class="item-subtitle">10:00 AM PST on Friday, March 15</p>
+                <p class="item-title">${escapeHtml(state.meeting.title)}</p>
+                <p class="item-subtitle">${escapeHtml(state.meeting.subtitle)}</p>
               </div>
             </button>
           </div>
@@ -1023,10 +1666,10 @@ function renderHomeView() {
           <div class="payment-summary">
             <div class="progress-row">
               <span>Remaining Balance</span>
-              <strong>$2188.00 USD</strong>
+              <strong>${escapeHtml(state.payments.remainingBalance)}</strong>
             </div>
             <div class="progress-track progress-track-tight" aria-hidden="true">
-              <div class="progress-fill payment-fill"></div>
+              <div class="progress-fill payment-fill" style="width:${state.payments.progressPercent}%"></div>
             </div>
             <button class="button button-secondary button-block" id="payment-plan-button" type="button">View payment plan</button>
           </div>
@@ -1062,7 +1705,7 @@ function renderWorkflowTabs(page, workflowId, activeTab) {
             type="button"
             role="tab"
             aria-selected="${active ? "true" : "false"}"
-            data-nav="#workflow/${workflowId}${tab === "workflow" ? "" : `/${tab}`}"
+            data-nav="${makeFirmHash(state.firmId, "workflow", workflowId, tab === "workflow" ? null : tab)}"
           >
             ${escapeHtml(tab.charAt(0).toUpperCase() + tab.slice(1))}
           </button>
@@ -1203,9 +1846,106 @@ function renderInvoicesView(page) {
   `;
 }
 
+function renderGladeWorkflowSteps(page) {
+  return page.steps.map((step) => {
+    if (step.status === "locked") {
+      return `
+        <section class="card glade-step-card is-locked">
+          <div class="glade-step-head">
+            <span class="glade-step-label">${escapeHtml(step.stepLabel)}</span>
+            <strong>${escapeHtml(step.title)}</strong>
+          </div>
+        </section>
+      `;
+    }
+
+    return `
+      <section class="card glade-step-card ${step.status === "active" ? "is-active" : ""}">
+        <div class="glade-step-head">
+          <span class="glade-step-label">${escapeHtml(step.stepLabel)}</span>
+          <strong>${escapeHtml(step.title)}</strong>
+          ${step.status === "completed" ? '<span class="glade-step-check">✓</span>' : ""}
+        </div>
+        <div class="workflow-stage-copy">
+          ${step.body.map((line) => `<p>${escapeHtml(line)}</p>`).join("")}
+        </div>
+        ${Array.isArray(step.tasks) && step.tasks.length ? `
+          <div class="stage-task-list">
+            ${step.tasks.map((task) => `
+              <article class="portal-task-row ${task.status === "completed" ? "is-completed" : ""}">
+                <div class="icon-frame icon-frame-small" aria-hidden="true">${phosphorIcon(task.status === "completed" ? "signature" : (task.icon === "calendar" ? "calendar" : "list-bullets"))}</div>
+                <div class="item-copy">
+                  <h3 class="item-title">${escapeHtml(task.title)}</h3>
+                  <p class="item-subtitle">${escapeHtml(task.subtitle)}</p>
+                  ${task.assignee ? `<p class="glade-task-assignee">${escapeHtml(task.assignee)}</p>` : ""}
+                  ${task.completeLink ? `<button class="task-link-button" type="button" data-task-action="complete">${escapeHtml(task.completeLink)}</button>` : ""}
+                </div>
+                ${task.actionLabel ? `<button class="workflow-action" type="button" data-nav="${task.route}">${escapeHtml(task.actionLabel)}</button>` : '<span class="portal-task-action-spacer" aria-hidden="true"></span>'}
+              </article>
+            `).join("")}
+          </div>
+        ` : ""}
+      </section>
+    `;
+  }).join("");
+}
+
+function renderGladeDocumentsTab(page) {
+  return renderDocumentsView(page);
+}
+
+function renderGladeWorkflowView(page, activeTab) {
+  const mainContent = activeTab === "documents" ? renderGladeDocumentsTab(page) : `
+    <section class="card glade-invoice-card">
+      <div class="glade-invoice-copy">
+        <strong>${escapeHtml(page.invoice.title)}</strong>
+        <span>Remaining Balance: ${escapeHtml(page.invoice.balance)}</span>
+        <span>${escapeHtml(page.invoice.assignee)}</span>
+        <button class="task-link-button" type="button" data-task-action="complete">Complete this task</button>
+      </div>
+      <div class="glade-invoice-actions">
+        <button class="workflow-action" type="button" data-nav="${makeFirmHash("glade", "task", "glade-business-assets-checklist")}">View</button>
+      </div>
+    </section>
+    ${renderGladeWorkflowSteps(page)}
+  `;
+
+  return `
+    <div class="progress-strip" aria-label="Case progress: ${page.progressPercent}%">
+      <div class="progress-strip-fill" style="width:${page.progressPercent}%"></div>
+      <span class="progress-strip-meta">${page.completedTasks}/${page.totalTasks} tasks &middot; ${page.progressPercent}%</span>
+    </div>
+    ${renderBreadcrumbs([
+      { label: "Home", route: getHomeHashForFirm("glade") },
+      { label: page.title }
+    ])}
+    <section class="detail-hero">
+      <h1>${escapeHtml(page.title)}</h1>
+      <p>Total Progress: ${page.progressPercent}% · ${page.completedTasks} of ${page.totalTasks} tasks</p>
+      <p>Your Team: Coleman Vurbeff</p>
+    </section>
+    ${renderWorkflowTabs(page, page.id, activeTab)}
+    <div class="detail-layout">
+      <div class="detail-main detail-stack">
+        ${mainContent}
+      </div>
+      <div class="detail-side">
+        ${renderCaseChatPanel()}
+      </div>
+    </div>
+    ${renderFooter()}
+  `;
+}
+
 function renderWorkflowView(route) {
-  const page = workflowPages[route.workflowId] || workflowPages["chapter-7"];
+  const pages = getWorkflowPagesForFirm(route.firmId);
+  const fallbackPage = route.firmId === "glade" ? pages["glade-onboarding"] : pages["chapter-7"];
+  const page = pages[route.workflowId] || fallbackPage;
   const activeTab = page.tabs.includes(route.tab) ? route.tab : page.defaultTab;
+
+  if (page.layout === "glade-onboarding") {
+    return renderGladeWorkflowView(page, activeTab);
+  }
 
   let mainContent = "";
   if (activeTab === "documents" && page.documents) {
@@ -1223,7 +1963,7 @@ function renderWorkflowView(route) {
     </div>
 
     ${renderBreadcrumbs([
-      { label: "Home", route: "#home" },
+      { label: "Home", route: getHomeHashForFirm(route.firmId) },
       { label: page.title }
     ])}
 
@@ -1301,14 +2041,91 @@ function renderChecklistRows(task) {
   `;
 }
 
+function renderCreditReportTask(task) {
+  const activeTab = task.tabs?.[0] || "Credit Report";
+  const extractedJson = escapeHtml(JSON.stringify(task.extractedData || {}, null, 2));
+
+  return `
+    <div class="credit-tabs-list" role="tablist" aria-label="Credit report sections">
+      ${(task.tabs || []).map((tab) => `
+        <button class="credit-tab ${tab === activeTab ? "is-active" : ""}" type="button" role="tab" aria-selected="${tab === activeTab ? "true" : "false"}">
+          ${escapeHtml(tab)}
+        </button>
+      `).join("")}
+    </div>
+
+    <div class="credit-layout">
+      <section class="card credit-report-card">
+        <div class="credit-report-toolbar">
+          <div class="credit-powered">
+            <span>Powered by</span>
+            <strong>Glade AI</strong>
+          </div>
+          <button class="button button-secondary credit-download-button" type="button" data-download="Three Bureau Credit Report.pdf">
+            <span class="button-icon" aria-hidden="true">${phosphorIcon("download")}</span>
+            <span>${escapeHtml(task.ctaLabel)}</span>
+          </button>
+        </div>
+
+        <div class="credit-heading-block">
+          <h2>Three Bureau Credit Report</h2>
+        </div>
+
+        <section class="credit-section">
+          <header class="credit-section-head">Personal information</header>
+          <div class="credit-table">
+            ${(task.personalInformation || []).map((item) => `
+              <div class="credit-row">
+                <span class="credit-key">${escapeHtml(item.label)}</span>
+                <span class="credit-value">${escapeHtml(item.value)}</span>
+              </div>
+            `).join("")}
+          </div>
+        </section>
+
+        <section class="credit-section">
+          <header class="credit-section-head">Credit score summary</header>
+          <div class="credit-score-grid">
+            ${(task.scoreSummary || []).map((item) => `
+              <article class="credit-score-card">
+                <span class="credit-bureau">${escapeHtml(item.bureau)}</span>
+                <strong class="credit-score">${escapeHtml(item.score)}</strong>
+                <span class="credit-rating">${escapeHtml(item.rating)}</span>
+              </article>
+            `).join("")}
+          </div>
+        </section>
+      </section>
+
+      <aside class="card credit-extract-card">
+        <header class="credit-extract-head">
+          <div class="credit-extract-title">
+            <span class="glade-icon" aria-hidden="true"></span>
+            <strong>Extracted data</strong>
+          </div>
+          <div class="credit-extract-actions">
+            <button class="credit-pill-button" type="button" data-copy-report-id="${escapeHtml(task.id)}">Copy</button>
+            <button class="credit-pill-button" type="button" data-task-action="collapse">Hide</button>
+          </div>
+        </header>
+        <pre class="credit-extract-body">${extractedJson}</pre>
+      </aside>
+    </div>
+  `;
+}
+
 function renderTaskView(route) {
-  const task = taskPages[route.taskId] || taskPages["bankruptcy-document-checklist"];
-  const workflow = workflowPages[task.workflowId] || workflowPages["chapter-7"];
+  const tasks = getTaskPagesForFirm(route.firmId);
+  const workflows = getWorkflowPagesForFirm(route.firmId);
+  const fallbackTask = route.firmId === "glade" ? tasks["glade-business-assets-checklist"] : tasks["bankruptcy-document-checklist"];
+  const task = tasks[route.taskId] || fallbackTask;
+  const workflow = workflows[task.workflowId] || (route.firmId === "glade" ? workflows["glade-onboarding"] : workflows["chapter-7"]);
+  const isCreditReportTask = task.layout === "credit-report";
 
   return `
     ${renderBreadcrumbs([
-      { label: "Home", route: "#home" },
-      { label: workflow.title, route: `#workflow/${workflow.id}` },
+      { label: "Home", route: getHomeHashForFirm(route.firmId) },
+      { label: workflow.title, route: makeFirmHash(route.firmId, "workflow", workflow.id) },
       { label: task.title }
     ])}
 
@@ -1317,27 +2134,48 @@ function renderTaskView(route) {
       <p>${escapeHtml(task.summary)}</p>
     </section>
 
-    <div class="task-hero-actions">
-      <button class="button button-primary task-submit-button" type="button" data-task-action="submit">
-        <span class="button-icon" aria-hidden="true">${phosphorIcon("paper-plane-right")}</span>
-        <span>${escapeHtml(task.ctaLabel)}</span>
-      </button>
-    </div>
+    ${isCreditReportTask
+      ? renderCreditReportTask(task)
+      : `
+      <div class="task-hero-actions">
+        <button class="button button-primary task-submit-button" type="button" data-task-action="submit">
+          <span class="button-icon" aria-hidden="true">${phosphorIcon("paper-plane-right")}</span>
+          <span>${escapeHtml(task.ctaLabel)}</span>
+        </button>
+      </div>
 
-    <div class="detail-layout">
-      <div class="detail-main detail-stack">
-        ${renderChecklistRows(task)}
+      <div class="detail-layout">
+        <div class="detail-main detail-stack">
+          ${renderChecklistRows(task)}
+        </div>
+        <div class="detail-side">
+          ${renderCaseChatPanel()}
+        </div>
       </div>
-      <div class="detail-side">
-        ${renderCaseChatPanel()}
-      </div>
-    </div>
+    `}
 
     ${renderFooter()}
   `;
 }
 
+function renderSupportView() {
+  return `
+    ${renderBreadcrumbs([
+      { label: "Home", route: getHomeHashForFirm(state.firmId) },
+      { label: "Support Chat" }
+    ])}
+    <section class="card support-page-card">
+      <h1>Support Chat</h1>
+      <p>Use the Support Chat button in the header to continue this conversation.</p>
+    </section>
+    ${renderFooter()}
+  `;
+}
+
 function resolveRoute() {
+  if (state.route.name === "support") {
+    return renderSupportView();
+  }
   if (state.route.name === "workflow") {
     return renderWorkflowView(state.route);
   }
@@ -1532,8 +2370,8 @@ function openTeamDetail(teamId) {
         </div>
       </div>
       <div class="chip-row">
-        <span class="chip">support@vanhornlaw.example</span>
-        <span class="chip">(555) 010-2048</span>
+        <span class="chip">${escapeHtml(state.teamContact.email)}</span>
+        <span class="chip">${escapeHtml(state.teamContact.phone)}</span>
       </div>
     `,
     `
@@ -1581,17 +2419,19 @@ function openResourceDetail(resourceId) {
 }
 
 function openMeetingDetail() {
+  const title = state.meeting.title;
+  const subtitle = state.meeting.subtitle;
   openDetailModal(
     "Upcoming meeting",
-    "341 Meeting of Creditors",
+    title,
     `
       <div class="modal-summary">
-        <strong>Friday, March 15 at 10:00 AM PST</strong>
-        <p>Your team has scheduled the meeting and will share final prep instructions in the portal.</p>
+        <strong>${escapeHtml(subtitle)}</strong>
+        <p>${state.meeting.pending ? "This meeting is pending scheduling. Use the View action to choose a date and time." : "Your team has scheduled the meeting and will share final prep instructions in the portal."}</p>
       </div>
       <ul>
-        <li>Bring the identity documents requested by your attorney.</li>
-        <li>Review the trustee questions resource before the meeting.</li>
+        <li>Bring the key documents requested by your team.</li>
+        <li>Share any questions in case chat before your meeting.</li>
         <li>Join ten minutes early if the meeting is virtual.</li>
       </ul>
     `,
@@ -1615,12 +2455,12 @@ function openPaymentDetail() {
     "Remaining Balance",
     `
       <div class="modal-summary">
-        <strong>$2188.00 USD outstanding</strong>
+        <strong>${escapeHtml(state.payments.remainingBalance)} outstanding</strong>
         <p>This balance reflects the remaining fees on your active matter. Payments already posted are included in the progress bar.</p>
       </div>
       <ul>
-        <li>Next scheduled payment: $350.00 on March 22.</li>
-        <li>Auto-pay is active on the card ending in 1182.</li>
+        <li>Next scheduled payment can be configured from your payment plan.</li>
+        <li>Auto-pay preferences can be updated with your onboarding team.</li>
         <li>Need a different plan? Message accounting from this portal.</li>
       </ul>
     `,
@@ -1645,18 +2485,12 @@ function openNotifications() {
     "Recent updates",
     `
       <div class="bullet-list">
-        <div class="bullet-item">
-          <span class="status-dot is-orange"></span>
-          <p>Your retainer agreement is ready for signature.</p>
-        </div>
-        <div class="bullet-item">
-          <span class="status-dot is-green"></span>
-          <p>Your Chapter 7 retainer workflow was archived successfully.</p>
-        </div>
-        <div class="bullet-item">
-          <span class="status-dot is-gray"></span>
-          <p>A reminder has been scheduled for the 341 Meeting of Creditors.</p>
-        </div>
+        ${state.notifications.map((note, index) => `
+          <div class="bullet-item">
+            <span class="status-dot ${index === 0 ? "is-orange" : index === 1 ? "is-green" : "is-gray"}"></span>
+            <p>${escapeHtml(note)}</p>
+          </div>
+        `).join("")}
       </div>
     `,
     `
@@ -1701,7 +2535,13 @@ function renderChatSurfaces() {
     caseThread.scrollTop = caseThread.scrollHeight;
   }
 
-  const mobileLabel = state.route.name === "home" ? "Support Chat" : "Case Chat";
+  const supportThread = elements.appView.querySelector(".support-page-thread");
+  if (supportThread) {
+    supportThread.innerHTML = renderChatEntries(state.supportPage.messages);
+    supportThread.scrollTop = supportThread.scrollHeight;
+  }
+
+  const mobileLabel = state.route.name === "home" || state.route.name === "support" ? "Support Chat" : "Case Chat";
   elements.mobileChatTitle.textContent = mobileLabel;
   elements.mobileChatDock.setAttribute("aria-label", mobileLabel);
 }
@@ -1724,6 +2564,19 @@ function bindViewEvents() {
   elements.appView.querySelectorAll("[data-download]").forEach((button) => {
     button.addEventListener("click", () => {
       showToast(`${button.dataset.download} download can be connected here.`);
+    });
+  });
+
+  elements.appView.querySelectorAll("[data-copy-report-id]").forEach((button) => {
+    button.addEventListener("click", async () => {
+      const reportTask = getTaskPagesForFirm(state.firmId)[button.dataset.copyReportId];
+      const reportJson = JSON.stringify(reportTask?.extractedData || {}, null, 2);
+      try {
+        await navigator.clipboard.writeText(reportJson);
+        showToast("Extracted data copied.");
+      } catch {
+        showToast("Clipboard access is blocked in this browser context.");
+      }
     });
   });
 
@@ -1759,7 +2612,11 @@ function bindViewEvents() {
 
 function renderApp() {
   const route = parseHash();
+  if (route.firmId !== state.firmId) {
+    applyFirmContext(route.firmId);
+  }
   state.route = route;
+  syncHeaderForFirm();
 
   const pageMarkup = resolveRoute();
   elements.appView.innerHTML = pageMarkup;
@@ -1783,10 +2640,19 @@ function renderApp() {
 }
 
 function initEvents() {
-  document.getElementById("support-chat-button").addEventListener("click", () => openPanel("support"));
+  document.getElementById("support-chat-button").addEventListener("click", () => {
+    openPanel("support");
+  });
   document.getElementById("support-close-button").addEventListener("click", closePanels);
   document.getElementById("modal-close-button").addEventListener("click", closePanels);
   document.getElementById("notifications-button").addEventListener("click", openNotifications);
+  elements.firmSwitcher.addEventListener("change", (event) => {
+    const nextFirm = event.target.value === "glade" ? "glade" : "van-horn";
+    const nextHash = getHomeHashForFirm(nextFirm);
+    closePanels();
+    closeProfileMenu();
+    navigateTo(nextHash);
+  });
 
   elements.profileButton.addEventListener("click", (event) => {
     event.stopPropagation();
