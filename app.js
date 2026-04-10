@@ -1661,6 +1661,7 @@ function renderHomeView() {
             </div>
           </div>
           <div class="payment-summary">
+            ${state.firmId === "glade" ? '<strong class="item-title">Customization Fee</strong>' : ""}
             <div class="progress-row">
               <span>Remaining Balance</span>
               <strong>${escapeHtml(state.payments.remainingBalance)}</strong>
@@ -1668,7 +1669,7 @@ function renderHomeView() {
             <div class="progress-track progress-track-tight" aria-hidden="true">
               <div class="progress-fill payment-fill" style="width:${state.payments.progressPercent}%"></div>
             </div>
-            <button class="button button-secondary button-block" id="payment-plan-button" type="button">View payment plan</button>
+            <button class="button button-secondary button-block" id="payment-plan-button" type="button">${state.firmId === "glade" ? "View Invoice" : "View payment plan"}</button>
           </div>
         </section>
       </aside>
