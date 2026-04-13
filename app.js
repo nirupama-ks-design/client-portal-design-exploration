@@ -1627,16 +1627,11 @@ function closeGladeBookingModal() {
 }
 
 function renderGladeUpcomingMeetingCard() {
-  const subtitle = state.gladeBookingConfirmed && state.gladeBookingDate && state.gladeBookingTime
-    ? `${formatGladeMeetingDate(state.gladeBookingDate)} · ${state.gladeBookingTime} PST`
-    : "Select date and time";
-
   return `
     <div class="glade-meeting-card">
       <span class="icon-frame" aria-hidden="true">${phosphorIcon("calendar")}</span>
       <div class="item-copy">
         <p class="item-title">Glade Onboarding First Review</p>
-        <p class="item-subtitle">${escapeHtml(subtitle)}</p>
       </div>
       ${state.gladeBookingConfirmed
         ? `<span class="glade-booked-badge">${phosphorIcon("check")} Booked</span>`
