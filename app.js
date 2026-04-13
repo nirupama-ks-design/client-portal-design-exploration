@@ -1818,7 +1818,7 @@ function renderGladeBookingModal() {
       <div class="glade-booking-body">
         ${!state.gladeBookingConfirmed ? renderGladeStepTrack() : ""}
         <div class="glade-booking-info">
-          <span class="glade-booking-host">CV</span>
+          <img class="glade-booking-host" src="./assets/coleman.png" alt="Coleman Vurbeff">
           <div>
             <strong>Glade Onboarding First Review</strong>
             <span>30 min with Coleman Vurbeff</span>

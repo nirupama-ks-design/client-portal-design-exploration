@@ -2177,34 +2177,31 @@ h4 {
   margin-bottom: 14px;
   border: 1px solid #e4e4e7;
   border-radius: 10px;
-  padding: 10px;
-  background: #f4f4f5;
+  padding: 12px 14px;
+  background: #ffffff;
   display: inline-flex;
-  align-items: center;
+  align-items: flex-start;
   gap: 10px;
 }
 
 .glade-booking-host {
-  width: 28px;
-  height: 28px;
+  width: 32px;
+  height: 32px;
   border-radius: 999px;
-  background: #18181b;
-  color: #fafafa;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 11px;
-  font-weight: 600;
+  object-fit: cover;
+  flex-shrink: 0;
 }
 
 .glade-booking-info div {
   display: grid;
   gap: 2px;
+  padding-top: 2px;
 }
 
 .glade-booking-info strong {
   color: #18181b;
   font-size: 13px;
+  font-weight: 600;
 }
 
 .glade-booking-info span {
@@ -2268,7 +2265,7 @@ h4 {
 }
 
 .glade-calendar-day.is-today:not(.is-selected) {
-  box-shadow: inset 0 0 0 1.5px #18181b;
+  background: #f4f4f5;
 }
 
 .glade-calendar-day.is-empty {
