@@ -854,6 +854,7 @@ const portalDataByFirm = {
   "van-horn": {
     userName: "Lilian",
     profileInitials: "CN",
+    profileAvatar: null,
     homeGreeting: "Good Afternoon, Lilian",
     homeLeadText: "Your Chapter 7 filing is",
     homeHeroPercent: 29,
@@ -884,6 +885,7 @@ const portalDataByFirm = {
   glade: {
     userName: "Laila",
     profileInitials: "LG",
+    profileAvatar: "https://www.figma.com/api/mcp/asset/18744495-dd8c-4d60-b59a-73e000059ff3",
     homeGreeting: "Good Afternoon, Laila",
     homeLeadText: "Your Glade New Client Onboarding is",
     homeHeroPercent: 40,
@@ -1178,6 +1180,7 @@ function applyFirmContext(firmId) {
   state.firmId = firmId;
   state.userName = context.userName;
   state.profileInitials = context.profileInitials;
+  state.profileAvatar = context.profileAvatar || null;
   state.homeGreeting = context.homeGreeting;
   state.homeLeadText = context.homeLeadText;
   state.homeHeroPercent = context.homeHeroPercent;
@@ -1315,7 +1318,7 @@ function appendChatMessage(message, role = "user") {
     role,
     author: role === "user" ? state.userName : state.firmId === "glade" ? "Glade" : "Support team",
     timestamp: "Now",
-    avatar: role === "user" ? state.team[0].avatar : state.team[1].avatar,
+    avatar: role === "user" ? (state.profileAvatar || state.team[0]?.avatar) : state.team[1]?.avatar,
     body: [message]
   });
 }
