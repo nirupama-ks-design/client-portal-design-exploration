@@ -946,16 +946,8 @@ const portalDataByFirm = {
         name: "Coleman Vurbeff",
         role: "Head of Sales",
         gradient: "linear-gradient(135deg, #0ea5e9, #2563eb)",
-        avatar: "https://www.figma.com/api/mcp/asset/18744495-dd8c-4d60-b59a-73e000059ff3",
+        avatar: "assets/coleman.jpg",
         summary: "Your primary onboarding lead for setup and rollout planning."
-      },
-      {
-        id: "ana",
-        name: "Ana Gayoso",
-        role: "Sales",
-        gradient: "linear-gradient(135deg, #f97316, #ef4444)",
-        avatar: "https://www.figma.com/api/mcp/asset/d58c8886-8ce8-4e4a-ad5a-c79ea16288a1",
-        summary: "Coordinates onboarding logistics and keeps implementation moving."
       }
     ],
     resources: [
@@ -1043,25 +1035,6 @@ const portalDataByFirm = {
           "Hi Laila,",
           "Thanks for finishing the Questionnaire & Document Uploads! Please book a call with us to have our first review of your attorney-facing dashboard."
         ]
-      },
-      {
-        id: "glade-chat-3",
-        role: "support",
-        author: "Ana Gayoso",
-        timestamp: "4/9/26, 6:43 PM",
-        avatar: "https://www.figma.com/api/mcp/asset/d58c8886-8ce8-4e4a-ad5a-c79ea16288a1",
-        badge: "TASK",
-        verified: true,
-        taskStatus: "Upload Documents",
-        taskTitle: "Business Assets & Details Document Checklist",
-        taskDescription: "2 remaining documents need to be uploaded",
-        body: [
-          "<strong>Reason:</strong> Please upload the remaining Voided Check and additional client documentation."
-        ],
-        bodyIsHtml: true,
-        replies: "3 replies",
-        replyMeta: "Last reply today at 11:34 AM",
-        replyAvatarCount: 4
       },
       {
         id: "glade-chat-4",
@@ -1532,16 +1505,11 @@ function renderHomeWorkflowItems() {
 
 function renderTeamList() {
   const [featured, secondary] = state.team;
-  return `
-    <button class="team-feature" type="button" data-team-id="${featured.id}">
-      <span class="avatar avatar-large" style="background:${featured.gradient}">
-        <img class="avatar-image" src="${featured.avatar}" alt="">
-      </span>
-      <span class="item-copy">
-        <span class="item-title">${escapeHtml(featured.name)}</span>
-        <span class="item-subtitle">${escapeHtml(featured.role)}</span>
-      </span>
-    </button>
+  if (!featured) {
+    return "";
+  }
+
+  const secondaryMarkup = secondary ? `
     <div class="team-divider" aria-hidden="true"></div>
     <button class="team-member" type="button" data-team-id="${secondary.id}">
       <span class="avatar" style="background:${secondary.gradient}">
@@ -1552,6 +1520,19 @@ function renderTeamList() {
         <span class="item-subtitle">${escapeHtml(secondary.role)}</span>
       </span>
     </button>
+  ` : "";
+
+  return `
+    <button class="team-feature" type="button" data-team-id="${featured.id}">
+      <span class="avatar avatar-large" style="background:${featured.gradient}">
+        <img class="avatar-image" src="${featured.avatar}" alt="">
+      </span>
+      <span class="item-copy">
+        <span class="item-title">${escapeHtml(featured.name)}</span>
+        <span class="item-subtitle">${escapeHtml(featured.role)}</span>
+      </span>
+    </button>
+    ${secondaryMarkup}
   `;
 }
 

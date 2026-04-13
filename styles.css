@@ -172,13 +172,12 @@ h4 {
 
 .brand-mark-g {
   position: absolute;
-  inset: 0;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
   display: none;
-  align-items: center;
-  justify-content: center;
-  font-size: 28px;
-  font-weight: 700;
-  color: #ffffff;
+  width: auto;
+  height: 26px;
 }
 
 .topbar[data-firm="glade"] .brand-mark {
@@ -2470,7 +2469,7 @@ body.is-locked {
   }
 
   .brand-mark-g {
-    font-size: 22px;
+    height: 24px;
   }
 
   .firm-switcher {
