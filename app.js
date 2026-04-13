@@ -1069,6 +1069,8 @@ const elements = {
   chatThread: document.getElementById("chat-thread"),
   profileButton: document.getElementById("profile-button"),
   profileMenu: document.getElementById("profile-menu"),
+  helpButton: document.getElementById("help-button"),
+  helpMenu: document.getElementById("help-menu"),
   accountSettingsButton: document.getElementById("account-settings-button"),
   logoutButton: document.getElementById("logout-button"),
   modalLabel: document.getElementById("modal-label"),
@@ -1282,12 +1284,37 @@ function toggleProfileMenu() {
     closeProfileMenu();
   } else {
     closePanels();
+    closeHelpMenu();
     openProfileMenu();
+  }
+}
+
+function closeHelpMenu() {
+  elements.helpMenu.classList.add("hidden");
+  elements.helpMenu.setAttribute("aria-hidden", "true");
+  elements.helpButton.setAttribute("aria-expanded", "false");
+}
+
+function openHelpMenu() {
+  elements.helpMenu.classList.remove("hidden");
+  elements.helpMenu.setAttribute("aria-hidden", "false");
+  elements.helpButton.setAttribute("aria-expanded", "true");
+}
+
+function toggleHelpMenu() {
+  const isOpen = !elements.helpMenu.classList.contains("hidden");
+  if (isOpen) {
+    closeHelpMenu();
+  } else {
+    closePanels();
+    closeProfileMenu();
+    openHelpMenu();
   }
 }
 
 function openPanel(panel) {
   closeProfileMenu();
+  closeHelpMenu();
 
   if (panel === "support" && isMobileViewport()) {
     setMobileChatExpanded(true);
@@ -2944,7 +2971,14 @@ function initEvents() {
   });
   document.getElementById("support-close-button").addEventListener("click", closePanels);
   document.getElementById("modal-close-button").addEventListener("click", closePanels);
-  document.getElementById("notifications-button").addEventListener("click", openNotifications);
+  elements.helpButton.addEventListener("click", (event) => {
+    event.stopPropagation();
+    toggleHelpMenu();
+  });
+
+  elements.helpMenu.addEventListener("click", (event) => {
+    event.stopPropagation();
+  });
   elements.firmSwitcher.addEventListener("change", (event) => {
     const nextFirm = event.target.value === "glade" ? "glade" : "van-horn";
     const nextHash = getHomeHashForFirm(nextFirm);
@@ -2992,7 +3026,10 @@ function initEvents() {
   window.addEventListener("scroll", syncMobileCarouselIndex, { passive: true });
   window.addEventListener("scroll", syncMobileStickyChrome, { passive: true });
   window.addEventListener("resize", applyResponsiveSections);
-  document.addEventListener("click", closeProfileMenu);
+  document.addEventListener("click", () => {
+    closeProfileMenu();
+    closeHelpMenu();
+  });
 
   document.addEventListener("keydown", (event) => {
     if (event.key === "Escape") {
@@ -3002,6 +3039,7 @@ function initEvents() {
       }
       closePanels();
       closeProfileMenu();
+      closeHelpMenu();
     }
   });
 }

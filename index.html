@@ -26,10 +26,18 @@
           <span class="button-icon" aria-hidden="true" data-icon="chats-circle"></span>
           <span>Support Chat</span>
         </button>
-        <button class="icon-button" id="notifications-button" type="button" aria-label="Open notifications">
-          <span class="notifications-desktop-icon" aria-hidden="true" data-icon="bell"></span>
-          <span class="notifications-mobile-icon" aria-hidden="true" data-icon="question"></span>
-        </button>
+        <div class="help-button-wrap">
+          <button class="icon-button" id="help-button" type="button" aria-label="Open help menu" aria-expanded="false" aria-controls="help-menu">
+            <span aria-hidden="true" data-icon="question"></span>
+          </button>
+          <div class="profile-menu hidden" id="help-menu" role="menu" aria-hidden="true">
+            <button class="profile-menu-item" type="button" role="menuitem">Article 1</button>
+            <button class="profile-menu-item" type="button" role="menuitem">Article 2</button>
+            <button class="profile-menu-item" type="button" role="menuitem">Article 3</button>
+            <button class="profile-menu-item" type="button" role="menuitem">Article 4</button>
+            <button class="profile-menu-item profile-menu-item-gradient" type="button" role="menuitem">Glade help center</button>
+          </div>
+        </div>
         <button class="avatar-button" id="profile-button" type="button" aria-label="Open profile menu" aria-expanded="false" aria-controls="profile-menu">CN</button>
         <div class="profile-menu hidden" id="profile-menu" role="menu" aria-hidden="true">
           <button class="profile-menu-item" id="account-settings-button" type="button" role="menuitem">Account settings</button>

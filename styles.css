@@ -248,6 +248,22 @@ h4 {
   color: #df1f2d;
 }
 
+.profile-menu-item-gradient {
+  background: linear-gradient(90deg, #8F01FF, #EC4899);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  font-weight: 600;
+}
+
+.help-button-wrap {
+  position: relative;
+}
+
+.help-button-wrap .profile-menu {
+  right: 0;
+}
+
 .page-content {
   max-width: var(--content-width);
   margin: 0 auto;
@@ -2955,14 +2971,6 @@ body.is-locked {
     width: 46px;
     height: 46px;
     font-size: 14px;
-  }
-
-  .notifications-desktop-icon {
-    display: none;
-  }
-
-  .notifications-mobile-icon {
-    display: inline-flex;
   }
 
   .page-content {
