@@ -1338,8 +1338,8 @@ function appendChatMessage(message, role = "user") {
 
 function getReplyAvatars() {
   return [
-    state.team[0].avatar,
-    state.team[1].avatar,
+    state.team[0]?.avatar,
+    state.team[1]?.avatar,
     state.team[2]?.avatar,
     state.team[3]?.avatar
   ].filter(Boolean);
