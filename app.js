@@ -1632,7 +1632,7 @@ function renderGladeUpcomingMeetingCard() {
     : "Select date and time";
 
   return `
-    <article class="task-item meeting-item glade-meeting-card">
+    <div class="glade-meeting-card">
       <span class="icon-frame" aria-hidden="true">${phosphorIcon("calendar")}</span>
       <div class="item-copy">
         <p class="item-title">Glade Onboarding First Review</p>
@@ -1641,7 +1641,7 @@ function renderGladeUpcomingMeetingCard() {
       ${state.gladeBookingConfirmed
         ? `<span class="glade-booked-badge">${phosphorIcon("check")} Booked</span>`
         : `<button class="task-action" type="button" data-glade-booking-open>Schedule</button>`}
-    </article>
+    </div>
   `;
 }
 
@@ -1899,18 +1899,17 @@ function renderHomeView() {
               <p class="card-label" id="meeting-title">Upcoming Meetings</p>
             </div>
           </div>
-          <div class="stack-list">
-            ${state.firmId === "glade"
-              ? renderGladeUpcomingMeetingCard()
-              : `
+          ${state.firmId === "glade"
+            ? renderGladeUpcomingMeetingCard()
+            : `<div class="stack-list">
             <button class="task-item meeting-item" id="meeting-button" type="button">
               <span class="icon-frame" aria-hidden="true">${phosphorIcon(state.meeting.pending ? "calendar-x" : "calendar")}</span>
               <div class="item-copy">
                 <p class="item-title">${escapeHtml(state.meeting.title)}</p>
                 <p class="item-subtitle">${escapeHtml(state.meeting.subtitle)}</p>
               </div>
-            </button>`}
-          </div>
+            </button>
+          </div>`}
         </section>
 
         <section class="card compact-card" id="section-payments" data-mobile-groups="invoices" aria-labelledby="payments-title">
