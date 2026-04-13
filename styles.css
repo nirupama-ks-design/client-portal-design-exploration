@@ -476,7 +476,8 @@ h4 {
 .task-item.meeting-item {
   grid-template-columns: auto minmax(0, 1fr);
   cursor: pointer;
-  border-top: 0 !important;
+  border: 0;
+  text-align: left;
 }
 
 .task-item.is-disabled,
