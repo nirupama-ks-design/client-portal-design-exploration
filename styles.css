@@ -2022,6 +2022,431 @@ h4 {
   color: #1d4ed8;
 }
 
+.glade-meeting-card {
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  border: 1px solid #e4e4e7;
+  border-radius: 12px;
+  margin: 0 18px 18px;
+  width: calc(100% - 36px);
+}
+
+.glade-booked-badge {
+  min-height: 28px;
+  border-radius: 999px;
+  border: 1px solid #86efac;
+  background: #f0fdf4;
+  color: #166534;
+  padding: 0 10px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.glade-booked-badge svg {
+  width: 14px;
+  height: 14px;
+}
+
+.glade-booking-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 38;
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(4px);
+}
+
+.glade-booking-modal {
+  position: fixed;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: min(680px, calc(100vw - 28px));
+  max-height: calc(100vh - 24px);
+  overflow: auto;
+  z-index: 39;
+  border-radius: 16px;
+  background: #ffffff;
+  box-shadow: 0 24px 48px -12px rgba(0, 0, 0, 0.18);
+}
+
+.glade-booking-modal-head {
+  border-bottom: 1px solid #e4e4e7;
+}
+
+.glade-booking-head-actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.glade-booking-icon {
+  width: 28px;
+  height: 28px;
+  min-height: 28px;
+  border-radius: 8px;
+}
+
+.glade-booking-icon svg {
+  width: 15px;
+  height: 15px;
+}
+
+.glade-booking-body {
+  padding: 14px 18px 18px;
+}
+
+.glade-booking-steps {
+  position: relative;
+  height: 56px;
+  margin-bottom: 12px;
+}
+
+.glade-booking-steps-line,
+.glade-booking-steps-fill {
+  position: absolute;
+  top: 8px;
+  left: 0;
+  height: 2px;
+}
+
+.glade-booking-steps-line {
+  width: 100%;
+  background: #d4d4d8;
+}
+
+.glade-booking-steps-fill {
+  background: #16a34a;
+  transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.glade-booking-step {
+  position: absolute;
+  top: 0;
+  transform: translateX(-50%);
+  display: grid;
+  justify-items: center;
+  gap: 7px;
+}
+
+.glade-booking-step-dot {
+  width: 18px;
+  height: 18px;
+  border-radius: 999px;
+  border: 1px solid #d4d4d8;
+  background: #ffffff;
+  color: transparent;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.glade-booking-step.is-complete .glade-booking-step-dot {
+  background: #16a34a;
+  border-color: #16a34a;
+  color: #ffffff;
+}
+
+.glade-booking-step.is-complete .glade-booking-step-dot svg {
+  width: 12px;
+  height: 12px;
+}
+
+.glade-booking-step.is-active .glade-booking-step-dot {
+  border-color: #86efac;
+  background: #dcfce7;
+  box-shadow: 0 0 0 4px rgba(134, 239, 172, 0.25);
+  position: relative;
+}
+
+.glade-booking-step.is-active .glade-booking-step-dot::after {
+  content: "";
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  background: #16a34a;
+}
+
+.glade-booking-step-label {
+  font-size: 11px;
+  color: #71717a;
+}
+
+.glade-booking-info {
+  margin-bottom: 14px;
+  border: 1px solid #e4e4e7;
+  border-radius: 10px;
+  padding: 10px;
+  background: #f4f4f5;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.glade-booking-host {
+  width: 28px;
+  height: 28px;
+  border-radius: 999px;
+  background: #18181b;
+  color: #fafafa;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.glade-booking-info div {
+  display: grid;
+  gap: 2px;
+}
+
+.glade-booking-info strong {
+  color: #18181b;
+  font-size: 13px;
+}
+
+.glade-booking-info span {
+  color: #71717a;
+  font-size: 12px;
+}
+
+.glade-calendar-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.glade-calendar-head strong {
+  color: #18181b;
+  font-size: 15px;
+}
+
+.glade-calendar-weekdays,
+.glade-calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 6px;
+}
+
+.glade-calendar-weekdays {
+  margin-bottom: 8px;
+}
+
+.glade-calendar-weekdays span {
+  text-align: center;
+  color: #71717a;
+  font-size: 11px;
+}
+
+.glade-calendar-day {
+  min-height: 36px;
+  border: 1px solid #e4e4e7;
+  border-radius: 8px;
+  background: #ffffff;
+  color: #18181b;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.glade-calendar-day:hover:not(:disabled) {
+  background: #f4f4f5;
+}
+
+.glade-calendar-day.is-disabled {
+  color: #a1a1aa;
+  background: #fafafa;
+  border-color: #f4f4f5;
+  cursor: not-allowed;
+}
+
+.glade-calendar-day.is-selected {
+  background: #18181b;
+  border-color: #18181b;
+  color: #fafafa;
+}
+
+.glade-calendar-day.is-today:not(.is-selected) {
+  border-color: #18181b;
+}
+
+.glade-calendar-day.is-empty {
+  border: 0;
+  background: transparent;
+}
+
+.glade-time-picker {
+  display: grid;
+  gap: 14px;
+}
+
+.glade-date-pill {
+  min-height: 28px;
+  border-radius: 999px;
+  border: 1px solid #e4e4e7;
+  background: #f4f4f5;
+  color: #3f3f46;
+  padding: 0 10px;
+  display: inline-flex;
+  align-items: center;
+  justify-self: start;
+  font-size: 12px;
+}
+
+.glade-time-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.glade-time-head strong {
+  font-size: 14px;
+  color: #18181b;
+}
+
+.glade-time-head span {
+  color: #71717a;
+  font-size: 12px;
+}
+
+.glade-time-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.glade-time-slot {
+  min-height: 36px;
+  border-radius: 8px;
+  border: 1px solid #d4d4d8;
+  background: #ffffff;
+  color: #18181b;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.glade-time-slot:hover {
+  background: #f4f4f5;
+}
+
+.glade-time-slot.is-selected {
+  background: #18181b;
+  border-color: #18181b;
+  color: #fafafa;
+}
+
+.glade-confirm-step {
+  display: grid;
+  gap: 12px;
+}
+
+.glade-summary-card {
+  border: 1px solid #e4e4e7;
+  border-radius: 12px;
+  background: #ffffff;
+}
+
+.glade-summary-row {
+  display: grid;
+  grid-template-columns: 24px auto minmax(0, 1fr);
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border-top: 1px solid #f4f4f5;
+}
+
+.glade-summary-row:first-child {
+  border-top: 0;
+}
+
+.glade-summary-icon {
+  width: 24px;
+  height: 24px;
+  border-radius: 8px;
+  background: #f4f4f5;
+  color: #3f3f46;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.glade-summary-icon svg {
+  width: 14px;
+  height: 14px;
+}
+
+.glade-summary-label {
+  color: #71717a;
+  font-size: 12px;
+}
+
+.glade-summary-row strong {
+  justify-self: end;
+  color: #18181b;
+  font-size: 12px;
+}
+
+.glade-agenda-card {
+  border: 1px solid #e4e4e7;
+  border-radius: 12px;
+  background: #f4f4f5;
+  padding: 12px;
+  display: grid;
+  gap: 10px;
+}
+
+.glade-agenda-list {
+  display: grid;
+  gap: 8px;
+}
+
+.glade-agenda-item {
+  display: grid;
+  grid-template-columns: 24px minmax(0, 1fr);
+  gap: 10px;
+  align-items: center;
+  color: #3f3f46;
+  font-size: 12px;
+}
+
+.glade-confirm-button {
+  min-height: 40px;
+  border-radius: 8px;
+}
+
+.glade-booked-state {
+  display: grid;
+  gap: 12px;
+}
+
+.glade-booked-check {
+  width: 34px;
+  height: 34px;
+  border-radius: 999px;
+  background: #16a34a;
+  color: #ffffff;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.glade-booked-check svg {
+  width: 18px;
+  height: 18px;
+}
+
+@media (max-width: 720px) {
+  .glade-booking-modal {
+    width: calc(100vw - 16px);
+  }
+
+  .glade-time-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
 .task-hero-actions {
   max-width: none;
   margin: 0 auto 20px;

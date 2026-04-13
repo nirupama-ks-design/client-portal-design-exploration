@@ -662,6 +662,13 @@ const state = {
     heading: "Support Chat",
     messages: []
   },
+  showGladeBookingModal: false,
+  gladeBookingStep: 0,
+  gladeBookingDate: null,
+  gladeBookingTime: null,
+  gladeBookingConfirmed: false,
+  gladeBookingMonth: new Date().getMonth(),
+  gladeBookingYear: new Date().getFullYear(),
   progressPercent: 51,
   completedTasks: 8,
   totalTasks: 14,
@@ -1102,7 +1109,11 @@ function phosphorIcon(name) {
     upload: `<svg ${common}><path d="M128 168V48"></path><path d="m80 96 48-48 48 48"></path><path d="M40 200h176"></path></svg>`,
     dots: `<svg ${common}><circle cx="60" cy="128" r="12" fill="currentColor" stroke="none"></circle><circle cx="128" cy="128" r="12" fill="currentColor" stroke="none"></circle><circle cx="196" cy="128" r="12" fill="currentColor" stroke="none"></circle></svg>`,
     file: `<svg ${common}><path d="M148 36H80a20 20 0 0 0-20 20v144a20 20 0 0 0 20 20h96a20 20 0 0 0 20-20V84Z"></path><path d="M148 36v48h48"></path></svg>`,
-    "caret-right": `<svg ${common}><path d="m96 48 64 80-64 80"></path></svg>`
+    "caret-right": `<svg ${common}><path d="m96 48 64 80-64 80"></path></svg>`,
+    "caret-left": `<svg ${common}><path d="m160 48-64 80 64 80"></path></svg>`,
+    check: `<svg ${common}><path d="m52 136 48 48 104-104"></path></svg>`,
+    clock: `<svg ${common}><circle cx="128" cy="128" r="96"></circle><path d="M128 72v56l40 24"></path></svg>`,
+    user: `<svg ${common}><circle cx="128" cy="96" r="40"></circle><path d="M56 208c16-32 44-48 72-48s56 16 72 48"></path></svg>`
   };
   return icons[name] || icons["list-bullets"];
 }
@@ -1194,6 +1205,13 @@ function applyFirmContext(firmId) {
   state.resources = deepClone(context.resources);
   state.chat = deepClone(context.chat);
   state.supportPage = deepClone(context.supportPage);
+  state.showGladeBookingModal = false;
+  state.gladeBookingStep = 0;
+  state.gladeBookingDate = null;
+  state.gladeBookingTime = null;
+  state.gladeBookingConfirmed = false;
+  state.gladeBookingMonth = new Date().getMonth();
+  state.gladeBookingYear = new Date().getFullYear();
   state.teamContact = deepClone(context.teamContact);
   state.notifications = deepClone(context.notifications);
   state.documentTreeExpanded = deepClone(defaultDocumentTreeExpanded);
@@ -1542,6 +1560,274 @@ function renderResources() {
   `).join("");
 }
 
+const GLADE_TIME_SLOTS = [
+  "9:00 AM", "9:30 AM", "10:00 AM", "10:30 AM",
+  "11:00 AM", "11:30 AM", "1:00 PM", "1:30 PM",
+  "2:00 PM", "2:30 PM", "3:00 PM", "3:30 PM",
+  "4:00 PM", "4:30 PM"
+];
+
+function toDateKey(value) {
+  const year = value.getFullYear();
+  const month = String(value.getMonth() + 1).padStart(2, "0");
+  const day = String(value.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
+}
+
+function fromDateKey(dateKey) {
+  const [year, month, day] = String(dateKey).split("-").map(Number);
+  return new Date(year, month - 1, day);
+}
+
+function formatGladeMeetingDate(dateKey) {
+  return fromDateKey(dateKey).toLocaleDateString("en-US", {
+    weekday: "short",
+    month: "short",
+    day: "numeric",
+    year: "numeric"
+  });
+}
+
+function isUnavailableBookingDate(value) {
+  const day = value.getDay();
+  if (day === 0 || day === 6) {
+    return true;
+  }
+  const today = new Date();
+  const midnight = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+  return value < midnight;
+}
+
+function resetGladeBooking({ keepConfirmed = false } = {}) {
+  state.showGladeBookingModal = false;
+  state.gladeBookingStep = 0;
+  state.gladeBookingMonth = new Date().getMonth();
+  state.gladeBookingYear = new Date().getFullYear();
+  if (!keepConfirmed) {
+    state.gladeBookingDate = null;
+    state.gladeBookingTime = null;
+    state.gladeBookingConfirmed = false;
+  }
+}
+
+function openGladeBookingModal() {
+  state.showGladeBookingModal = true;
+  state.gladeBookingStep = 0;
+  state.gladeBookingDate = null;
+  state.gladeBookingTime = null;
+  state.gladeBookingConfirmed = false;
+  renderApp();
+}
+
+function closeGladeBookingModal() {
+  resetGladeBooking({ keepConfirmed: state.gladeBookingConfirmed });
+  renderApp();
+}
+
+function renderGladeUpcomingMeetingCard() {
+  const subtitle = state.gladeBookingConfirmed && state.gladeBookingDate && state.gladeBookingTime
+    ? `${formatGladeMeetingDate(state.gladeBookingDate)} · ${state.gladeBookingTime} PST`
+    : "Select date and time";
+
+  return `
+    <article class="task-item meeting-item glade-meeting-card">
+      <span class="icon-frame" aria-hidden="true">${phosphorIcon("calendar")}</span>
+      <div class="item-copy">
+        <p class="item-title">Glade Onboarding First Review</p>
+        <p class="item-subtitle">${escapeHtml(subtitle)}</p>
+      </div>
+      ${state.gladeBookingConfirmed
+        ? `<span class="glade-booked-badge">${phosphorIcon("check")} Booked</span>`
+        : `<button class="task-action" type="button" data-glade-booking-open>Schedule</button>`}
+    </article>
+  `;
+}
+
+function renderGladeStepTrack() {
+  const labels = ["Date", "Time", "Confirm"];
+  const fill = state.gladeBookingStep === 0 ? 0 : state.gladeBookingStep === 1 ? 50 : 100;
+  return `
+    <div class="glade-booking-steps">
+      <div class="glade-booking-steps-line"></div>
+      <div class="glade-booking-steps-fill" style="width:${fill}%"></div>
+      ${labels.map((label, index) => {
+        const stepClass = index < state.gladeBookingStep ? "is-complete" : index === state.gladeBookingStep ? "is-active" : "is-future";
+        return `
+          <div class="glade-booking-step ${stepClass}" style="left:${index * 50}%">
+            <span class="glade-booking-step-dot">${index < state.gladeBookingStep ? phosphorIcon("check") : ""}</span>
+            <span class="glade-booking-step-label">${label}</span>
+          </div>
+        `;
+      }).join("")}
+    </div>
+  `;
+}
+
+function renderGladeDatePicker() {
+  const monthStart = new Date(state.gladeBookingYear, state.gladeBookingMonth, 1);
+  const firstWeekday = monthStart.getDay();
+  const daysInMonth = new Date(state.gladeBookingYear, state.gladeBookingMonth + 1, 0).getDate();
+  const todayKey = toDateKey(new Date());
+  const cells = [];
+
+  for (let i = 0; i < firstWeekday; i += 1) {
+    cells.push('<span class="glade-calendar-day is-empty" aria-hidden="true"></span>');
+  }
+  for (let day = 1; day <= daysInMonth; day += 1) {
+    const value = new Date(state.gladeBookingYear, state.gladeBookingMonth, day);
+    const dateKey = toDateKey(value);
+    const disabled = isUnavailableBookingDate(value);
+    const selected = state.gladeBookingDate === dateKey;
+    const isToday = dateKey === todayKey;
+    cells.push(`
+      <button
+        class="glade-calendar-day ${disabled ? "is-disabled" : ""} ${selected ? "is-selected" : ""} ${isToday ? "is-today" : ""}"
+        type="button"
+        ${disabled ? "disabled" : ""}
+        data-glade-booking-day="${dateKey}"
+      >
+        ${day}
+      </button>
+    `);
+  }
+
+  return `
+    <div class="glade-booking-calendar">
+      <div class="glade-calendar-head">
+        <button class="icon-button glade-booking-icon" type="button" data-glade-month-nav="-1" aria-label="Previous month">${phosphorIcon("caret-left")}</button>
+        <strong>${monthStart.toLocaleDateString("en-US", { month: "long", year: "numeric" })}</strong>
+        <button class="icon-button glade-booking-icon" type="button" data-glade-month-nav="1" aria-label="Next month">${phosphorIcon("caret-right")}</button>
+      </div>
+      <div class="glade-calendar-weekdays">
+        <span>Su</span><span>Mo</span><span>Tu</span><span>We</span><span>Th</span><span>Fr</span><span>Sa</span>
+      </div>
+      <div class="glade-calendar-grid">${cells.join("")}</div>
+    </div>
+  `;
+}
+
+function renderGladeTimePicker() {
+  return `
+    <div class="glade-time-picker">
+      <span class="glade-date-pill">${escapeHtml(formatGladeMeetingDate(state.gladeBookingDate))}</span>
+      <div class="glade-time-head">
+        <strong>Available times</strong>
+        <span>Pacific Time (PST)</span>
+      </div>
+      <div class="glade-time-grid">
+        ${GLADE_TIME_SLOTS.map((slot) => `
+          <button class="glade-time-slot ${state.gladeBookingTime === slot ? "is-selected" : ""}" type="button" data-glade-booking-time="${slot}">
+            ${slot}
+          </button>
+        `).join("")}
+      </div>
+    </div>
+  `;
+}
+
+function renderGladeConfirmStep() {
+  const rows = [
+    { icon: "calendar", label: "Date", value: formatGladeMeetingDate(state.gladeBookingDate) },
+    { icon: "clock", label: "Time", value: `${state.gladeBookingTime} PST` },
+    { icon: "user", label: "With", value: "Coleman Vurbeff" }
+  ];
+  return `
+    <div class="glade-confirm-step">
+      <div class="glade-summary-card">
+        ${rows.map((row) => `
+          <div class="glade-summary-row">
+            <span class="glade-summary-icon">${phosphorIcon(row.icon)}</span>
+            <span class="glade-summary-label">${row.label}</span>
+            <strong>${escapeHtml(row.value)}</strong>
+          </div>
+        `).join("")}
+      </div>
+      <section class="glade-agenda-card">
+        <strong>What we'll cover</strong>
+        <div class="glade-agenda-list">
+          <div class="glade-agenda-item"><span class="glade-summary-icon">${phosphorIcon("check")}</span><span>Walk through your Glade workspace setup</span></div>
+          <div class="glade-agenda-item"><span class="glade-summary-icon">${phosphorIcon("check")}</span><span>Review uploaded documents together</span></div>
+          <div class="glade-agenda-item"><span class="glade-summary-icon">${phosphorIcon("check")}</span><span>Answer any onboarding questions</span></div>
+        </div>
+      </section>
+      <button class="button button-primary glade-confirm-button" type="button" data-glade-booking-confirm>Confirm Booking</button>
+    </div>
+  `;
+}
+
+function renderGladeBookedState() {
+  return `
+    <div class="glade-booked-state">
+      <span class="glade-booked-check">${phosphorIcon("check")}</span>
+      <h3>Glade Onboarding First Review</h3>
+      <p>A calendar invite has been sent</p>
+      <div class="glade-summary-card">
+        <div class="glade-summary-row">
+          <span class="glade-summary-icon">${phosphorIcon("calendar")}</span>
+          <span class="glade-summary-label">Date</span>
+          <strong>${escapeHtml(formatGladeMeetingDate(state.gladeBookingDate))}</strong>
+        </div>
+        <div class="glade-summary-row">
+          <span class="glade-summary-icon">${phosphorIcon("clock")}</span>
+          <span class="glade-summary-label">Time</span>
+          <strong>${escapeHtml(state.gladeBookingTime)} PST</strong>
+        </div>
+        <div class="glade-summary-row">
+          <span class="glade-summary-icon">${phosphorIcon("user")}</span>
+          <span class="glade-summary-label">Host</span>
+          <strong>Coleman Vurbeff</strong>
+        </div>
+      </div>
+      <button class="button button-primary glade-confirm-button" type="button" data-glade-booking-done>Done</button>
+    </div>
+  `;
+}
+
+function renderGladeBookingModal() {
+  if (state.firmId !== "glade" || !state.showGladeBookingModal) {
+    return "";
+  }
+
+  let body = renderGladeDatePicker();
+  if (state.gladeBookingStep === 1) {
+    body = renderGladeTimePicker();
+  } else if (state.gladeBookingStep === 2) {
+    body = renderGladeConfirmStep();
+  }
+  if (state.gladeBookingConfirmed) {
+    body = renderGladeBookedState();
+  }
+
+  return `
+    <div class="glade-booking-overlay" data-glade-booking-close></div>
+    <section class="glade-booking-modal" role="dialog" aria-modal="true" aria-labelledby="glade-booking-title">
+      <div class="modal-head glade-booking-modal-head">
+        <div>
+          <p class="sheet-label">Upcoming Meeting</p>
+          <h2 id="glade-booking-title">Schedule Booking</h2>
+        </div>
+        <div class="glade-booking-head-actions">
+          ${state.gladeBookingStep > 0 && !state.gladeBookingConfirmed
+            ? `<button class="icon-button glade-booking-icon" type="button" data-glade-booking-back aria-label="Back">${phosphorIcon("caret-left")}</button>`
+            : ""}
+          <button class="icon-button glade-booking-icon" type="button" data-glade-booking-close aria-label="Close">${phosphorIcon("x")}</button>
+        </div>
+      </div>
+      <div class="glade-booking-body">
+        ${!state.gladeBookingConfirmed ? renderGladeStepTrack() : ""}
+        <div class="glade-booking-info">
+          <span class="glade-booking-host">CV</span>
+          <div>
+            <strong>Glade Onboarding First Review</strong>
+            <span>30 min with Coleman Vurbeff</span>
+          </div>
+        </div>
+        ${body}
+      </div>
+    </section>
+  `;
+}
+
 function renderHomeView() {
   return `
     <section class="hero">
@@ -1612,13 +1898,16 @@ function renderHomeView() {
             </div>
           </div>
           <div class="stack-list">
+            ${state.firmId === "glade"
+              ? renderGladeUpcomingMeetingCard()
+              : `
             <button class="task-item meeting-item" id="meeting-button" type="button">
               <span class="icon-frame" aria-hidden="true">${phosphorIcon(state.meeting.pending ? "calendar-x" : "calendar")}</span>
               <div class="item-copy">
                 <p class="item-title">${escapeHtml(state.meeting.title)}</p>
                 <p class="item-subtitle">${escapeHtml(state.meeting.subtitle)}</p>
               </div>
-            </button>
+            </button>`}
           </div>
         </section>
 
@@ -1643,6 +1932,7 @@ function renderHomeView() {
       </aside>
     </div>
 
+    ${renderGladeBookingModal()}
     ${renderFooter()}
   `;
 }
@@ -2550,6 +2840,64 @@ function bindViewEvents() {
     });
   });
 
+  elements.appView.querySelectorAll("[data-glade-booking-open]").forEach((button) => {
+    button.addEventListener("click", openGladeBookingModal);
+  });
+
+  elements.appView.querySelectorAll("[data-glade-booking-close]").forEach((button) => {
+    button.addEventListener("click", closeGladeBookingModal);
+  });
+
+  elements.appView.querySelectorAll("[data-glade-booking-back]").forEach((button) => {
+    button.addEventListener("click", () => {
+      state.gladeBookingStep = Math.max(0, state.gladeBookingStep - 1);
+      renderApp();
+    });
+  });
+
+  elements.appView.querySelectorAll("[data-glade-month-nav]").forEach((button) => {
+    button.addEventListener("click", () => {
+      const current = new Date(state.gladeBookingYear, state.gladeBookingMonth, 1);
+      current.setMonth(current.getMonth() + Number(button.dataset.gladeMonthNav));
+      state.gladeBookingYear = current.getFullYear();
+      state.gladeBookingMonth = current.getMonth();
+      renderApp();
+    });
+  });
+
+  elements.appView.querySelectorAll("[data-glade-booking-day]").forEach((button) => {
+    button.addEventListener("click", () => {
+      state.gladeBookingDate = button.dataset.gladeBookingDay;
+      state.gladeBookingStep = 1;
+      renderApp();
+    });
+  });
+
+  elements.appView.querySelectorAll("[data-glade-booking-time]").forEach((button) => {
+    button.addEventListener("click", () => {
+      state.gladeBookingTime = button.dataset.gladeBookingTime;
+      state.gladeBookingStep = 2;
+      renderApp();
+    });
+  });
+
+  elements.appView.querySelectorAll("[data-glade-booking-confirm]").forEach((button) => {
+    button.addEventListener("click", () => {
+      state.gladeBookingConfirmed = true;
+      state.meeting.pending = false;
+      state.meeting.subtitle = `${formatGladeMeetingDate(state.gladeBookingDate)} · ${state.gladeBookingTime} PST`;
+      renderApp();
+    });
+  });
+
+  elements.appView.querySelectorAll("[data-glade-booking-done]").forEach((button) => {
+    button.addEventListener("click", () => {
+      state.showGladeBookingModal = false;
+      state.gladeBookingStep = 0;
+      renderApp();
+    });
+  });
+
   const meetingButton = elements.appView.querySelector("#meeting-button");
   if (meetingButton) {
     meetingButton.addEventListener("click", openMeetingDetail);
@@ -2652,6 +3000,10 @@ function initEvents() {
 
   document.addEventListener("keydown", (event) => {
     if (event.key === "Escape") {
+      if (state.showGladeBookingModal) {
+        closeGladeBookingModal();
+        return;
+      }
       closePanels();
       closeProfileMenu();
     }
