@@ -663,13 +663,6 @@ const state = {
     heading: "Support Chat",
     messages: []
   },
-  showBookingModal: false,
-  bookingStep: 0,
-  bookingDate: null,
-  bookingTime: null,
-  bookingConfirmed: false,
-  bookingCalendarYear: new Date().getFullYear(),
-  bookingCalendarMonth: new Date().getMonth(),
   progressPercent: 51,
   completedTasks: 8,
   totalTasks: 14,
@@ -879,15 +872,6 @@ const portalDataByFirm = {
       heading: "Support Chat",
       messages: []
     },
-    booking: {
-      showBookingModal: false,
-      bookingStep: 0,
-      bookingDate: null,
-      bookingTime: null,
-      bookingConfirmed: false,
-      bookingCalendarYear: new Date().getFullYear(),
-      bookingCalendarMonth: new Date().getMonth()
-    },
     teamContact: {
       email: "support@vanhornlaw.example",
       phone: "(555) 010-2048"
@@ -1053,15 +1037,6 @@ const portalDataByFirm = {
       heading: "Support Chat",
       messages: []
     },
-    booking: {
-      showBookingModal: false,
-      bookingStep: 0,
-      bookingDate: null,
-      bookingTime: null,
-      bookingConfirmed: false,
-      bookingCalendarYear: new Date().getFullYear(),
-      bookingCalendarMonth: new Date().getMonth()
-    },
     teamContact: {
       email: "support@glade.ai",
       phone: "(415) 555-0131"
@@ -1128,12 +1103,7 @@ function phosphorIcon(name) {
     upload: `<svg ${common}><path d="M128 168V48"></path><path d="m80 96 48-48 48 48"></path><path d="M40 200h176"></path></svg>`,
     dots: `<svg ${common}><circle cx="60" cy="128" r="12" fill="currentColor" stroke="none"></circle><circle cx="128" cy="128" r="12" fill="currentColor" stroke="none"></circle><circle cx="196" cy="128" r="12" fill="currentColor" stroke="none"></circle></svg>`,
     file: `<svg ${common}><path d="M148 36H80a20 20 0 0 0-20 20v144a20 20 0 0 0 20 20h96a20 20 0 0 0 20-20V84Z"></path><path d="M148 36v48h48"></path></svg>`,
-    "caret-right": `<svg ${common}><path d="m96 48 64 80-64 80"></path></svg>`,
-    "caret-left": `<svg ${common}><path d="m160 48-64 80 64 80"></path></svg>`,
-    "arrow-left": `<svg ${common}><path d="M200 128H56"></path><path d="m112 72-56 56 56 56"></path></svg>`,
-    check: `<svg ${common}><path d="m52 136 48 48 104-104"></path></svg>`,
-    clock: `<svg ${common}><circle cx="128" cy="128" r="96"></circle><path d="M128 72v56l40 24"></path></svg>`,
-    user: `<svg ${common}><circle cx="128" cy="96" r="40"></circle><path d="M56 208c16-32 44-48 72-48s56 16 72 48"></path></svg>`
+    "caret-right": `<svg ${common}><path d="m96 48 64 80-64 80"></path></svg>`
   };
   return icons[name] || icons["list-bullets"];
 }
@@ -1225,13 +1195,6 @@ function applyFirmContext(firmId) {
   state.resources = deepClone(context.resources);
   state.chat = deepClone(context.chat);
   state.supportPage = deepClone(context.supportPage);
-  state.showBookingModal = context.booking?.showBookingModal || false;
-  state.bookingStep = context.booking?.bookingStep || 0;
-  state.bookingDate = context.booking?.bookingDate || null;
-  state.bookingTime = context.booking?.bookingTime || null;
-  state.bookingConfirmed = context.booking?.bookingConfirmed || false;
-  state.bookingCalendarYear = context.booking?.bookingCalendarYear || new Date().getFullYear();
-  state.bookingCalendarMonth = context.booking?.bookingCalendarMonth ?? new Date().getMonth();
   state.teamContact = deepClone(context.teamContact);
   state.notifications = deepClone(context.notifications);
   state.documentTreeExpanded = deepClone(defaultDocumentTreeExpanded);
@@ -1580,299 +1543,6 @@ function renderResources() {
   `).join("");
 }
 
-const BOOKING_TIME_SLOTS = [
-  "9:00 AM", "9:30 AM", "10:00 AM", "10:30 AM",
-  "11:00 AM", "11:30 AM", "1:00 PM", "1:30 PM",
-  "2:00 PM", "2:30 PM", "3:00 PM", "3:30 PM",
-  "4:00 PM", "4:30 PM"
-];
-
-function formatDateKey(date) {
-  const year = date.getFullYear();
-  const month = String(date.getMonth() + 1).padStart(2, "0");
-  const day = String(date.getDate()).padStart(2, "0");
-  return `${year}-${month}-${day}`;
-}
-
-function parseDateKey(dateKey) {
-  const [year, month, day] = String(dateKey).split("-").map(Number);
-  return new Date(year, month - 1, day);
-}
-
-function formatBookingDateBadge(dateKey) {
-  const date = parseDateKey(dateKey);
-  return date.toLocaleDateString("en-US", {
-    weekday: "short",
-    month: "short",
-    day: "numeric",
-    year: "numeric"
-  });
-}
-
-function formatBookedMeetingSubtitle(dateKey, timeValue) {
-  return `${formatBookingDateBadge(dateKey)} · ${timeValue} PST`;
-}
-
-function getBookingTrackPercent() {
-  if (state.bookingStep <= 0) return 0;
-  if (state.bookingStep === 1) return 50;
-  return 100;
-}
-
-function isWeekend(date) {
-  const day = date.getDay();
-  return day === 0 || day === 6;
-}
-
-function isPastDate(date) {
-  const today = new Date();
-  const todayMidnight = new Date(today.getFullYear(), today.getMonth(), today.getDate());
-  return date < todayMidnight;
-}
-
-function getBookingMonthLabel() {
-  return new Date(state.bookingCalendarYear, state.bookingCalendarMonth, 1).toLocaleDateString("en-US", {
-    month: "long",
-    year: "numeric"
-  });
-}
-
-function renderBookingStepIndicator() {
-  const steps = ["Date", "Time", "Confirm"];
-  const fillPercent = getBookingTrackPercent();
-  return `
-    <div class="booking-stepper">
-      <div class="booking-stepper-track">
-        <div class="booking-stepper-track-fill" style="width:${fillPercent}%"></div>
-        ${steps.map((label, index) => {
-          const stateClass = index < state.bookingStep
-            ? "is-complete"
-            : index === state.bookingStep
-              ? "is-active"
-              : "is-future";
-          const left = index * 50;
-          return `
-            <div class="booking-step-node ${stateClass}" style="left:${left}%">
-              <span class="booking-step-circle">${index < state.bookingStep ? phosphorIcon("check") : ""}</span>
-              <span class="booking-step-label">${label}</span>
-            </div>
-          `;
-        }).join("")}
-      </div>
-    </div>
-  `;
-}
-
-function renderBookingCalendar() {
-  const monthStart = new Date(state.bookingCalendarYear, state.bookingCalendarMonth, 1);
-  const firstDay = monthStart.getDay();
-  const daysInMonth = new Date(state.bookingCalendarYear, state.bookingCalendarMonth + 1, 0).getDate();
-  const todayKey = formatDateKey(new Date());
-  const cells = [];
-
-  for (let i = 0; i < firstDay; i += 1) {
-    cells.push('<span class="booking-date-cell is-empty" aria-hidden="true"></span>');
-  }
-
-  for (let day = 1; day <= daysInMonth; day += 1) {
-    const date = new Date(state.bookingCalendarYear, state.bookingCalendarMonth, day);
-    const dateKey = formatDateKey(date);
-    const disabled = isWeekend(date) || isPastDate(date);
-    const selected = state.bookingDate === dateKey;
-    const today = todayKey === dateKey;
-    cells.push(`
-      <button
-        class="booking-date-cell ${disabled ? "is-disabled" : ""} ${selected ? "is-selected" : ""} ${today ? "is-today" : ""}"
-        type="button"
-        ${disabled ? "disabled" : ""}
-        data-booking-day="${dateKey}"
-      >
-        ${day}
-      </button>
-    `);
-  }
-
-  return `
-    <div class="booking-calendar">
-      <div class="booking-calendar-head">
-        <button class="booking-icon-button" type="button" data-booking-month-nav="-1" aria-label="Previous month">${phosphorIcon("caret-left")}</button>
-        <strong>${getBookingMonthLabel()}</strong>
-        <button class="booking-icon-button" type="button" data-booking-month-nav="1" aria-label="Next month">${phosphorIcon("caret-right")}</button>
-      </div>
-      <div class="booking-weekdays">
-        <span>Su</span><span>Mo</span><span>Tu</span><span>We</span><span>Th</span><span>Fr</span><span>Sa</span>
-      </div>
-      <div class="booking-date-grid">${cells.join("")}</div>
-    </div>
-  `;
-}
-
-function renderBookingTimePicker() {
-  const dateLabel = state.bookingDate ? formatBookingDateBadge(state.bookingDate) : "";
-  return `
-    <div class="booking-time-wrap">
-      <span class="booking-date-badge">${escapeHtml(dateLabel)}</span>
-      <div class="booking-time-head">
-        <strong>Available times</strong>
-        <span>Pacific Time (PST)</span>
-      </div>
-      <div class="booking-time-grid">
-        ${BOOKING_TIME_SLOTS.map((timeValue) => `
-          <button class="booking-time-slot ${state.bookingTime === timeValue ? "is-selected" : ""}" type="button" data-booking-time="${timeValue}">
-            ${timeValue}
-          </button>
-        `).join("")}
-      </div>
-    </div>
-  `;
-}
-
-function renderBookingConfirm() {
-  const summaryRows = [
-    { icon: "calendar", label: "Date", value: formatBookingDateBadge(state.bookingDate) },
-    { icon: "clock", label: "Time", value: `${state.bookingTime} PST` },
-    { icon: "user", label: "With", value: "Coleman Vurbeff" }
-  ];
-
-  const agenda = [
-    "Walk through your Glade workspace setup",
-    "Review uploaded documents together",
-    "Answer any onboarding questions"
-  ];
-
-  return `
-    <div class="booking-confirm-wrap">
-      <div class="booking-summary-card">
-        ${summaryRows.map((row) => `
-          <div class="booking-summary-row">
-            <span class="booking-summary-icon">${phosphorIcon(row.icon)}</span>
-            <span class="booking-summary-label">${row.label}</span>
-            <strong>${escapeHtml(row.value)}</strong>
-          </div>
-        `).join("")}
-      </div>
-
-      <div class="booking-agenda-card">
-        <strong>What we'll cover</strong>
-        <div class="booking-agenda-list">
-          ${agenda.map((item) => `
-            <div class="booking-agenda-item">
-              <span class="booking-agenda-icon">${phosphorIcon("check")}</span>
-              <span>${escapeHtml(item)}</span>
-            </div>
-          `).join("")}
-        </div>
-      </div>
-
-      <button class="booking-confirm-button" type="button" data-booking-confirm>Confirm Booking</button>
-    </div>
-  `;
-}
-
-function renderBookingConfirmed() {
-  return `
-    <div class="booking-confirmed">
-      <span class="booking-confirmed-check">${phosphorIcon("check")}</span>
-      <h3>Glade Onboarding First Review</h3>
-      <p>A calendar invite has been sent</p>
-      <div class="booking-summary-card">
-        <div class="booking-summary-row">
-          <span class="booking-summary-icon">${phosphorIcon("calendar")}</span>
-          <span class="booking-summary-label">Date</span>
-          <strong>${escapeHtml(formatBookingDateBadge(state.bookingDate))}</strong>
-        </div>
-        <div class="booking-summary-row">
-          <span class="booking-summary-icon">${phosphorIcon("clock")}</span>
-          <span class="booking-summary-label">Time</span>
-          <strong>${escapeHtml(state.bookingTime)} PST</strong>
-        </div>
-        <div class="booking-summary-row">
-          <span class="booking-summary-icon">${phosphorIcon("user")}</span>
-          <span class="booking-summary-label">Host</span>
-          <strong>Coleman Vurbeff</strong>
-        </div>
-      </div>
-      <button class="booking-confirm-button" type="button" data-booking-done>Done</button>
-    </div>
-  `;
-}
-
-function renderBookingModal() {
-  if (state.firmId !== "glade" || !state.showBookingModal) {
-    return "";
-  }
-
-  const canGoBack = state.bookingStep > 0;
-  let bodyMarkup = renderBookingCalendar();
-  if (state.bookingStep === 1) {
-    bodyMarkup = renderBookingTimePicker();
-  } else if (state.bookingStep === 2) {
-    bodyMarkup = renderBookingConfirm();
-  }
-  if (state.bookingConfirmed) {
-    bodyMarkup = renderBookingConfirmed();
-  }
-
-  return `
-    <div class="booking-modal-overlay" data-booking-close></div>
-    <section class="booking-modal" role="dialog" aria-modal="true" aria-labelledby="booking-modal-title">
-      <header class="booking-modal-head">
-        <div class="booking-head-actions">
-          ${canGoBack && !state.bookingConfirmed
-            ? `<button class="booking-icon-button" type="button" data-booking-back aria-label="Back">${phosphorIcon("arrow-left")}</button>`
-            : `<span class="booking-icon-spacer" aria-hidden="true"></span>`}
-          <h2 id="booking-modal-title">Schedule Booking</h2>
-          <button class="booking-icon-button" type="button" data-booking-close aria-label="Close">${phosphorIcon("x")}</button>
-        </div>
-        ${!state.bookingConfirmed ? renderBookingStepIndicator() : ""}
-      </header>
-      <div class="booking-meeting-strip">
-        <span class="booking-host-initials">CV</span>
-        <div>
-          <strong>Glade Onboarding First Review</strong>
-          <span>30 min with Coleman Vurbeff</span>
-        </div>
-      </div>
-      <div class="booking-modal-body">${bodyMarkup}</div>
-    </section>
-  `;
-}
-
-function renderMeetingCard() {
-  if (state.firmId !== "glade") {
-    return `
-      <button class="task-item meeting-item" id="meeting-button" type="button">
-        <span class="icon-frame" aria-hidden="true">${phosphorIcon(state.meeting.pending ? "calendar-x" : "calendar")}</span>
-        <div class="item-copy">
-          <p class="item-title">${escapeHtml(state.meeting.title)}</p>
-          <p class="item-subtitle">${escapeHtml(state.meeting.subtitle)}</p>
-        </div>
-      </button>
-    `;
-  }
-
-  const subtitle = state.bookingConfirmed
-    ? formatBookedMeetingSubtitle(state.bookingDate, state.bookingTime)
-    : "30 min · with Coleman Vurbeff";
-
-  return `
-    <article class="task-item meeting-item booking-meeting-item">
-      <span class="icon-frame" aria-hidden="true">${phosphorIcon("calendar")}</span>
-      <div class="item-copy">
-        <p class="item-title">Glade Onboarding First Review</p>
-        <p class="item-subtitle">${escapeHtml(subtitle)}</p>
-      </div>
-      ${state.bookingConfirmed
-        ? `<span class="booking-booked-pill">${phosphorIcon("check")} Booked</span>`
-        : `<button class="task-action" type="button" data-booking-open>Schedule</button>`}
-      <div class="booking-meeting-footer">
-        <span class="booking-host-initials">CV</span>
-        <span>with Coleman Vurbeff · 30 min</span>
-      </div>
-    </article>
-  `;
-}
-
 function renderHomeView() {
   return `
     <section class="hero">
@@ -1943,7 +1613,13 @@ function renderHomeView() {
             </div>
           </div>
           <div class="stack-list">
-            ${renderMeetingCard()}
+            <button class="task-item meeting-item" id="meeting-button" type="button">
+              <span class="icon-frame" aria-hidden="true">${phosphorIcon(state.meeting.pending ? "calendar-x" : "calendar")}</span>
+              <div class="item-copy">
+                <p class="item-title">${escapeHtml(state.meeting.title)}</p>
+                <p class="item-subtitle">${escapeHtml(state.meeting.subtitle)}</p>
+              </div>
+            </button>
           </div>
         </section>
 
@@ -1968,7 +1644,6 @@ function renderHomeView() {
       </aside>
     </div>
 
-    ${renderBookingModal()}
     ${renderFooter()}
   `;
 }
@@ -2730,73 +2405,6 @@ function openMeetingDetail() {
   );
 }
 
-function resetBookingFlowState({ keepConfirmed = false } = {}) {
-  state.showBookingModal = false;
-  state.bookingStep = 0;
-  const focusDate = keepConfirmed && state.bookingDate ? parseDateKey(state.bookingDate) : new Date();
-  state.bookingCalendarYear = focusDate.getFullYear();
-  state.bookingCalendarMonth = focusDate.getMonth();
-  if (!keepConfirmed) {
-    state.bookingDate = null;
-    state.bookingTime = null;
-    state.bookingConfirmed = false;
-  }
-}
-
-function openBookingModal() {
-  state.showBookingModal = true;
-  state.bookingStep = 0;
-  state.bookingConfirmed = false;
-  state.bookingDate = null;
-  state.bookingTime = null;
-  const now = new Date();
-  state.bookingCalendarYear = now.getFullYear();
-  state.bookingCalendarMonth = now.getMonth();
-  renderApp();
-}
-
-function closeBookingModal() {
-  resetBookingFlowState({ keepConfirmed: state.bookingConfirmed });
-  renderApp();
-}
-
-function moveBookingMonth(delta) {
-  const current = new Date(state.bookingCalendarYear, state.bookingCalendarMonth, 1);
-  current.setMonth(current.getMonth() + delta);
-  state.bookingCalendarYear = current.getFullYear();
-  state.bookingCalendarMonth = current.getMonth();
-  renderApp();
-}
-
-function selectBookingDate(dateKey) {
-  state.bookingDate = dateKey;
-  state.bookingTime = null;
-  state.bookingStep = 1;
-  renderApp();
-}
-
-function selectBookingTime(timeValue) {
-  state.bookingTime = timeValue;
-  state.bookingStep = 2;
-  renderApp();
-}
-
-function confirmBooking() {
-  if (!state.bookingDate || !state.bookingTime) {
-    return;
-  }
-  state.bookingConfirmed = true;
-  state.meeting.pending = false;
-  state.meeting.subtitle = formatBookedMeetingSubtitle(state.bookingDate, state.bookingTime);
-  renderApp();
-}
-
-function completeBooking() {
-  state.showBookingModal = false;
-  state.bookingStep = 0;
-  renderApp();
-}
-
 function openPaymentDetail() {
   openDetailModal(
     "Payment plan",
@@ -2943,49 +2551,8 @@ function bindViewEvents() {
     });
   });
 
-  elements.appView.querySelectorAll("[data-booking-open]").forEach((button) => {
-    button.addEventListener("click", openBookingModal);
-  });
-
-  elements.appView.querySelectorAll("[data-booking-close]").forEach((button) => {
-    button.addEventListener("click", closeBookingModal);
-  });
-
-  elements.appView.querySelectorAll("[data-booking-back]").forEach((button) => {
-    button.addEventListener("click", () => {
-      state.bookingStep = Math.max(0, state.bookingStep - 1);
-      renderApp();
-    });
-  });
-
-  elements.appView.querySelectorAll("[data-booking-month-nav]").forEach((button) => {
-    button.addEventListener("click", () => {
-      moveBookingMonth(Number(button.dataset.bookingMonthNav));
-    });
-  });
-
-  elements.appView.querySelectorAll("[data-booking-day]").forEach((button) => {
-    button.addEventListener("click", () => {
-      selectBookingDate(button.dataset.bookingDay);
-    });
-  });
-
-  elements.appView.querySelectorAll("[data-booking-time]").forEach((button) => {
-    button.addEventListener("click", () => {
-      selectBookingTime(button.dataset.bookingTime);
-    });
-  });
-
-  elements.appView.querySelectorAll("[data-booking-confirm]").forEach((button) => {
-    button.addEventListener("click", confirmBooking);
-  });
-
-  elements.appView.querySelectorAll("[data-booking-done]").forEach((button) => {
-    button.addEventListener("click", completeBooking);
-  });
-
   const meetingButton = elements.appView.querySelector("#meeting-button");
-  if (meetingButton && state.firmId !== "glade") {
+  if (meetingButton) {
     meetingButton.addEventListener("click", openMeetingDetail);
   }
 
@@ -3086,10 +2653,6 @@ function initEvents() {
 
   document.addEventListener("keydown", (event) => {
     if (event.key === "Escape") {
-      if (state.showBookingModal) {
-        closeBookingModal();
-        return;
-      }
       closePanels();
       closeProfileMenu();
     }
