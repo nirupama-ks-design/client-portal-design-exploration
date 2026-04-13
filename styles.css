@@ -1121,6 +1121,13 @@ h4 {
   height: 36px;
 }
 
+.chat-avatar-initials {
+  background: #cff4fb;
+  color: #1f6f79;
+  font-size: 13px;
+  font-weight: 500;
+}
+
 .chat-verified {
   position: absolute;
   bottom: -1px;

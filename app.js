@@ -854,7 +854,7 @@ const portalDataByFirm = {
   "van-horn": {
     userName: "Lilian",
     profileInitials: "CN",
-    profileAvatar: null,
+    profileAvatarInitials: null,
     homeGreeting: "Good Afternoon, Lilian",
     homeLeadText: "Your Chapter 7 filing is",
     homeHeroPercent: 29,
@@ -885,7 +885,7 @@ const portalDataByFirm = {
   glade: {
     userName: "Laila",
     profileInitials: "LG",
-    profileAvatar: "https://www.figma.com/api/mcp/asset/18744495-dd8c-4d60-b59a-73e000059ff3",
+    profileAvatarInitials: "LG",
     homeGreeting: "Good Afternoon, Laila",
     homeLeadText: "Your Glade New Client Onboarding is",
     homeHeroPercent: 40,
@@ -1027,7 +1027,7 @@ const portalDataByFirm = {
         role: "user",
         author: "Laila",
         timestamp: "4/9/26, 9:12 PM",
-        avatar: "https://www.figma.com/api/mcp/asset/18744495-dd8c-4d60-b59a-73e000059ff3",
+        avatarInitials: "LG",
         body: [
           "Sure, I'll upload those documents tonight."
         ]
@@ -1180,7 +1180,7 @@ function applyFirmContext(firmId) {
   state.firmId = firmId;
   state.userName = context.userName;
   state.profileInitials = context.profileInitials;
-  state.profileAvatar = context.profileAvatar || null;
+  state.profileAvatarInitials = context.profileAvatarInitials || null;
   state.homeGreeting = context.homeGreeting;
   state.homeLeadText = context.homeLeadText;
   state.homeHeroPercent = context.homeHeroPercent;
@@ -1318,7 +1318,8 @@ function appendChatMessage(message, role = "user") {
     role,
     author: role === "user" ? state.userName : state.firmId === "glade" ? "Glade" : "Support team",
     timestamp: "Now",
-    avatar: role === "user" ? (state.profileAvatar || state.team[0]?.avatar) : state.team[1]?.avatar,
+    avatar: role === "user" ? (state.profileAvatarInitials ? undefined : state.team[0]?.avatar) : state.team[1]?.avatar,
+    avatarInitials: role === "user" ? state.profileAvatarInitials : undefined,
     body: [message]
   });
 }
@@ -1348,8 +1349,8 @@ function renderChatEntries(entries = state.chat) {
     return `
       <article class="chat-entry ${entry.role === "user" ? "is-user" : "is-support"}">
         <div class="chat-entry-head">
-          <span class="chat-avatar" aria-hidden="true">
-            <img class="avatar-image" src="${entry.avatar}" alt="">
+          <span class="chat-avatar${entry.avatarInitials ? " chat-avatar-initials" : ""}" aria-hidden="true">
+            ${entry.avatarInitials ? `<span class="chat-initials">${escapeHtml(entry.avatarInitials)}</span>` : `<img class="avatar-image" src="${entry.avatar}" alt="">`}
             ${entry.verified ? '<span class="chat-verified"></span>' : ""}
           </span>
           <div class="chat-entry-meta">
