@@ -738,36 +738,20 @@ const state = {
   ],
   team: [
     {
-      id: "ricky",
-      name: "Ricky Smith",
+      id: "gary",
+      name: "Gary Van Horn",
       role: "Lead Intake Attorney",
       gradient: "linear-gradient(135deg, #f59e0b, #ef4444)",
-      avatar: "https://www.figma.com/api/mcp/asset/18744495-dd8c-4d60-b59a-73e000059ff3",
+      avatar: "./assets/gary-van-horn.jpg",
       summary: "Primary attorney contact for filing strategy, petition review, and final approval."
     },
     {
-      id: "ana",
-      name: "Ana Gayoso",
+      id: "riley",
+      name: "Riley Boerger",
       role: "Attorney",
       gradient: "linear-gradient(135deg, #2563eb, #7c3aed)",
-      avatar: "https://www.figma.com/api/mcp/asset/d58c8886-8ce8-4e4a-ad5a-c79ea16288a1",
+      avatar: "./assets/riley-boerger.jpeg",
       summary: "Supports legal review and coordinates additional disclosures."
-    },
-    {
-      id: "sienna",
-      name: "Sienna Park",
-      role: "Paralegal",
-      gradient: "linear-gradient(135deg, #ec4899, #8b5cf6)",
-      avatar: "https://www.figma.com/api/mcp/asset/4b05613e-8da0-4122-ade1-fb2893812f62",
-      summary: "Tracks questionnaire progress and case documents."
-    },
-    {
-      id: "abbi",
-      name: "Abbi Mariano",
-      role: "Documents team",
-      gradient: "linear-gradient(135deg, #10b981, #0ea5e9)",
-      avatar: "https://www.figma.com/api/mcp/asset/9b417dd2-cf55-4942-982a-66c7099c9730",
-      summary: "Validates uploads and keeps the filing packet complete."
     }
   ],
   resources: [
