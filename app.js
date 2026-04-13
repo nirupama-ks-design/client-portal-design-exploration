@@ -946,7 +946,7 @@ const portalDataByFirm = {
         name: "Coleman Vurbeff",
         role: "Head of Sales",
         gradient: "linear-gradient(135deg, #0ea5e9, #2563eb)",
-        avatar: "assets/coleman.jpg",
+        avatar: "./assets/coleman.png",
         summary: "Your primary onboarding lead for setup and rollout planning."
       }
     ],
@@ -1016,7 +1016,7 @@ const portalDataByFirm = {
         role: "support",
         author: "Coleman",
         timestamp: "4/8/26, 6:43 PM",
-        avatar: "https://www.figma.com/api/mcp/asset/18744495-dd8c-4d60-b59a-73e000059ff3",
+        avatar: "./assets/coleman.png",
         body: [
           "Hi Laila,",
           "Quick reminder about a couple of outstanding items for your Glade New Client Onboarding. If you'd like any help completing these, or have questions, please let us know and our team will assist."
@@ -1030,7 +1030,7 @@ const portalDataByFirm = {
         role: "support",
         author: "Coleman",
         timestamp: "4/9/26, 8:59 PM",
-        avatar: "https://www.figma.com/api/mcp/asset/18744495-dd8c-4d60-b59a-73e000059ff3",
+        avatar: "./assets/coleman.png",
         body: [
           "Hi Laila,",
           "Thanks for finishing the Questionnaire & Document Uploads! Please book a call with us to have our first review of your attorney-facing dashboard."
