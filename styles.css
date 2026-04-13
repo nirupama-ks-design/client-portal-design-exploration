@@ -2062,11 +2062,11 @@ h4 {
   left: 50%;
   top: 50%;
   transform: translate(-50%, -50%);
-  width: min(680px, calc(100vw - 28px));
-  max-height: calc(100vh - 24px);
+  width: min(620px, calc(100vw - 32px));
+  max-height: min(84vh, 760px);
   overflow: auto;
   z-index: 39;
-  border-radius: 16px;
+  border-radius: 24px;
   background: #ffffff;
   box-shadow: 0 24px 48px -12px rgba(0, 0, 0, 0.18);
 }
@@ -2439,7 +2439,8 @@ h4 {
 
 @media (max-width: 720px) {
   .glade-booking-modal {
-    width: calc(100vw - 16px);
+    width: calc(100vw - 32px);
+    border-radius: 20px;
   }
 
   .glade-time-grid {
