@@ -2054,7 +2054,6 @@ h4 {
   inset: 0;
   z-index: 38;
   background: rgba(0, 0, 0, 0.4);
-  backdrop-filter: blur(4px);
 }
 
 .glade-booking-modal {
@@ -2062,17 +2061,17 @@ h4 {
   left: 50%;
   top: 50%;
   transform: translate(-50%, -50%);
-  width: min(620px, calc(100vw - 32px));
-  max-height: min(84vh, 760px);
+  width: min(480px, calc(100vw - 48px));
+  max-height: min(84vh, 700px);
   overflow: auto;
   z-index: 39;
-  border-radius: 24px;
+  border-radius: 16px;
   background: #ffffff;
   box-shadow: 0 24px 48px -12px rgba(0, 0, 0, 0.18);
 }
 
 .glade-booking-modal-head {
-  border-bottom: 1px solid #e4e4e7;
+  border-bottom: 1px solid #f4f4f5;
 }
 
 .glade-booking-head-actions {
@@ -2100,7 +2099,7 @@ h4 {
 .glade-booking-steps {
   position: relative;
   height: 56px;
-  margin-bottom: 12px;
+  margin: 0 24px 12px;
 }
 
 .glade-booking-steps-line,
@@ -2243,37 +2242,35 @@ h4 {
 
 .glade-calendar-day {
   min-height: 36px;
-  border: 1px solid #e4e4e7;
+  border: none;
   border-radius: 8px;
-  background: #ffffff;
+  background: transparent;
   color: #18181b;
   cursor: pointer;
   transition: all 0.15s ease;
 }
 
-.glade-calendar-day:hover:not(:disabled) {
+.glade-calendar-day:hover:not(:disabled):not(.is-selected) {
   background: #f4f4f5;
 }
 
 .glade-calendar-day.is-disabled {
-  color: #a1a1aa;
-  background: #fafafa;
-  border-color: #f4f4f5;
+  color: #d4d4d8;
+  background: transparent;
   cursor: not-allowed;
+  pointer-events: none;
 }
 
 .glade-calendar-day.is-selected {
   background: #18181b;
-  border-color: #18181b;
   color: #fafafa;
 }
 
 .glade-calendar-day.is-today:not(.is-selected) {
-  border-color: #18181b;
+  box-shadow: inset 0 0 0 1.5px #18181b;
 }
 
 .glade-calendar-day.is-empty {
-  border: 0;
   background: transparent;
 }
 
@@ -2318,9 +2315,9 @@ h4 {
 }
 
 .glade-time-slot {
-  min-height: 36px;
+  height: 40px;
   border-radius: 8px;
-  border: 1px solid #d4d4d8;
+  border: 1px solid #e4e4e7;
   background: #ffffff;
   color: #18181b;
   cursor: pointer;
@@ -2404,11 +2401,28 @@ h4 {
 
 .glade-agenda-item {
   display: grid;
-  grid-template-columns: 24px minmax(0, 1fr);
+  grid-template-columns: 28px minmax(0, 1fr);
   gap: 10px;
   align-items: center;
   color: #3f3f46;
   font-size: 12px;
+}
+
+.glade-agenda-icon {
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  background: #f4f4f5;
+  border: 1px solid #e4e4e7;
+  color: #3f3f46;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.glade-agenda-icon svg {
+  width: 14px;
+  height: 14px;
 }
 
 .glade-confirm-button {
@@ -2440,7 +2454,7 @@ h4 {
 @media (max-width: 720px) {
   .glade-booking-modal {
     width: calc(100vw - 32px);
-    border-radius: 20px;
+    border-radius: 14px;
   }
 
   .glade-time-grid {

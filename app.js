@@ -1113,7 +1113,9 @@ function phosphorIcon(name) {
     "caret-left": `<svg ${common}><path d="m160 48-64 80 64 80"></path></svg>`,
     check: `<svg ${common}><path d="m52 136 48 48 104-104"></path></svg>`,
     clock: `<svg ${common}><circle cx="128" cy="128" r="96"></circle><path d="M128 72v56l40 24"></path></svg>`,
-    user: `<svg ${common}><circle cx="128" cy="96" r="40"></circle><path d="M56 208c16-32 44-48 72-48s56 16 72 48"></path></svg>`
+    user: `<svg ${common}><circle cx="128" cy="96" r="40"></circle><path d="M56 208c16-32 44-48 72-48s56 16 72 48"></path></svg>`,
+    monitor: `<svg ${common}><rect x="32" y="48" width="192" height="144" rx="16"></rect><path d="M160 232H96"></path><path d="M128 192v40"></path></svg>`,
+    "file-text": `<svg ${common}><path d="M148 36H80a20 20 0 0 0-20 20v144a20 20 0 0 0 20 20h96a20 20 0 0 0 20-20V84Z"></path><path d="M148 36v48h48"></path><path d="M104 136h48"></path><path d="M104 168h48"></path></svg>`
   };
   return icons[name] || icons["list-bullets"];
 }
@@ -1745,9 +1747,9 @@ function renderGladeConfirmStep() {
       <section class="glade-agenda-card">
         <strong>What we'll cover</strong>
         <div class="glade-agenda-list">
-          <div class="glade-agenda-item"><span class="glade-summary-icon">${phosphorIcon("check")}</span><span>Walk through your Glade workspace setup</span></div>
-          <div class="glade-agenda-item"><span class="glade-summary-icon">${phosphorIcon("check")}</span><span>Review uploaded documents together</span></div>
-          <div class="glade-agenda-item"><span class="glade-summary-icon">${phosphorIcon("check")}</span><span>Answer any onboarding questions</span></div>
+          <div class="glade-agenda-item"><span class="glade-agenda-icon">${phosphorIcon("monitor")}</span><span>Walk through your Glade workspace setup</span></div>
+          <div class="glade-agenda-item"><span class="glade-agenda-icon">${phosphorIcon("file-text")}</span><span>Review uploaded documents together</span></div>
+          <div class="glade-agenda-item"><span class="glade-agenda-icon">${phosphorIcon("question")}</span><span>Answer any onboarding questions</span></div>
         </div>
       </section>
       <button class="button button-primary glade-confirm-button" type="button" data-glade-booking-confirm>Confirm Booking</button>
