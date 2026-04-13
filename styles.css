@@ -2023,11 +2023,24 @@ h4 {
 }
 
 .glade-meeting-card {
-  grid-template-columns: auto minmax(0, 1fr) auto;
+  display: flex;
+  align-items: center;
+  gap: 12px;
   border: 1px solid #e4e4e7;
   border-radius: 12px;
   margin: 0 18px 18px;
   width: calc(100% - 36px);
+}
+
+.glade-meeting-card .item-copy {
+  flex: 1;
+  min-width: 0;
+}
+
+.glade-meeting-card .task-action,
+.glade-meeting-card .glade-booked-badge {
+  flex-shrink: 0;
+  margin-left: auto;
 }
 
 .glade-booked-badge {
