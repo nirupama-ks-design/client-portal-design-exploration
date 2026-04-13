@@ -502,11 +502,10 @@ const gladeWorkflowPages = {
         tasks: [
           {
             title: "Glade Onboarding First Review",
-            subtitle: "Meeting",
+            subtitle: "",
             status: "active",
             icon: "calendar",
-            actionLabel: "Schedule",
-            route: makeFirmHash("glade", "task", "glade-onboarding-first-review")
+            completeLink: "Schedule"
           }
         ]
       },
@@ -1843,7 +1842,7 @@ function renderGladeWorkflowSteps(page) {
                 <div class="icon-frame icon-frame-small" aria-hidden="true">${phosphorIcon(task.status === "completed" ? "signature" : (task.icon === "calendar" ? "calendar" : "list-bullets"))}</div>
                 <div class="item-copy">
                   <h3 class="item-title">${escapeHtml(task.title)}</h3>
-                  <p class="item-subtitle">${escapeHtml(task.subtitle)}</p>
+                  ${task.subtitle ? `<p class="item-subtitle">${escapeHtml(task.subtitle)}</p>` : ""}
                   ${task.assignee ? `<p class="glade-task-assignee">${escapeHtml(task.assignee)}</p>` : ""}
                   ${task.completeLink ? `<button class="task-link-button" type="button" data-task-action="complete">${escapeHtml(task.completeLink)}</button>` : ""}
                 </div>
