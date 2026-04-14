@@ -1165,15 +1165,15 @@ h4 {
   display: flex;
   align-items: center;
   flex-wrap: wrap;
-  gap: 8px;
-  font-size: 14px;
-  color: #9ca3af;
+  gap: 6px;
+  font-size: 11px;
+  color: #c4c4c4;
 }
 
 .chat-entry-author-row strong {
-  font-size: 14px;
-  font-weight: 700;
-  color: #010101;
+  font-size: 13px;
+  font-weight: 600;
+  color: #18181b;
 }
 
 .chat-entry-badge {
@@ -1194,9 +1194,9 @@ h4 {
 .chat-body {
   display: grid;
   gap: 4px;
-  font-size: 15px;
-  line-height: 1.6;
-  color: #010101;
+  font-size: 14px;
+  line-height: 1.45;
+  color: #303641;
 }
 
 .chat-body p {
@@ -1254,9 +1254,9 @@ h4 {
   display: flex;
   align-items: center;
   flex-wrap: wrap;
-  gap: 8px;
-  font-size: 13px;
-  color: #6b7280;
+  gap: 6px;
+  font-size: 11px;
+  color: #c4c4c4;
 }
 
 .chat-replies strong {
