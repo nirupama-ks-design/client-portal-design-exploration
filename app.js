@@ -437,7 +437,7 @@ const gladeWorkflowPages = {
     completedTasks: 2,
     totalTasks: 5,
     defaultTab: "workflow",
-    tabs: ["workflow", "documents"],
+    tabs: ["workflow", "documents", "invoices"],
     layout: "glade-onboarding",
     invoice: {
       title: "Customization Fee",
@@ -2173,10 +2173,33 @@ function renderGladeDocumentsTab(page) {
   return renderDocumentsView(page);
 }
 
+function renderGladeInvoicesTab() {
+  const invoices = [
+    { title: "Glade Customization Fee", amount: "$2,500.00", status: "Paid", tone: "green" },
+    { title: "Additional Customization Fee", amount: "$2,000.00", status: "Unpaid", tone: "orange" }
+  ];
+  return invoices.map((inv) => `
+    <section class="card glade-step-card">
+      <div class="glade-invoice-row">
+        <div class="item-copy">
+          <p class="item-title">${escapeHtml(inv.title)}</p>
+          <p class="item-subtitle">${escapeHtml(inv.amount)}</p>
+        </div>
+        <span class="glade-invoice-badge is-${inv.tone}">${escapeHtml(inv.status)}</span>
+      </div>
+    </section>
+  `).join("");
+}
+
 function renderGladeWorkflowView(page, activeTab) {
-  const mainContent = activeTab === "documents" ? renderGladeDocumentsTab(page) : `
-    ${renderGladeWorkflowSteps(page)}
-  `;
+  let mainContent;
+  if (activeTab === "documents") {
+    mainContent = renderGladeDocumentsTab(page);
+  } else if (activeTab === "invoices") {
+    mainContent = renderGladeInvoicesTab();
+  } else {
+    mainContent = renderGladeWorkflowSteps(page);
+  }
 
   return `
     <div class="progress-strip" aria-label="Case progress: ${page.progressPercent}%">

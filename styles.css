@@ -1916,6 +1916,41 @@ h4 {
   padding: 0;
 }
 
+.glade-invoice-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 20px;
+}
+
+.glade-invoice-row .item-copy {
+  flex: 1;
+  min-width: 0;
+}
+
+.glade-invoice-badge {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  min-height: 24px;
+  padding: 0 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.glade-invoice-badge.is-green {
+  background: #f0fdf4;
+  color: #16a34a;
+  border: 1px solid #bbf7d0;
+}
+
+.glade-invoice-badge.is-orange {
+  background: #fff7ed;
+  color: #ea580c;
+  border: 1px solid #fed7aa;
+}
+
 .glade-step-card.is-locked {
   opacity: 0.62;
   background: rgba(15, 23, 42, 0.04);
