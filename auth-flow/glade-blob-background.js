@@ -194,7 +194,23 @@
   }
 
   function initGladeBlobBackground(container, options) {
-    if (!container || !window.THREE) return function () {};
+    if (!container) return function () {};
+
+    var _innerCleanup = null;
+    var _cancelled = false;
+    var _pollTimer = null;
+    var _dimRaf = null;
+
+    function attemptInit() {
+      if (_cancelled) return;
+      if (container.clientWidth <= 0 || container.clientHeight <= 0) {
+        _dimRaf = requestAnimationFrame(attemptInit);
+        return;
+      }
+      _innerCleanup = runInit();
+    }
+
+    function runInit() {
 
     const THREE = window.THREE;
     const saved = loadSavedParams();
@@ -782,9 +798,21 @@
     }
 
     function applyPlacement() {
-      const isMobile = window.innerWidth < 900;
-      group.scale.setScalar(isMobile ? 1.65 : settings.groupScale);
-      group.position.set(isMobile ? 0.2 : settings.groupX, isMobile ? -1.6 : settings.groupY, 0);
+      var vw = window.innerWidth;
+      var mScale = 1.65, mX = 0.2, mY = -1.6;
+      var dScale = settings.groupScale, dX = settings.groupX, dY = settings.groupY;
+
+      if (vw <= 900) {
+        group.scale.setScalar(mScale);
+        group.position.set(mX, mY, 0);
+      } else if (vw >= 1100) {
+        group.scale.setScalar(dScale);
+        group.position.set(dX, dY, 0);
+      } else {
+        var t = (vw - 900) / 200;
+        group.scale.setScalar(mScale + (dScale - mScale) * t);
+        group.position.set(mX + (dX - mX) * t, mY + (dY - mY) * t, 0);
+      }
     }
 
     function applyVisualUniforms() {
@@ -1062,9 +1090,13 @@
 
     let time = 0;
     let raf = 0;
+    let _lastFrameMs = performance.now();
 
     function animate() {
-      time += p.timeStep;
+      var now = performance.now();
+      var dtSec = Math.min((now - _lastFrameMs) / 1000, 0.05);
+      _lastFrameMs = now;
+      time += dtSec * p.timeStep * 60;
       innerUni.uTime.value = time;
 
       group.rotation.y = time * p.rotSpeed;
@@ -1082,21 +1114,28 @@
     }
     animate();
 
+    var _resizeTimer = null;
     function onResize() {
-      const w = container.clientWidth;
-      const h = container.clientHeight;
+      var w = container.clientWidth;
+      var h = container.clientHeight;
+      if (w <= 0 || h <= 0) return;
       camera.aspect = w / h;
       camera.updateProjectionMatrix();
       renderer.setSize(w, h);
       renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
       applyPlacement();
     }
+    function debouncedResize() {
+      if (_resizeTimer) clearTimeout(_resizeTimer);
+      _resizeTimer = setTimeout(onResize, 150);
+    }
 
-    window.addEventListener("resize", onResize);
+    window.addEventListener("resize", debouncedResize);
 
     return function cleanup() {
       cancelAnimationFrame(raf);
-      window.removeEventListener("resize", onResize);
+      if (_resizeTimer) clearTimeout(_resizeTimer);
+      window.removeEventListener("resize", debouncedResize);
       if (container.contains(renderer.domElement)) container.removeChild(renderer.domElement);
       disposeGeometry();
       renderer.dispose();
@@ -1104,6 +1143,31 @@
       shellFrontMat.dispose();
       shellBackMat.dispose();
       dotMat.dispose();
+    };
+    } // end runInit
+
+    if (!window.THREE) {
+      var _pollStart = Date.now();
+      _pollTimer = setInterval(function () {
+        if (_cancelled) { clearInterval(_pollTimer); return; }
+        if (window.THREE) {
+          clearInterval(_pollTimer);
+          _pollTimer = null;
+          attemptInit();
+        } else if (Date.now() - _pollStart > 5000) {
+          clearInterval(_pollTimer);
+          _pollTimer = null;
+        }
+      }, 100);
+    } else {
+      attemptInit();
+    }
+
+    return function cleanup() {
+      _cancelled = true;
+      if (_pollTimer) clearInterval(_pollTimer);
+      if (_dimRaf) cancelAnimationFrame(_dimRaf);
+      if (_innerCleanup) _innerCleanup();
     };
   }
 
