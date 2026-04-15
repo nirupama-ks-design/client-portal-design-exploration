@@ -303,7 +303,7 @@ h1 {
   display: grid;
   grid-template-columns: 1fr auto 1fr;
   align-items: center;
-  color: #a2acbc;
+  color: #ffffff;
   font-size: 12px;
   line-height: 1.2;
   font-weight: 400;
@@ -321,7 +321,7 @@ h1 {
   align-items: center;
   justify-content: center;
   gap: 8px;
-  color: #aeb8c8;
+  color: #ffffff;
   font-weight: 500;
 }
 
