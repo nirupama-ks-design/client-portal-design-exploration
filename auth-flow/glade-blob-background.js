@@ -129,8 +129,8 @@
     glowTop3: "#cfadf7",
     glowBottom3: "#cfe4ff",
 
-    bgTop: "#dcecff",
-    bgBottom: "#d5e8ff",
+    bgTop: "#e8f1fe",
+    bgBottom: "#e2eefb",
     hazeOpacity: 0.3
   };
 
