@@ -3027,7 +3027,7 @@ function initEvents() {
   elements.logoutButton.addEventListener("click", () => {
     closeProfileMenu();
     sessionStorage.removeItem("gladePortalAuth");
-    window.location.href = "./auth-flow/signup-lawfirm.html";
+    window.location.href = "./auth-flow/signup-full.html";
   });
 
   elements.overlay.addEventListener("click", () => {
