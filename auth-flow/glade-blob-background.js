@@ -1,7 +1,18 @@
 (function () {
-  function createNoise() {
-    const p = [];
-    for (let i = 0; i < 256; i += 1) p[i] = Math.floor(Math.random() * 256);
+  function createNoise(seed) {
+    let state = (seed >>> 0) || 1;
+    const rand = () => {
+      state = (1664525 * state + 1013904223) >>> 0;
+      return state / 4294967296;
+    };
+
+    const p = Array.from({ length: 256 }, (_v, i) => i);
+    for (let i = p.length - 1; i > 0; i -= 1) {
+      const j = Math.floor(rand() * (i + 1));
+      const tmp = p[i];
+      p[i] = p[j];
+      p[j] = tmp;
+    }
     const perm = p.concat(p);
     const g3 = [
       [1, 1, 0], [-1, 1, 0], [1, -1, 0], [-1, -1, 0],
@@ -49,6 +60,7 @@
   const UI_KEY = "gladeBlobTuning:ui";
 
   const DEFAULTS = {
+    noiseSeed: 133742,
     innerRadius: 0.92,
     shellRadius: 1.19,
     shellDetail: 5,
@@ -185,7 +197,6 @@
     if (!container || !window.THREE) return function () {};
 
     const THREE = window.THREE;
-    const noise = createNoise();
     const saved = loadSavedParams();
 
     const settings = Object.assign({
@@ -201,6 +212,7 @@
 
     const persisted = settings.useSaved ? saved : {};
     const p = Object.assign({}, DEFAULTS, persisted, options && options.params ? options.params : {});
+    const noise = createNoise(p.noiseSeed);
     if (!Object.prototype.hasOwnProperty.call(saved, "noiseScale")) {
       p.noiseScale = p.oct1Freq;
     }
