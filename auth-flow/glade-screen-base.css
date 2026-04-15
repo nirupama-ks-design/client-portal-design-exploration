@@ -154,16 +154,18 @@ body {
 }
 
 .screen {
+  --modal-width: min(430px, calc(100vw - 34px));
   position: relative;
   z-index: 2;
   min-height: 100vh;
   padding: clamp(24px, 4vw, 70px);
   display: grid;
-  align-content: start;
+  justify-items: center;
+  align-content: center;
 }
 
 .signup-card {
-  width: min(430px, calc(100vw - 34px));
+  width: var(--modal-width);
   border-radius: 16px;
   background: var(--card);
   border: 1px solid var(--card-border);
@@ -290,15 +292,16 @@ h1 {
 
 .page-footer {
   position: fixed;
-  left: 0;
-  right: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: var(--modal-width);
   bottom: clamp(16px, 2.5vw, 30px);
   z-index: 2;
-  padding: 0 clamp(18px, 4vw, 48px);
+  padding: 0;
   display: grid;
   grid-template-columns: 1fr auto 1fr;
   align-items: center;
-  color: #17181b;
+  color: #a2acbc;
   font-size: 12px;
   line-height: 1.2;
   font-weight: 400;
@@ -312,11 +315,18 @@ h1 {
 
 .footer-mid {
   justify-self: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  color: #aeb8c8;
+  font-weight: 500;
+}
+
+.footer-mid > span {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
-  color: rgba(255, 255, 255, 0.76);
-  font-weight: 500;
+  line-height: 1;
 }
 
 .footer-right {
@@ -339,12 +349,8 @@ h1 {
   }
 
   .screen {
-    justify-items: center;
+    --modal-width: min(620px, calc(100vw - 26px));
     align-content: center;
-  }
-
-  .signup-card {
-    width: min(620px, calc(100vw - 26px));
   }
 
   .signup-main {
@@ -375,6 +381,7 @@ h1 {
     gap: 10px;
     text-align: center;
     bottom: 10px;
+    width: calc(100vw - 26px);
   }
 
   .footer-left,
