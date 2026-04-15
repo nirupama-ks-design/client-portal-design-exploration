@@ -20,7 +20,7 @@
           <h1>Welcome back</h1>
           <p class="subtitle">Sign in to continue to your client portal.</p>
 
-          <form action="../index.html" method="get">
+          <form action="../dashboard.html" method="get">
             <div class="field">
               <label for="signin-email">Email</label>
               <div class="input-wrap">
@@ -58,6 +58,10 @@
     <script src="https://unpkg.com/three@0.160.0/build/three.min.js"></script>
     <script src="./glade-blob-background.js"></script>
     <script>
+      const signinForm = document.querySelector("form");
+      signinForm?.addEventListener("submit", () => {
+        sessionStorage.setItem("gladePortalAuth", "true");
+      });
       window.initGladeBlobBackground(document.getElementById("blob-root"));
     </script>
   </body>

@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Client Portal</title>
+  <script>
+    if (sessionStorage.getItem("gladePortalAuth") !== "true") {
+      window.location.replace("./auth-flow/signup-lawfirm.html");
+    }
+  </script>
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <div class="page-shell">
+    <header class="topbar" data-firm="van-horn">
+      <div class="firm-switcher" aria-label="Select portal firm">
+        <span class="brand-mark" id="brand-mark" aria-hidden="true">
+          <span class="brand-mark-v">V</span>
+          <span class="brand-mark-h">H</span>
+          <img class="brand-mark-g" src="./assets/glade-logo.png" alt="Glade.ai">
+        </span>
+        <label class="sr-only" for="firm-switcher">Firm</label>
+        <select class="firm-switcher-select" id="firm-switcher" aria-label="Select firm">
+          <option value="van-horn">Van Horn Law Group P.A.</option>
+          <option value="glade">Glade.ai</option>
+        </select>
+      </div>
+      <div class="topbar-actions">
+        <button class="button button-primary button-chat" id="support-chat-button" type="button">
+          <span class="button-icon" aria-hidden="true" data-icon="chats-circle"></span>
+          <span>Support Chat</span>
+        </button>
+        <div class="help-button-wrap">
+          <button class="icon-button" id="help-button" type="button" aria-label="Open help menu" aria-expanded="false" aria-controls="help-menu">
+            <span aria-hidden="true" data-icon="question"></span>
+          </button>
+          <div class="profile-menu hidden" id="help-menu" role="menu" aria-hidden="true">
+            <button class="profile-menu-item" type="button" role="menuitem">Article 1</button>
+            <button class="profile-menu-item" type="button" role="menuitem">Article 2</button>
+            <button class="profile-menu-item" type="button" role="menuitem">Article 3</button>
+            <button class="profile-menu-item" type="button" role="menuitem">Article 4</button>
+            <button class="profile-menu-item profile-menu-item-gradient" type="button" role="menuitem">Glade help center</button>
+          </div>
+        </div>
+        <button class="avatar-button" id="profile-button" type="button" aria-label="Open profile menu" aria-expanded="false" aria-controls="profile-menu">CN</button>
+        <div class="profile-menu hidden" id="profile-menu" role="menu" aria-hidden="true">
+          <button class="profile-menu-item" id="account-settings-button" type="button" role="menuitem">Account settings</button>
+          <button class="profile-menu-item profile-menu-item-danger" id="logout-button" type="button" role="menuitem">Log out</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="page-content" id="app-view"></main>
+  </div>
+
+  <div class="overlay hidden" id="overlay"></div>
+
+  <aside class="sheet hidden" id="support-sheet" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="support-sheet-title">
+    <div class="sheet-head chat-panel-head">
+      <h2 class="chat-panel-title" id="support-sheet-title">Support Chat</h2>
+      <button class="chat-collapse-button" id="support-close-button" type="button" aria-label="Close support chat">
+        <span aria-hidden="true" data-icon="caret-up"></span>
+      </button>
+    </div>
+    <div class="chat-thread" id="chat-thread"></div>
+    <form class="chat-composer chat-composer-desktop" id="chat-form">
+      <label class="sr-only" for="chat-input">Message</label>
+      <div class="chat-input-shell">
+        <span class="chat-plus" aria-hidden="true" data-icon="plus"></span>
+        <input id="chat-input" name="chat" type="text" placeholder="Enter your message">
+      </div>
+      <button class="chat-send" type="submit" aria-label="Send support message">
+        <span aria-hidden="true" data-icon="paper-plane-right"></span>
+      </button>
+    </form>
+  </aside>
+
+  <section class="modal hidden" id="detail-modal" aria-hidden="true" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+    <div class="modal-head">
+      <div>
+        <p class="sheet-label" id="modal-label">Portal Detail</p>
+        <h2 id="modal-title">Detail title</h2>
+      </div>
+      <button class="icon-button" id="modal-close-button" type="button" aria-label="Close detail panel">
+        <span aria-hidden="true" data-icon="x"></span>
+      </button>
+    </div>
+    <div class="modal-body" id="modal-body"></div>
+    <div class="modal-actions" id="modal-actions"></div>
+  </section>
+
+  <section class="mobile-chat-dock" id="mobile-chat-dock" aria-label="Support Chat" aria-expanded="false">
+    <button class="mobile-chat-header" id="mobile-chat-toggle" type="button" aria-controls="mobile-chat-thread" aria-expanded="false">
+      <span id="mobile-chat-title">Support Chat</span>
+      <span class="mobile-chat-chevron" aria-hidden="true" data-icon="caret-up"></span>
+    </button>
+    <div class="mobile-chat-thread-wrap" id="mobile-chat-thread-wrap">
+      <div class="chat-thread mobile-chat-thread" id="mobile-chat-thread"></div>
+    </div>
+    <form class="mobile-chat-composer" id="mobile-chat-form">
+      <label class="sr-only" for="mobile-chat-input">Message</label>
+      <div class="mobile-chat-input-shell">
+        <span class="mobile-chat-plus" aria-hidden="true" data-icon="plus"></span>
+        <input id="mobile-chat-input" name="mobile-chat" type="text" placeholder="Enter your message">
+      </div>
+      <button class="mobile-chat-send" type="submit" aria-label="Send support message">
+        <span aria-hidden="true" data-icon="paper-plane-right"></span>
+      </button>
+    </form>
+  </section>
+
+  <script src="./app.js"></script>
+</body>
+</html>
