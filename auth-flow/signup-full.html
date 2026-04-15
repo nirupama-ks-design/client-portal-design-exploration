@@ -69,7 +69,7 @@
       signupForm?.addEventListener("submit", () => {
         sessionStorage.setItem("gladePortalAuth", "true");
       });
-      window.initGladeBlobBackground(document.getElementById("blob-root"));
+      window.initGladeBlobBackground(document.getElementById("blob-root"), { showControls: false, useSaved: false });
     </script>
   </body>
 </html>

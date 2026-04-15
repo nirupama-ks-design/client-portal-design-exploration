@@ -4,12 +4,12 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Glade Signup</title>
-  <meta http-equiv="refresh" content="0; url=./auth-flow/signup-full.html">
   <script>
-    window.location.replace('./auth-flow/signup-full.html');
+    const target = `./auth-flow/signup-full.html${window.location.search || ""}${window.location.hash || ""}`;
+    window.location.replace(target);
   </script>
 </head>
 <body>
-  <p>Redirecting to <a href="./auth-flow/signup-full.html">signup</a>...</p>
+  <p>Redirecting to <a href="./auth-flow/signup-full.html?tune=1">signup</a>...</p>
 </body>
 </html>

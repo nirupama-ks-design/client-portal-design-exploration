@@ -45,40 +45,194 @@
     };
   }
 
+  const STORAGE_KEY = "gladeBlobTuning:v2";
+  const UI_KEY = "gladeBlobTuning:ui";
+
   const DEFAULTS = {
-    oct1Freq: 1.1, oct1Amp: 0.16,
-    oct2Freq: 2.5, oct2Amp: 0.04,
-    oct3Freq: 4.5, oct3Amp: 0.005,
-    swirlSpeed: 0.22, swirlRadius: 0.8, driftSpeed: 0.16,
-    breathAmp: 0.09, breathSpeed: 0.45,
-    rotSpeed: 0.4, tiltAmp: 0.38, timeStep: 0.005,
-    baseOpacity: 0.14, edgeMult: 0.45, fresnelPow: 0.8,
-    specIntensity: 0.18, specWidth: 1.5,
-    frostAmount: 0.05, foldStrength: 0.09,
-    backBaseOpacity: 0.06, backEdgeMult: 0.25,
-    glowOpacity: 0.09, glow2Opacity: 0.05, glow3Opacity: 0.025,
-    dotOpacity: 0.8, dotSize: 5
+    innerRadius: 0.92,
+    shellRadius: 1.19,
+    shellDetail: 5,
+    dotSize: 5,
+    dotOpacity: 0.65,
+    dotDensity: 0.71,
+
+    oct1Freq: 1.1,
+    oct1Amp: 0.16,
+    oct2Freq: 2.5,
+    oct2Amp: 0.04,
+    oct3Freq: 4.5,
+    oct3Amp: 0.005,
+
+    noiseScale: 1.1,
+    noiseStrength: 0.18,
+    noiseOctaves: 5,
+    noiseLacunarity: 2.35,
+    noisePersistence: 0.25,
+    noiseWarp: 0.64,
+    noiseWarpFreq: 1.35,
+    noiseFlow: 0.22,
+    noiseStretchY: 0.93,
+    noiseRidgeMix: 0.29,
+    surfaceCurviness: 0.5,
+    shellChunkiness: 0.62,
+    shellBanding: 0.39,
+    shellLopsidedness: 0.28,
+    shellBottomWeight: 0.16,
+    shellRidgeStrength: 0.21,
+    shellSteps: 12,
+
+    swirlSpeed: 0.19,
+    swirlRadius: 0.65,
+    driftSpeed: 0.16,
+    breathAmp: 0.06,
+    breathSpeed: 0.68,
+
+    rotSpeed: 0.28,
+    tiltAmp: 0.38,
+    timeStep: 0.005,
+
+    baseOpacity: 0.09,
+    edgeMult: 0.25,
+    fresnelPow: 2.56,
+    specIntensity: 0.18,
+    specWidth: 1.65,
+    frostAmount: 0.275,
+    foldStrength: 0.105,
+    backBaseOpacity: 0.18,
+    backEdgeMult: 0.67,
+
+    glowOpacity: 0.08,
+    glow2Opacity: 0.03,
+    glow3Opacity: 0.03,
+
+    innerSaturation: 1.11,
+    innerColor1: "#fa8470",
+    innerColor2: "#e06baa",
+    innerColor3: "#ffc4ab",
+    innerColor4: "#f4a4c0",
+    innerColor5: "#b18cfe",
+    innerColor6: "#4a80ea",
+
+    shellTopColor: "#ffffff",
+    shellBottomColor: "#ffffff",
+    shellSideColor: "#f0e8f0",
+    shellNoiseDarkColor: "#aaaaaa",
+    shellNoiseTintColor: "#c0c0c0",
+
+    backTopColor: "#f7f0f7",
+    backBottomColor: "#eff2f7",
+
+    glowTop1: "#e0d1f5",
+    glowBottom1: "#c7e0fa",
+    glowTop2: "#d8ccf2",
+    glowBottom2: "#cce0f5",
+    glowTop3: "#d6c7f0",
+    glowBottom3: "#d1e0f2",
+
+    bgTop: "#e8f1fe",
+    bgBottom: "#e2eefb",
+    hazeOpacity: 0.21
   };
 
-  const INNER_R = 0.92;
-  const SHELL_R = 1.22;
-  const MIN_D = (INNER_R + 0.03) / SHELL_R;
+  function clamp(n, min, max) {
+    return Math.min(max, Math.max(min, n));
+  }
+
+  function toHex(color) {
+    const c = color.getHexString();
+    return `#${c}`;
+  }
+
+  function toVec3(hex, THREE) {
+    return new THREE.Color(hex);
+  }
+
+  function loadSavedParams() {
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (!raw) return {};
+      const parsed = JSON.parse(raw);
+      if (!parsed || typeof parsed !== "object") return {};
+      return parsed;
+    } catch (_e) {
+      return {};
+    }
+  }
+
+  function saveParams(params) {
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(params));
+    } catch (_e) {}
+  }
+
+  function saveUiState(state) {
+    try {
+      localStorage.setItem(UI_KEY, JSON.stringify(state));
+    } catch (_e) {}
+  }
+
+  function loadUiState() {
+    try {
+      const raw = localStorage.getItem(UI_KEY);
+      if (!raw) return {};
+      return JSON.parse(raw) || {};
+    } catch (_e) {
+      return {};
+    }
+  }
 
   function initGladeBlobBackground(container, options) {
     if (!container || !window.THREE) return function () {};
 
     const THREE = window.THREE;
+    const noise = createNoise();
+    const saved = loadSavedParams();
+
     const settings = Object.assign({
       groupScale: 2.42,
       groupX: 1.52,
       groupY: -1.65,
       cameraX: 0.3,
       cameraY: 0.1,
-      cameraZ: 5.2
+      cameraZ: 5.2,
+      showControls: false,
+      useSaved: false
     }, options || {});
 
-    const p = Object.assign({}, DEFAULTS);
-    const noise = createNoise();
+    const persisted = settings.useSaved ? saved : {};
+    const p = Object.assign({}, DEFAULTS, persisted, options && options.params ? options.params : {});
+    if (!Object.prototype.hasOwnProperty.call(saved, "noiseScale")) {
+      p.noiseScale = p.oct1Freq;
+    }
+    if (!Object.prototype.hasOwnProperty.call(saved, "noiseStrength")) {
+      p.noiseStrength = p.oct1Amp;
+    }
+    if (!Object.prototype.hasOwnProperty.call(saved, "noiseLacunarity")) {
+      p.noiseLacunarity = p.oct1Freq > 0 ? p.oct2Freq / p.oct1Freq : DEFAULTS.noiseLacunarity;
+    }
+    if (!Object.prototype.hasOwnProperty.call(saved, "noisePersistence")) {
+      p.noisePersistence = p.oct1Amp > 0 ? p.oct2Amp / p.oct1Amp : DEFAULTS.noisePersistence;
+    }
+
+    // Keep outer membrane and texture readable in production even if values drift.
+    p.dotOpacity = clamp(p.dotOpacity, 0.5, 1);
+    p.dotDensity = clamp(p.dotDensity, 0.55, 1);
+    p.baseOpacity = clamp(p.baseOpacity, 0.1, 0.5);
+    p.edgeMult = clamp(p.edgeMult, 0.28, 1.2);
+    p.backBaseOpacity = clamp(p.backBaseOpacity, 0.05, 0.4);
+    p.backEdgeMult = clamp(p.backEdgeMult, 0.12, 1);
+    p.glowOpacity = clamp(p.glowOpacity, 0.05, 0.25);
+    p.glow2Opacity = clamp(p.glow2Opacity, 0.03, 0.2);
+    p.glow3Opacity = clamp(p.glow3Opacity, 0.02, 0.18);
+    p.shellRadius = Math.max(p.shellRadius, p.innerRadius + 0.19);
+    p.surfaceCurviness = clamp(p.surfaceCurviness, 0, 1);
+    p.shellChunkiness = clamp(p.shellChunkiness, 0, 1);
+    p.shellBanding = clamp(p.shellBanding, 0, 1);
+    p.shellLopsidedness = clamp(p.shellLopsidedness, 0, 1);
+    p.shellBottomWeight = clamp(p.shellBottomWeight, 0, 1);
+    p.shellRidgeStrength = clamp(p.shellRidgeStrength, 0, 1);
+    p.shellSteps = clamp(Math.round(p.shellSteps), 0, 12);
+
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(40, container.clientWidth / container.clientHeight, 0.1, 100);
     camera.position.set(settings.cameraX, settings.cameraY, settings.cameraZ);
@@ -94,13 +248,22 @@
     group.scale.setScalar(settings.groupScale);
     scene.add(group);
 
-    const innerUni = { uTime: { value: 0 } };
+    const innerUni = {
+      uTime: { value: 0 },
+      uSaturation: { value: p.innerSaturation },
+      uColor1: { value: toVec3(p.innerColor1, THREE) },
+      uColor2: { value: toVec3(p.innerColor2, THREE) },
+      uColor3: { value: toVec3(p.innerColor3, THREE) },
+      uColor4: { value: toVec3(p.innerColor4, THREE) },
+      uColor5: { value: toVec3(p.innerColor5, THREE) },
+      uColor6: { value: toVec3(p.innerColor6, THREE) }
+    };
+
     const innerMat = new THREE.ShaderMaterial({
       uniforms: innerUni,
       transparent: true,
       depthWrite: false,
       vertexShader: `
-        uniform float uTime;
         varying vec3 vON;
         varying vec3 vN;
         varying vec3 vV;
@@ -114,6 +277,13 @@
       `,
       fragmentShader: `
         uniform float uTime;
+        uniform float uSaturation;
+        uniform vec3 uColor1;
+        uniform vec3 uColor2;
+        uniform vec3 uColor3;
+        uniform vec3 uColor4;
+        uniform vec3 uColor5;
+        uniform vec3 uColor6;
         varying vec3 vON;
         varying vec3 vN;
         varying vec3 vV;
@@ -128,13 +298,6 @@
           vec3 d4 = normalize(vec3(cos(t*0.06+2.0), sin(t*0.11+0.8), cos(t*0.09+4.0)));
           vec3 d5 = normalize(vec3(sin(t*0.11+5.0), cos(t*0.08+3.0), sin(t*0.06+1.0)));
 
-          vec3 cP = vec3(0.98, 0.52, 0.62);
-          vec3 cK = vec3(0.88, 0.42, 0.82);
-          vec3 cV = vec3(0.58, 0.38, 0.95);
-          vec3 cB = vec3(0.25, 0.48, 0.94);
-          vec3 cC = vec3(0.30, 0.78, 0.92);
-          vec3 cW = vec3(0.96, 0.58, 0.72);
-
           float pw = 2.5;
           float w0 = pow(max(dot(n,d0)*0.5+0.5, 0.0), pw);
           float w1 = pow(max(dot(n,d1)*0.5+0.5, 0.0), pw);
@@ -143,10 +306,10 @@
           float w4 = pow(max(dot(n,d4)*0.5+0.5, 0.0), pw);
           float w5 = pow(max(dot(n,d5)*0.5+0.5, 0.0), pw);
           float wT = w0+w1+w2+w3+w4+w5 + 0.001;
-          vec3 col = (cP*w0 + cK*w1 + cV*w2 + cB*w3 + cC*w4 + cW*w5) / wT;
+          vec3 col = (uColor1*w0 + uColor2*w1 + uColor3*w2 + uColor4*w3 + uColor5*w4 + uColor6*w5) / wT;
 
           float g = dot(col, vec3(0.299, 0.587, 0.114));
-          col = mix(vec3(g), col, 1.3);
+          col = mix(vec3(g), col, uSaturation);
 
           float facing = abs(dot(vN, vV));
           float edgeFade = smoothstep(0.0, 0.5, facing);
@@ -154,31 +317,21 @@
         }
       `
     });
-    group.add(new THREE.Mesh(new THREE.SphereGeometry(INNER_R, 64, 64), innerMat));
-
-    const shellGeo = new THREE.IcosahedronGeometry(SHELL_R, 5);
-    const vCount = shellGeo.attributes.position.count;
-    shellGeo.setAttribute("disp", new THREE.BufferAttribute(new Float32Array(vCount), 1));
-    shellGeo.setAttribute("frost", new THREE.BufferAttribute(new Float32Array(vCount), 1));
-    const shellOrig = shellGeo.attributes.position.array.slice();
-
-    const shellBackGeo = new THREE.IcosahedronGeometry(SHELL_R, 5);
-    const bCount = shellBackGeo.attributes.position.count;
-    shellBackGeo.setAttribute("disp", new THREE.BufferAttribute(new Float32Array(bCount), 1));
-    shellBackGeo.setAttribute("frost", new THREE.BufferAttribute(new Float32Array(bCount), 1));
-    const shellBackOrig = shellBackGeo.attributes.position.array.slice();
 
     const shellVS = `
       attribute float disp;
       attribute float frost;
+      attribute float randv;
       varying vec3 vN;
       varying vec3 vV;
       varying vec3 vWN;
       varying float vDisp;
       varying float vFrost;
+      varying float vRand;
       void main() {
         vDisp = disp;
         vFrost = frost;
+        vRand = randv;
         vN = normalize(normalMatrix * normal);
         vWN = normalize((modelMatrix * vec4(normal, 0.0)).xyz);
         vec4 mv = modelViewMatrix * vec4(position, 1.0);
@@ -194,7 +347,12 @@
       uSpecIntensity: { value: p.specIntensity },
       uSpecWidth: { value: p.specWidth },
       uFrostAmount: { value: p.frostAmount },
-      uFoldStrength: { value: p.foldStrength }
+      uFoldStrength: { value: p.foldStrength },
+      uShellTopColor: { value: toVec3(p.shellTopColor, THREE) },
+      uShellBottomColor: { value: toVec3(p.shellBottomColor, THREE) },
+      uShellSideColor: { value: toVec3(p.shellSideColor, THREE) },
+      uShellNoiseDarkColor: { value: toVec3(p.shellNoiseDarkColor, THREE) },
+      uShellNoiseTintColor: { value: toVec3(p.shellNoiseTintColor, THREE) }
     };
 
     const shellFrontMat = new THREE.ShaderMaterial({
@@ -208,6 +366,11 @@
         uniform float uSpecWidth;
         uniform float uFrostAmount;
         uniform float uFoldStrength;
+        uniform vec3 uShellTopColor;
+        uniform vec3 uShellBottomColor;
+        uniform vec3 uShellSideColor;
+        uniform vec3 uShellNoiseDarkColor;
+        uniform vec3 uShellNoiseTintColor;
         varying vec3 vN;
         varying vec3 vV;
         varying vec3 vWN;
@@ -218,9 +381,9 @@
           float edge = pow(f, uFresnelPow);
 
           float angle = dot(vWN, vec3(0.0, 1.0, 0.0)) * 0.5 + 0.5;
-          vec3 col = mix(vec3(0.93, 0.95, 1.0), vec3(1.0, 0.93, 0.96), angle);
-          col = mix(col, vec3(0.98, 0.90, 0.94), max(dot(vWN, vec3(1.0, 0.0, 0.0)), 0.0) * 0.15);
-          col += mix(vec3(0.02), vec3(0.04, 0.01, 0.03), gl_FragCoord.y / 900.0);
+          vec3 col = mix(uShellTopColor, uShellBottomColor, angle);
+          col = mix(col, uShellSideColor, max(dot(vWN, vec3(1.0, 0.0, 0.0)), 0.0) * 0.15);
+          col += mix(uShellNoiseDarkColor, uShellNoiseTintColor, gl_FragCoord.y / 900.0);
 
           vec3 l1 = normalize(vec3(-0.4, 0.8, 0.6));
           vec3 l2 = normalize(vec3(0.5, 0.3, 0.8));
@@ -234,6 +397,7 @@
           float fa = (vFrost * 0.5 + 0.5) * uFrostAmount;
           float fold = pow(max(dot(vWN, l1), 0.0), 2.5) * uFoldStrength;
           float alpha = uBaseOpacity + edge * uEdgeMult + cb + fa + fold;
+          alpha = max(alpha, uBaseOpacity * 1.35 + 0.02);
           gl_FragColor = vec4(col, clamp(alpha, 0.0, 0.85));
         }
       `,
@@ -241,11 +405,12 @@
       side: THREE.FrontSide,
       depthWrite: false
     });
-    group.add(new THREE.Mesh(shellGeo, shellFrontMat));
 
     const backUni = {
       uBaseOpacity: { value: p.backBaseOpacity },
-      uEdgeMult: { value: p.backEdgeMult }
+      uEdgeMult: { value: p.backEdgeMult },
+      uBackTopColor: { value: toVec3(p.backTopColor, THREE) },
+      uBackBottomColor: { value: toVec3(p.backBottomColor, THREE) }
     };
 
     const shellBackMat = new THREE.ShaderMaterial({
@@ -254,6 +419,8 @@
       fragmentShader: `
         uniform float uBaseOpacity;
         uniform float uEdgeMult;
+        uniform vec3 uBackTopColor;
+        uniform vec3 uBackBottomColor;
         varying vec3 vN;
         varying vec3 vV;
         varying vec3 vWN;
@@ -263,17 +430,23 @@
           float edge = pow(f, 1.8);
           float fa = (vFrost * 0.5 + 0.5) * 0.015;
           float yf = dot(vWN, vec3(0.0, 1.0, 0.0)) * 0.5 + 0.5;
-          vec3 col = mix(vec3(0.94, 0.95, 0.97), vec3(0.97, 0.94, 0.97), yf);
-          gl_FragColor = vec4(col, clamp(uBaseOpacity + edge * uEdgeMult + fa, 0.0, 0.6));
+          vec3 col = mix(uBackBottomColor, uBackTopColor, yf);
+          float alpha = uBaseOpacity + edge * uEdgeMult + fa;
+          alpha = max(alpha, uBaseOpacity * 1.15 + 0.01);
+          gl_FragColor = vec4(col, clamp(alpha, 0.0, 0.6));
         }
       `,
       transparent: true,
       side: THREE.BackSide,
       depthWrite: false
     });
-    group.add(new THREE.Mesh(shellBackGeo, shellBackMat));
 
-    const dotUni = { uDotOpacity: { value: p.dotOpacity }, uDotSize: { value: p.dotSize } };
+    const dotUni = {
+      uDotOpacity: { value: p.dotOpacity },
+      uDotSize: { value: p.dotSize },
+      uDotDensity: { value: p.dotDensity }
+    };
+
     const dotMat = new THREE.ShaderMaterial({
       uniforms: dotUni,
       transparent: true,
@@ -282,11 +455,14 @@
         uniform float uDotSize;
         attribute float disp;
         attribute float frost;
+        attribute float randv;
         varying vec3 vDN;
         varying vec3 vDV;
         varying float vM;
+        varying float vRand;
         void main() {
           vM = (frost * 0.5 + 0.5) * 0.5 + max(disp, 0.0) * 1.5;
+          vRand = randv;
           vDN = normalize(normalMatrix * normalize(position));
           vec4 mv = modelViewMatrix * vec4(position, 1.0);
           vDV = normalize(-mv.xyz);
@@ -296,10 +472,13 @@
       `,
       fragmentShader: `
         uniform float uDotOpacity;
+        uniform float uDotDensity;
         varying vec3 vDN;
         varying vec3 vDV;
         varying float vM;
+        varying float vRand;
         void main() {
+          if (vRand > uDotDensity) discard;
           float d = length(gl_PointCoord - vec2(0.5));
           if (d > 0.5) discard;
           float soft = 1.0 - smoothstep(0.2, 0.5, d);
@@ -310,7 +489,6 @@
         }
       `
     });
-    group.add(new THREE.Points(shellGeo, dotMat));
 
     const glowVS = `
       varying vec3 vWN;
@@ -320,46 +498,169 @@
       }
     `;
 
-    function makeGlowFS(topC, botC) {
-      return `
-        uniform float uOp;
-        varying vec3 vWN;
-        void main() {
-          vec3 n = normalize(vWN);
-          float yf = n.y * 0.5 + 0.5;
-          float xf = n.x * 0.5 + 0.5;
-          vec3 top = vec3(${topC});
-          vec3 bot = vec3(${botC});
-          vec3 col = mix(bot, top, yf);
-          col = mix(col, vec3(0.98, 0.90, 0.94), xf * 0.2);
-          gl_FragColor = vec4(col, uOp);
-        }
-      `;
-    }
+    const glowFS = `
+      uniform float uOp;
+      uniform vec3 uTop;
+      uniform vec3 uBottom;
+      varying vec3 vWN;
+      void main() {
+        vec3 n = normalize(vWN);
+        float yf = n.y * 0.5 + 0.5;
+        float xf = n.x * 0.5 + 0.5;
+        vec3 col = mix(uBottom, uTop, yf);
+        col = mix(col, vec3(0.98, 0.90, 0.94), xf * 0.2);
+        gl_FragColor = vec4(col, uOp);
+      }
+    `;
 
     const glowConfigs = [
-      { dr: 0.18, sub: 5, op: p.glowOpacity, top: "0.88,0.82,0.96", bot: "0.78,0.88,0.98" },
-      { dr: 0.35, sub: 4, op: p.glow2Opacity, top: "0.85,0.80,0.95", bot: "0.80,0.88,0.96" },
-      { dr: 0.55, sub: 3, op: p.glow3Opacity, top: "0.84,0.78,0.94", bot: "0.82,0.88,0.95" }
+      { dr: 0.18, sub: 5, opKey: "glowOpacity", topKey: "glowTop1", botKey: "glowBottom1" },
+      { dr: 0.35, sub: 4, opKey: "glow2Opacity", topKey: "glowTop2", botKey: "glowBottom2" },
+      { dr: 0.55, sub: 3, opKey: "glow3Opacity", topKey: "glowTop3", botKey: "glowBottom3" }
     ];
 
-    const glowData = glowConfigs.map((cfg) => {
-      const geo = new THREE.IcosahedronGeometry(SHELL_R + cfg.dr, cfg.sub);
-      const orig = geo.attributes.position.array.slice();
-      const uni = { uOp: { value: cfg.op } };
-      const mat = new THREE.ShaderMaterial({
-        uniforms: uni,
-        vertexShader: glowVS,
-        fragmentShader: makeGlowFS(cfg.top, cfg.bot),
-        transparent: true,
-        side: THREE.BackSide,
-        depthWrite: false
+    let innerMesh = null;
+    let shellFrontMesh = null;
+    let shellBackMesh = null;
+    let dotPoints = null;
+    let shellGeo = null;
+    let shellBackGeo = null;
+    let shellOrig = null;
+    let shellBackOrig = null;
+    let glowData = [];
+
+    function getMinDisplacement() {
+      return (p.innerRadius + 0.09) / p.shellRadius;
+    }
+
+    function randomFromXYZ(x, y, z) {
+      const v = Math.sin(x * 12.9898 + y * 78.233 + z * 45.164) * 43758.5453;
+      return v - Math.floor(v);
+    }
+
+    function disposeGeometry() {
+      if (innerMesh) {
+        group.remove(innerMesh);
+        innerMesh.geometry.dispose();
+        innerMesh = null;
+      }
+      if (shellFrontMesh) {
+        group.remove(shellFrontMesh);
+        shellFrontMesh.geometry.dispose();
+        shellFrontMesh = null;
+      }
+      if (shellBackMesh) {
+        group.remove(shellBackMesh);
+        shellBackMesh.geometry.dispose();
+        shellBackMesh = null;
+      }
+      if (dotPoints) {
+        group.remove(dotPoints);
+        dotPoints = null;
+      }
+      glowData.forEach((g) => {
+        group.remove(g.mesh);
+        g.geo.dispose();
       });
-      group.add(new THREE.Mesh(geo, mat));
-      return { geo, orig };
-    });
+      glowData = [];
+    }
+
+    function buildShellAttributes(geo) {
+      const count = geo.attributes.position.count;
+      geo.setAttribute("disp", new THREE.BufferAttribute(new Float32Array(count), 1));
+      geo.setAttribute("frost", new THREE.BufferAttribute(new Float32Array(count), 1));
+      const rand = new Float32Array(count);
+      const pos = geo.attributes.position.array;
+      for (let i = 0; i < count; i += 1) {
+        const idx = i * 3;
+        rand[i] = randomFromXYZ(pos[idx], pos[idx + 1], pos[idx + 2]);
+      }
+      geo.setAttribute("randv", new THREE.BufferAttribute(rand, 1));
+    }
+
+    function buildGeometry() {
+      disposeGeometry();
+
+      innerMesh = new THREE.Mesh(new THREE.SphereGeometry(p.innerRadius, 64, 64), innerMat);
+      group.add(innerMesh);
+
+      shellGeo = new THREE.IcosahedronGeometry(p.shellRadius, p.shellDetail);
+      buildShellAttributes(shellGeo);
+      shellOrig = shellGeo.attributes.position.array.slice();
+      shellFrontMesh = new THREE.Mesh(shellGeo, shellFrontMat);
+      group.add(shellFrontMesh);
+
+      shellBackGeo = new THREE.IcosahedronGeometry(p.shellRadius, p.shellDetail);
+      buildShellAttributes(shellBackGeo);
+      shellBackOrig = shellBackGeo.attributes.position.array.slice();
+      shellBackMesh = new THREE.Mesh(shellBackGeo, shellBackMat);
+      group.add(shellBackMesh);
+
+      dotPoints = new THREE.Points(shellGeo, dotMat);
+      group.add(dotPoints);
+
+      glowData = glowConfigs.map((cfg) => {
+        const geo = new THREE.IcosahedronGeometry(p.shellRadius + cfg.dr, cfg.sub);
+        const orig = geo.attributes.position.array.slice();
+        const uni = {
+          uOp: { value: p[cfg.opKey] },
+          uTop: { value: toVec3(p[cfg.topKey], THREE) },
+          uBottom: { value: toVec3(p[cfg.botKey], THREE) }
+        };
+        const mat = new THREE.ShaderMaterial({
+          uniforms: uni,
+          vertexShader: glowVS,
+          fragmentShader: glowFS,
+          transparent: true,
+          side: THREE.BackSide,
+          depthWrite: false
+        });
+        const mesh = new THREE.Mesh(geo, mat);
+        group.add(mesh);
+        return { geo, orig, mat, uniforms: uni };
+      });
+    }
+
+    function samplePerlinFBM(nx, ny, nz, t, ampScale) {
+      const flowT = t * p.noiseFlow;
+      const baseX = nx * p.noiseScale;
+      const baseY = ny * p.noiseScale * p.noiseStretchY;
+      const baseZ = nz * p.noiseScale;
+
+      const warpFreq = p.noiseWarpFreq;
+      const wX = noise(baseX * warpFreq + flowT * 0.83 + 11.0, baseY * warpFreq - flowT * 0.47, baseZ * warpFreq + flowT * 0.31);
+      const wY = noise(baseX * warpFreq - flowT * 0.29 + 29.0, baseY * warpFreq + flowT * 0.58, baseZ * warpFreq - flowT * 0.71);
+      const wZ = noise(baseX * warpFreq + flowT * 0.41 + 47.0, baseY * warpFreq + flowT * 0.22, baseZ * warpFreq + flowT * 0.66);
+
+      const x = baseX + wX * p.noiseWarp;
+      const y = baseY + wY * p.noiseWarp;
+      const z = baseZ + wZ * p.noiseWarp;
+
+      let total = 0;
+      let norm = 0;
+      let freq = 1;
+      let amp = 1;
+      const octaves = Math.max(1, Math.round(p.noiseOctaves));
+      for (let i = 0; i < octaves; i += 1) {
+        const n = noise(
+          x * freq + flowT * (0.9 + i * 0.08),
+          y * freq + flowT * (0.6 + i * 0.05),
+          z * freq - flowT * (0.7 + i * 0.06)
+        );
+        const ridge = (1 - Math.abs(n)) * 2 - 1;
+        const shaped = n * (1 - p.noiseRidgeMix) + ridge * p.noiseRidgeMix;
+        total += shaped * amp;
+        norm += amp;
+        amp *= p.noisePersistence;
+        freq *= p.noiseLacunarity;
+      }
+
+      const normalized = norm > 0 ? total / norm : 0;
+      return normalized * p.noiseStrength * (ampScale || 1);
+    }
 
     function displaceShell(origArr, geo, t) {
+      if (!geo || !origArr) return;
       const pos = geo.attributes.position.array;
       const dA = geo.attributes.disp.array;
       const fA = geo.attributes.frost.array;
@@ -372,6 +673,7 @@
       const b1 = Math.sin(t * p.breathSpeed);
       const b2 = Math.sin(t * p.breathSpeed * 0.6);
       const breath = 1 + b1 * b1 * Math.sign(b1) * p.breathAmp + b2 * b2 * Math.sign(b2) * p.breathAmp * 0.4;
+      const minD = getMinDisplacement();
 
       for (let i = 0; i < origArr.length; i += 3) {
         const ox = origArr[i];
@@ -383,15 +685,48 @@
         const ny = oy / len;
         const nz = oz / len;
 
-        const n = noise(nx * p.oct1Freq + sx + fx, ny * p.oct1Freq + dr, nz * p.oct1Freq + sz) * p.oct1Amp
-          + noise(nx * p.oct2Freq + sx * 1.4 + 10, ny * p.oct2Freq + dr * 1.6, nz * p.oct2Freq + sz * 1.4 + 10) * p.oct2Amp
-          + noise(nx * p.oct3Freq + sx * 0.9 + 20, ny * p.oct3Freq + dr * 0.7, nz * p.oct3Freq + sz * 0.9 + 20) * p.oct3Amp;
+        const curvy = p.surfaceCurviness;
+        const macro = samplePerlinFBM(nx + sx + fx, ny + dr, nz + sz, t, 1);
+        const micro = samplePerlinFBM(
+          nx * (1.65 + curvy * 0.9) + sx * 0.5,
+          ny * (1.5 + curvy * 0.7) + dr * 0.4,
+          nz * (1.65 + curvy * 0.9) + sz * 0.5,
+          t * (1.2 + curvy * 0.8),
+          0.35
+        );
+        const chunk = samplePerlinFBM(
+          nx * (1.7 + p.shellChunkiness * 1.1) + sx * 0.32,
+          ny * (1.45 + p.shellChunkiness * 0.95) + dr * 0.2,
+          nz * (1.7 + p.shellChunkiness * 1.1) + sz * 0.32,
+          t * 0.78,
+          0.55
+        );
+        const lat = (ny * 0.5 + 0.5);
+        const bandFreq = 4.5 + p.shellBanding * 16.0;
+        const band = Math.sin(lat * bandFreq * 3.14159265 + t * 0.14);
+        const lopside = (nx * 0.62 - nz * 0.22 - ny * 0.35);
+        const bottom = Math.max(0.0, -ny);
+        const ridge = Math.sign(band) * Math.pow(Math.abs(band), 2.4);
+
+        let n = macro * (0.8 + curvy * 0.22) + micro * (0.14 + curvy * 0.2);
+        n += chunk * (0.06 + p.shellChunkiness * 0.1);
+        n += band * (0.02 + p.shellBanding * 0.07);
+        n += ridge * (p.shellRidgeStrength * 0.05);
+        n += lopside * (p.shellLopsidedness * 0.08);
+        n += (bottom * bottom) * (p.shellBottomWeight * 0.08);
+        n = clamp(n, -p.noiseStrength * 0.55, p.noiseStrength * 0.95);
 
         const idx = i / 3;
         dA[idx] = n;
         fA[idx] = noise(nx * 3.2 + t * 0.04, ny * 3.2 + t * 0.035, nz * 3.2 + t * 0.045);
 
-        const d = Math.max(breath + n, MIN_D);
+        let d = breath + n;
+        if (p.shellSteps > 0) {
+          const stepAmp = 0.12 + p.noiseStrength * 0.42;
+          const stepSize = stepAmp / p.shellSteps;
+          d = Math.round(d / stepSize) * stepSize;
+        }
+        d = Math.max(d, minD);
         pos[i] = ox * d;
         pos[i + 1] = oy * d;
         pos[i + 2] = oz * d;
@@ -404,6 +739,7 @@
     }
 
     function displaceGlow(origArr, geo, t, nScale) {
+      if (!geo || !origArr) return;
       const tgt = geo.attributes.position.array;
       const sw = t * p.swirlSpeed;
       const sx = Math.sin(sw) * p.swirlRadius;
@@ -424,7 +760,7 @@
         const ny = oy / len;
         const nz = oz / len;
 
-        const n = noise(nx * p.oct1Freq + sx + fx, ny * p.oct1Freq + dr, nz * p.oct1Freq + sz) * nScale;
+        const n = samplePerlinFBM(nx + sx + fx, ny + dr, nz + sz, t, nScale / Math.max(p.noiseStrength, 0.0001));
         const d = breath + n;
         tgt[i] = ox * d;
         tgt[i + 1] = oy * d;
@@ -433,15 +769,288 @@
       geo.attributes.position.needsUpdate = true;
     }
 
-    function updatePlacement() {
+    function applyPlacement() {
       const isMobile = window.innerWidth < 900;
       group.scale.setScalar(isMobile ? 1.65 : settings.groupScale);
       group.position.set(isMobile ? 0.2 : settings.groupX, isMobile ? -1.6 : settings.groupY, 0);
     }
-    updatePlacement();
+
+    function applyVisualUniforms() {
+      innerUni.uSaturation.value = p.innerSaturation;
+      innerUni.uColor1.value.set(p.innerColor1);
+      innerUni.uColor2.value.set(p.innerColor2);
+      innerUni.uColor3.value.set(p.innerColor3);
+      innerUni.uColor4.value.set(p.innerColor4);
+      innerUni.uColor5.value.set(p.innerColor5);
+      innerUni.uColor6.value.set(p.innerColor6);
+
+      frontUni.uBaseOpacity.value = p.baseOpacity;
+      frontUni.uEdgeMult.value = p.edgeMult;
+      frontUni.uFresnelPow.value = p.fresnelPow;
+      frontUni.uSpecIntensity.value = p.specIntensity;
+      frontUni.uSpecWidth.value = p.specWidth;
+      frontUni.uFrostAmount.value = p.frostAmount;
+      frontUni.uFoldStrength.value = p.foldStrength;
+      frontUni.uShellTopColor.value.set(p.shellTopColor);
+      frontUni.uShellBottomColor.value.set(p.shellBottomColor);
+      frontUni.uShellSideColor.value.set(p.shellSideColor);
+      frontUni.uShellNoiseDarkColor.value.set(p.shellNoiseDarkColor);
+      frontUni.uShellNoiseTintColor.value.set(p.shellNoiseTintColor);
+
+      backUni.uBaseOpacity.value = p.backBaseOpacity;
+      backUni.uEdgeMult.value = p.backEdgeMult;
+      backUni.uBackTopColor.value.set(p.backTopColor);
+      backUni.uBackBottomColor.value.set(p.backBottomColor);
+
+      dotUni.uDotOpacity.value = p.dotOpacity;
+      dotUni.uDotSize.value = p.dotSize;
+      dotUni.uDotDensity.value = p.dotDensity;
+
+      glowData.forEach((g, idx) => {
+        const opKey = idx === 0 ? "glowOpacity" : idx === 1 ? "glow2Opacity" : "glow3Opacity";
+        const topKey = idx === 0 ? "glowTop1" : idx === 1 ? "glowTop2" : "glowTop3";
+        const botKey = idx === 0 ? "glowBottom1" : idx === 1 ? "glowBottom2" : "glowBottom3";
+        g.uniforms.uOp.value = p[opKey];
+        g.uniforms.uTop.value.set(p[topKey]);
+        g.uniforms.uBottom.value.set(p[botKey]);
+      });
+
+      container.style.background = `linear-gradient(180deg, ${p.bgTop} 0%, ${p.bgBottom} 100%)`;
+      const haze = container.parentElement && container.parentElement.querySelector(".bg-haze");
+      if (haze) haze.style.opacity = String(p.hazeOpacity);
+    }
+
+    function exportConfigText() {
+      const output = {};
+      Object.keys(DEFAULTS).forEach((k) => {
+        output[k] = p[k];
+      });
+      return JSON.stringify(output, null, 2);
+    }
+
+    function createControlPanel() {
+      if (!settings.showControls) return null;
+
+      const existing = document.querySelector(".blob-controls");
+      if (existing) existing.remove();
+
+      const panel = document.createElement("aside");
+      panel.className = "blob-controls";
+      panel.innerHTML = `
+        <div class="blob-controls-head">
+          <strong>Blob Tuning</strong>
+          <button type="button" data-action="collapse">-</button>
+        </div>
+        <div class="blob-controls-body"></div>
+      `;
+
+      const body = panel.querySelector(".blob-controls-body");
+
+      function addSection(title) {
+        const sec = document.createElement("div");
+        sec.className = "blob-controls-section";
+        sec.innerHTML = `<h4>${title}</h4>`;
+        body.appendChild(sec);
+        return sec;
+      }
+
+      function addRange(sec, label, key, min, max, step, rebuild) {
+        const row = document.createElement("label");
+        row.className = "blob-controls-row";
+        row.innerHTML = `
+          <span>${label}</span>
+          <div>
+            <input type="range" min="${min}" max="${max}" step="${step}" value="${p[key]}">
+            <input type="number" min="${min}" max="${max}" step="${step}" value="${p[key]}">
+          </div>
+        `;
+        const [slider, number] = row.querySelectorAll("input");
+        const update = (value) => {
+          const next = clamp(Number(value), Number(min), Number(max));
+          p[key] = next;
+          slider.value = String(next);
+          number.value = String(next);
+          saveParams(p);
+          if (rebuild) buildGeometry();
+          applyVisualUniforms();
+        };
+        slider.addEventListener("input", (e) => update(e.target.value));
+        number.addEventListener("input", (e) => update(e.target.value));
+        sec.appendChild(row);
+      }
+
+      function addColor(sec, label, key) {
+        const row = document.createElement("label");
+        row.className = "blob-controls-row";
+        row.innerHTML = `
+          <span>${label}</span>
+          <div>
+            <input type="color" value="${toHex(new THREE.Color(p[key]))}">
+            <input type="text" value="${p[key]}">
+          </div>
+        `;
+        const [picker, text] = row.querySelectorAll("input");
+        const update = (value) => {
+          const next = /^#[0-9a-fA-F]{6}$/.test(value) ? value : p[key];
+          p[key] = next;
+          picker.value = toHex(new THREE.Color(next));
+          text.value = next;
+          saveParams(p);
+          applyVisualUniforms();
+        };
+        picker.addEventListener("input", (e) => update(e.target.value));
+        text.addEventListener("change", (e) => update(e.target.value));
+        sec.appendChild(row);
+      }
+
+      const geometry = addSection("Geometry + Density");
+      addRange(geometry, "Inner radius", "innerRadius", 0.4, 1.4, 0.01, true);
+      addRange(geometry, "Outer radius", "shellRadius", 0.8, 1.8, 0.01, true);
+      addRange(geometry, "Shell detail", "shellDetail", 2, 6, 1, true);
+      addRange(geometry, "Shell vertex size", "dotSize", 1, 16, 0.2, false);
+      addRange(geometry, "Vertex opacity", "dotOpacity", 0, 1, 0.01, false);
+      addRange(geometry, "Form density", "dotDensity", 0.05, 1, 0.01, false);
+
+      const perlin = addSection("Perlin Noise");
+      addRange(perlin, "Noise scale", "noiseScale", 0.2, 3.5, 0.01, false);
+      addRange(perlin, "Noise strength", "noiseStrength", 0.01, 0.35, 0.005, false);
+      addRange(perlin, "Noise octaves", "noiseOctaves", 1, 6, 1, false);
+      addRange(perlin, "Lacunarity", "noiseLacunarity", 1.2, 3.2, 0.01, false);
+      addRange(perlin, "Persistence", "noisePersistence", 0.1, 0.95, 0.01, false);
+      addRange(perlin, "Domain warp", "noiseWarp", 0, 1.2, 0.01, false);
+      addRange(perlin, "Warp frequency", "noiseWarpFreq", 0.4, 3.2, 0.01, false);
+      addRange(perlin, "Flow speed", "noiseFlow", 0.01, 0.8, 0.005, false);
+      addRange(perlin, "Vertical stretch", "noiseStretchY", 0.4, 1.8, 0.01, false);
+      addRange(perlin, "Ridge mix", "noiseRidgeMix", 0, 1, 0.01, false);
+      addRange(perlin, "Surface curviness", "surfaceCurviness", 0, 1, 0.01, false);
+      addRange(perlin, "Shell chunkiness", "shellChunkiness", 0, 1, 0.01, false);
+      addRange(perlin, "Shell banding", "shellBanding", 0, 1, 0.01, false);
+      addRange(perlin, "Shell ridge strength", "shellRidgeStrength", 0, 1, 0.01, false);
+      addRange(perlin, "Shell lopsidedness", "shellLopsidedness", 0, 1, 0.01, false);
+      addRange(perlin, "Shell bottom weight", "shellBottomWeight", 0, 1, 0.01, false);
+      addRange(perlin, "Shell stepping", "shellSteps", 0, 12, 1, false);
+
+      const glass = addSection("Glass + Motion");
+      addRange(glass, "Glass base opacity", "baseOpacity", 0, 0.5, 0.005, false);
+      addRange(glass, "Glass edge boost", "edgeMult", 0, 1.2, 0.01, false);
+      addRange(glass, "Fresnel power", "fresnelPow", 0.2, 3.5, 0.01, false);
+      addRange(glass, "Specular intensity", "specIntensity", 0, 1, 0.01, false);
+      addRange(glass, "Specular width", "specWidth", 0.3, 5, 0.05, false);
+      addRange(glass, "Frost amount", "frostAmount", 0, 0.35, 0.005, false);
+      addRange(glass, "Fold strength", "foldStrength", 0, 0.35, 0.005, false);
+      addRange(glass, "Back glass opacity", "backBaseOpacity", 0, 0.4, 0.005, false);
+      addRange(glass, "Back edge boost", "backEdgeMult", 0, 1, 0.01, false);
+      addRange(glass, "Swirl speed", "swirlSpeed", 0.02, 0.7, 0.005, false);
+      addRange(glass, "Swirl radius", "swirlRadius", 0, 1.8, 0.01, false);
+      addRange(glass, "Drift speed", "driftSpeed", 0.02, 0.6, 0.005, false);
+      addRange(glass, "Breath amount", "breathAmp", 0, 0.25, 0.005, false);
+      addRange(glass, "Breath speed", "breathSpeed", 0.1, 1.2, 0.01, false);
+      addRange(glass, "Rotation speed", "rotSpeed", 0, 1.2, 0.01, false);
+
+      const colors = addSection("Colors");
+      addColor(colors, "Inner color 1", "innerColor1");
+      addColor(colors, "Inner color 2", "innerColor2");
+      addColor(colors, "Inner color 3", "innerColor3");
+      addColor(colors, "Inner color 4", "innerColor4");
+      addColor(colors, "Inner color 5", "innerColor5");
+      addColor(colors, "Inner color 6", "innerColor6");
+      addRange(colors, "Inner saturation", "innerSaturation", 0, 2.2, 0.01, false);
+
+      addColor(colors, "Shell top", "shellTopColor");
+      addColor(colors, "Shell bottom", "shellBottomColor");
+      addColor(colors, "Shell side tint", "shellSideColor");
+      addColor(colors, "Shell dark noise", "shellNoiseDarkColor");
+      addColor(colors, "Shell noise tint", "shellNoiseTintColor");
+      addColor(colors, "Back top", "backTopColor");
+      addColor(colors, "Back bottom", "backBottomColor");
+
+      const glow = addSection("Glow + Background");
+      addRange(glow, "Glow 1 opacity", "glowOpacity", 0, 0.25, 0.005, false);
+      addRange(glow, "Glow 2 opacity", "glow2Opacity", 0, 0.2, 0.005, false);
+      addRange(glow, "Glow 3 opacity", "glow3Opacity", 0, 0.18, 0.005, false);
+      addColor(glow, "Glow 1 top", "glowTop1");
+      addColor(glow, "Glow 1 bottom", "glowBottom1");
+      addColor(glow, "Glow 2 top", "glowTop2");
+      addColor(glow, "Glow 2 bottom", "glowBottom2");
+      addColor(glow, "Glow 3 top", "glowTop3");
+      addColor(glow, "Glow 3 bottom", "glowBottom3");
+      addColor(glow, "Background top", "bgTop");
+      addColor(glow, "Background bottom", "bgBottom");
+      addRange(glow, "Haze opacity", "hazeOpacity", 0, 1, 0.01, false);
+
+      const tools = document.createElement("div");
+      tools.className = "blob-controls-tools";
+      tools.innerHTML = `
+        <button type="button" data-action="copy">Copy config</button>
+        <button type="button" data-action="reset">Reset</button>
+        <button type="button" data-action="hide">Hide menu</button>
+      `;
+      body.appendChild(tools);
+
+      panel.addEventListener("click", async (event) => {
+        const target = event.target;
+        if (!(target instanceof HTMLElement)) return;
+        const action = target.getAttribute("data-action");
+        if (!action) return;
+
+        if (action === "collapse") {
+          panel.classList.toggle("is-collapsed");
+          target.textContent = panel.classList.contains("is-collapsed") ? "+" : "-";
+          saveUiState({ hidden: false, collapsed: panel.classList.contains("is-collapsed") });
+          return;
+        }
+
+        if (action === "copy") {
+          const text = exportConfigText();
+          try {
+            await navigator.clipboard.writeText(text);
+            target.textContent = "Copied";
+            setTimeout(() => { target.textContent = "Copy config"; }, 1200);
+          } catch (_e) {
+            target.textContent = "Copy failed";
+            setTimeout(() => { target.textContent = "Copy config"; }, 1200);
+          }
+          return;
+        }
+
+        if (action === "reset") {
+          Object.keys(DEFAULTS).forEach((k) => { p[k] = DEFAULTS[k]; });
+          saveParams(p);
+          buildGeometry();
+          applyVisualUniforms();
+          panel.remove();
+          createControlPanel();
+          return;
+        }
+
+        if (action === "hide") {
+          saveUiState({ hidden: true, collapsed: false });
+          panel.remove();
+        }
+      });
+
+      document.body.appendChild(panel);
+      const ui = loadUiState();
+      if (ui && ui.collapsed) {
+        panel.classList.add("is-collapsed");
+        const collapseButton = panel.querySelector('[data-action="collapse"]');
+        if (collapseButton) collapseButton.textContent = "+";
+      }
+      return panel;
+    }
+
+    buildGeometry();
+    applyVisualUniforms();
+    applyPlacement();
+
+    if (settings.showControls) {
+      saveUiState({ hidden: false, collapsed: false });
+      createControlPanel();
+    }
 
     let time = 0;
     let raf = 0;
+
     function animate() {
       time += p.timeStep;
       innerUni.uTime.value = time;
@@ -452,9 +1061,9 @@
 
       displaceShell(shellOrig, shellGeo, time);
       displaceShell(shellBackOrig, shellBackGeo, time);
-      displaceGlow(glowData[0].orig, glowData[0].geo, time, 0.1);
-      displaceGlow(glowData[1].orig, glowData[1].geo, time, 0.06);
-      displaceGlow(glowData[2].orig, glowData[2].geo, time, 0.03);
+      if (glowData[0]) displaceGlow(glowData[0].orig, glowData[0].geo, time, 0.1);
+      if (glowData[1]) displaceGlow(glowData[1].orig, glowData[1].geo, time, 0.06);
+      if (glowData[2]) displaceGlow(glowData[2].orig, glowData[2].geo, time, 0.03);
 
       renderer.render(scene, camera);
       raf = requestAnimationFrame(animate);
@@ -468,18 +1077,17 @@
       camera.updateProjectionMatrix();
       renderer.setSize(w, h);
       renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
-      updatePlacement();
+      applyPlacement();
     }
+
     window.addEventListener("resize", onResize);
 
     return function cleanup() {
       cancelAnimationFrame(raf);
       window.removeEventListener("resize", onResize);
       if (container.contains(renderer.domElement)) container.removeChild(renderer.domElement);
+      disposeGeometry();
       renderer.dispose();
-      shellGeo.dispose();
-      shellBackGeo.dispose();
-      glowData.forEach((g) => g.geo.dispose());
       innerMat.dispose();
       shellFrontMat.dispose();
       shellBackMat.dispose();
