@@ -323,11 +323,11 @@ h1 {
   justify-self: end;
 }
 
-.pill-logo {
-  width: 20px;
-  height: 20px;
-  border-radius: 50%;
-  background: conic-gradient(from 220deg, #2da8ff, #9f5fff, #f63ccf, #ffa817, #2da8ff);
+.footer-logo-horizontal {
+  height: 16px;
+  width: auto;
+  display: inline-block;
+  object-fit: contain;
 }
 
 @media (max-width: 1080px) {
