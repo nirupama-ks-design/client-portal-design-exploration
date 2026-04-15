@@ -6,6 +6,7 @@
   --muted: #5f6a7b;
   --accent: #4f86ff;
   --input-border: #d8d8d8;
+  --layout-pad: clamp(24px, 4vw, 70px);
 }
 
 * { box-sizing: border-box; }
@@ -154,7 +155,6 @@ body {
 }
 
 .screen {
-  --layout-pad: clamp(24px, 4vw, 70px);
   --modal-width: min(430px, calc(100vw - 34px));
   position: relative;
   z-index: 2;
@@ -351,9 +351,12 @@ h1 {
   }
 
   .screen {
-    --layout-pad: 13px;
     --modal-width: min(620px, calc(100vw - 26px));
     align-content: center;
+  }
+
+  :root {
+    --layout-pad: 13px;
   }
 
   .signup-main {
