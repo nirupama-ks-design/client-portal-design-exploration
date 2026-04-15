@@ -101,37 +101,37 @@
     backBaseOpacity: 0.18,
     backEdgeMult: 0.67,
 
-    glowOpacity: 0.08,
-    glow2Opacity: 0.03,
-    glow3Opacity: 0.03,
+    glowOpacity: 0.12,
+    glow2Opacity: 0.07,
+    glow3Opacity: 0.05,
 
-    innerSaturation: 1.11,
-    innerColor1: "#fa8470",
-    innerColor2: "#e06baa",
-    innerColor3: "#ffc4ab",
-    innerColor4: "#f4a4c0",
-    innerColor5: "#b18cfe",
-    innerColor6: "#4a80ea",
+    innerSaturation: 1.28,
+    innerColor1: "#ff7a5f",
+    innerColor2: "#f156b2",
+    innerColor3: "#ffc2a0",
+    innerColor4: "#ff8dc0",
+    innerColor5: "#9a79ff",
+    innerColor6: "#3f7dff",
 
     shellTopColor: "#ffffff",
     shellBottomColor: "#ffffff",
-    shellSideColor: "#f0e8f0",
-    shellNoiseDarkColor: "#aaaaaa",
-    shellNoiseTintColor: "#c0c0c0",
+    shellSideColor: "#f3e6f8",
+    shellNoiseDarkColor: "#9f95b0",
+    shellNoiseTintColor: "#cec5da",
 
-    backTopColor: "#f7f0f7",
-    backBottomColor: "#eff2f7",
+    backTopColor: "#efe3fa",
+    backBottomColor: "#e4ecfb",
 
-    glowTop1: "#e0d1f5",
-    glowBottom1: "#c7e0fa",
-    glowTop2: "#d8ccf2",
-    glowBottom2: "#cce0f5",
-    glowTop3: "#d6c7f0",
-    glowBottom3: "#d1e0f2",
+    glowTop1: "#dbbffd",
+    glowBottom1: "#b9d6ff",
+    glowTop2: "#d4b7fa",
+    glowBottom2: "#c4dcff",
+    glowTop3: "#cfadf7",
+    glowBottom3: "#cfe4ff",
 
-    bgTop: "#e8f1fe",
-    bgBottom: "#e2eefb",
-    hazeOpacity: 0.21
+    bgTop: "#dcecff",
+    bgBottom: "#d5e8ff",
+    hazeOpacity: 0.3
   };
 
   function clamp(n, min, max) {
