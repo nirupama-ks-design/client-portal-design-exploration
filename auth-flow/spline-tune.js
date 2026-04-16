@@ -101,7 +101,7 @@
   function initSplineTune() {
     const params = new URLSearchParams(window.location.search);
     const forced = params.get("tune") === "1";
-    const viewer = document.querySelector(".bg-stage-primary spline-viewer");
+    const viewer = document.querySelector(".bg-stage spline-viewer");
     if (!viewer) return;
 
     const state = load();

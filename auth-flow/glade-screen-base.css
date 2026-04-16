@@ -39,20 +39,6 @@ body {
   border: 0;
 }
 
-.bg-stage-secondary {
-  left: 0;
-  right: 0;
-  top: auto;
-  bottom: -18vh;
-  height: 70vh;
-}
-
-.bg-stage-secondary spline-viewer {
-  opacity: 0.64;
-  transform: scale(0.9);
-  transform-origin: 50% 100%;
-}
-
 .spline-controls {
   position: fixed;
   top: 12px;
