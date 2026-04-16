@@ -1,11 +1,11 @@
 (function () {
-  const STORAGE_KEY = "gladeSplineTune:v1";
+  const STORAGE_KEY = "gladeSplineTune:v2";
   const UI_KEY = "gladeSplineTune:ui:v1";
   const DEFAULTS = {
-    zoom: 1,
-    x: 0,
-    y: 0,
-    rotate: 0,
+    zoom: 1.63,
+    x: -21.1,
+    y: -18.3,
+    rotate: -2.6,
     opacity: 1
   };
 
@@ -101,7 +101,7 @@
   function initSplineTune() {
     const params = new URLSearchParams(window.location.search);
     const forced = params.get("tune") === "1";
-    const viewer = document.querySelector(".bg-stage spline-viewer");
+    const viewer = document.querySelector(".bg-stage-primary spline-viewer");
     if (!viewer) return;
 
     const state = load();
