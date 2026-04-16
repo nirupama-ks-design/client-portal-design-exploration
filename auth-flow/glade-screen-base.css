@@ -25,33 +25,20 @@ body {
 }
 
 .spline-bg {
-  --spline-x: 10%;
-  --spline-y: -5%;
-  --spline-scale: 1;
-  --spline-width: 1800px;
-  --spline-height: 1100px;
   position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
+  inset: 0;
   z-index: 0;
-  overflow: hidden;
-  pointer-events: none;
   background: #dce8f5;
 }
 
+.spline-bg.loaded {
+  pointer-events: none;
+}
+
 .spline-bg spline-viewer {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: var(--spline-width);
-  height: var(--spline-height);
   display: block;
-  border: 0;
-  transform: translate(var(--spline-x), var(--spline-y)) scale(var(--spline-scale));
-  transform-origin: center center;
-  transition: transform 0.4s ease;
+  width: 100%;
+  height: 100%;
 }
 
 .spline-controls {
@@ -526,18 +513,3 @@ h1 {
   }
 }
 
-@media (max-width: 1024px) and (min-width: 768px) {
-  .spline-bg {
-    --spline-x: 0%;
-    --spline-y: -5%;
-    --spline-scale: 1.25;
-  }
-}
-
-@media (max-width: 767px) {
-  .spline-bg {
-    --spline-x: -20%;
-    --spline-y: -20%;
-    --spline-scale: 1.6;
-  }
-}
