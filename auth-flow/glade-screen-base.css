@@ -121,6 +121,30 @@ body {
   padding: 8px 10px;
 }
 
+.spline-controls-launcher,
+.spline-controls-close {
+  border: 1px solid rgba(144, 159, 181, 0.36);
+  background: rgba(255, 255, 255, 0.92);
+  color: #1d2430;
+  border-radius: 8px;
+  font-size: 12px;
+  line-height: 1;
+  padding: 8px 10px;
+  -webkit-backdrop-filter: blur(8px) saturate(130%);
+  backdrop-filter: blur(8px) saturate(130%);
+}
+
+.spline-controls-launcher {
+  position: fixed;
+  top: 12px;
+  right: 12px;
+  z-index: 6;
+}
+
+.spline-controls-close {
+  margin-left: auto;
+}
+
 .bg-haze {
   position: fixed;
   inset: 0;

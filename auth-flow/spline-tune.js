@@ -1,5 +1,6 @@
 (function () {
   const STORAGE_KEY = "gladeSplineTune:v1";
+  const UI_KEY = "gladeSplineTune:ui:v1";
   const DEFAULTS = {
     zoom: 1,
     x: 0,
@@ -99,14 +100,20 @@
 
   function initSplineTune() {
     const params = new URLSearchParams(window.location.search);
-    const showControls = params.get("tune") === "1";
+    const forced = params.get("tune") === "1";
     const viewer = document.querySelector(".bg-stage spline-viewer");
     if (!viewer) return;
 
     const state = load();
     apply(viewer, state);
 
-    if (!showControls) return;
+    if (forced) {
+      try { localStorage.setItem(UI_KEY, "open"); } catch (_e) {}
+    }
+
+    const isOpen = forced || (() => {
+      try { return localStorage.getItem(UI_KEY) === "open"; } catch (_e) { return false; }
+    })();
 
     const onChange = () => {
       apply(viewer, state);
@@ -134,8 +141,33 @@
       }
     };
 
-    const panel = createPanel(state, onChange, onReset, onCopy);
-    document.body.appendChild(panel);
+    const launcher = document.createElement("button");
+    launcher.type = "button";
+    launcher.className = "spline-controls-launcher";
+    launcher.textContent = "Tune";
+    document.body.appendChild(launcher);
+
+    let panel = null;
+    const openPanel = () => {
+      if (panel) return;
+      panel = createPanel(state, onChange, onReset, onCopy);
+      const head = panel.querySelector(".spline-controls-head");
+      const close = document.createElement("button");
+      close.type = "button";
+      close.className = "spline-controls-close";
+      close.textContent = "Close";
+      close.addEventListener("click", () => {
+        try { localStorage.setItem(UI_KEY, "closed"); } catch (_e) {}
+        panel.remove();
+        panel = null;
+      });
+      head.appendChild(close);
+      document.body.appendChild(panel);
+      try { localStorage.setItem(UI_KEY, "open"); } catch (_e) {}
+    };
+
+    launcher.addEventListener("click", openPanel);
+    if (isOpen) openPanel();
   }
 
   if (document.readyState === "loading") {
