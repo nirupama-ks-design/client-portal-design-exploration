@@ -19,9 +19,13 @@ html, body {
 
 body {
   font-family: Inter, "SF Pro Text", "Segoe UI", system-ui, sans-serif;
-  background: #dce8f5;
+  background: transparent;
   color: var(--text);
   overflow: hidden;
+}
+
+html {
+  background: #dce8f5;
 }
 
 .spline-bg {
