@@ -7,8 +7,9 @@
     <link rel="stylesheet" href="./glade-screen-base.css" />
   </head>
   <body>
-    <div id="blob-root" class="bg-stage"></div>
-    <div class="bg-haze"></div>
+    <div class="bg-stage">
+      <spline-viewer url="https://prod.spline.design/KfPslsvkLATHP6wa/scene.splinecode"></spline-viewer>
+    </div>
 
     <main class="screen">
       <section class="signup-card" aria-label="Create your account">
@@ -42,10 +43,6 @@
       <div class="footer-right">Glade Intelligence Corp.</div>
     </footer>
 
-    <script src="https://unpkg.com/three@0.160.0/build/three.min.js"></script>
-    <script src="./glade-blob-background.js"></script>
-    <script>
-      window.initGladeBlobBackground(document.getElementById("blob-root"), { showControls: false, useSaved: false });
-    </script>
+    <script type="module" src="https://unpkg.com/@splinetool/viewer@1.9.59/build/spline-viewer.js"></script>
   </body>
 </html>
