@@ -28,11 +28,9 @@ body {
   position: fixed;
   inset: 0;
   z-index: 0;
-  background: #dce8f5;
-}
-
-.spline-bg.loaded {
+  overflow: hidden;
   pointer-events: none;
+  background: #dce8f5;
 }
 
 .spline-bg spline-viewer {

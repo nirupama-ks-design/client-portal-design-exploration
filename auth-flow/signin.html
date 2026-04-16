@@ -60,16 +60,13 @@
       <div class="footer-right">© Glade Intelligence Corp.</div>
     </footer>
 
-    <script type="module" src="https://unpkg.com/@splinetool/viewer@1.12.82/build/spline-viewer.js" async></script>
+    <script type="module" src="https://unpkg.com/@splinetool/viewer@1.12.81/build/spline-viewer.js" async></script>
     <script>
       const signinForm = document.querySelector("form");
       signinForm?.addEventListener("submit", () => {
         sessionStorage.setItem("gladePortalAuth", "true");
       });
 
-      document.querySelector("spline-viewer")?.addEventListener("load", function () {
-        this.closest(".spline-bg")?.classList.add("loaded");
-      });
     </script>
   </body>
 </html>
