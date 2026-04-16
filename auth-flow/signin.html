@@ -7,11 +7,11 @@
     <link rel="stylesheet" href="./glade-screen-base.css" />
   </head>
   <body>
-    <div class="bg-stage">
-      <spline-viewer url="https://prod.spline.design/wW2q9yA967GCMp9k/scene.splinecode"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO2pR5kAAAAASUVORK5CYII=" alt="Spline preview" style="width: 100%; height: 100%;"/></spline-viewer>
+    <div class="spline-bg">
+      <spline-viewer loading-anim-type="spinner-small-light" url="https://prod.spline.design/wW2q9yA967GCMp9k/scene.splinecode"></spline-viewer>
     </div>
 
-    <main class="screen">
+    <main class="page-content">
       <section class="signup-card" aria-label="Sign in">
         <div class="signup-main">
           <div class="logo" aria-hidden="true">
@@ -57,7 +57,6 @@
     </footer>
 
     <script type="module" src="https://unpkg.com/@splinetool/viewer@1.12.82/build/spline-viewer.js" async></script>
-    <script src="./spline-tune.js"></script>
     <script>
       const signinForm = document.querySelector("form");
       signinForm?.addEventListener("submit", () => {
