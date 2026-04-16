@@ -282,7 +282,7 @@ body {
 .signup-card {
   width: var(--modal-width);
   border-radius: 16px;
-  background: var(--card);
+  background: transparent;
   border: 1px solid var(--card-border);
   box-shadow: 0 20px 44px rgba(75, 91, 118, 0.12);
   overflow: hidden;
@@ -290,6 +290,7 @@ body {
 
 .signup-main {
   padding: 28px 24px 18px;
+  background: var(--card);
 }
 
 .logo {
